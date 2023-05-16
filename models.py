@@ -3,7 +3,6 @@ from sqlalchemy.orm import backref
 
 db = SQLAlchemy() # Our DB Handler
 
-
 class Posts(db.Model):
     __tablename__ = 'posts'
 
@@ -11,9 +10,9 @@ class Posts(db.Model):
                    db.Sequence('posts_id_seq'),
                    primary_key=True)
     
-    profile_id = db.Column(db.Integer,
-                           db.ForeignKey('profiles.id'),
-                           nullable=False)
+    # profile_id = db.Column(db.Integer,
+    #                        db.ForeignKey('profiles.id'),
+    #                        nullable=False)
     
     timestamp = db.Column(db.DateTime,
                           server_default=db.func.now(),
