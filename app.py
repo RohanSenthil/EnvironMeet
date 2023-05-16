@@ -1,4 +1,4 @@
-from flask import Flask    
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from models import db
 from tools import generate_uri_from_file
@@ -12,6 +12,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db.init_app(app)
 with app.app_context():
     db.create_all()
+
+# Routes
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
