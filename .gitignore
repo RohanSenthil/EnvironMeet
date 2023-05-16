@@ -1,1 +1,8 @@
 .env
+.idea
+.vscode
+venv
+__pycache__
+instance/*.db
+flask_session
+migrations/
