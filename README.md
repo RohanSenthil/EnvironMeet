@@ -8,7 +8,7 @@ In your virtual environment type `pip install -r requirements.txt`
 In the MySQL command line, execute the following commands:                 
 `CREATE DATABASE environmeet_db;`     
 `CREATE USER 'test_user'@'localhost' IDENTIFIED BY 'fake_password';`         
-`GRANT ALL PRIVILEGES ON test_db.* TO 'test_user'@'localhost';
+`GRANT ALL PRIVILEGES ON environmeet_db.* TO 'test_user'@'localhost';
 FLUSH PRIVILEGES;`
 
 Create your own .env file with the contents
