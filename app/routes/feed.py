@@ -3,4 +3,4 @@ from flask import render_template
 
 @app.route('/feed')
 def feed():
-    return render_template('feed/feed.html')
+    return render_template('feed.html')
