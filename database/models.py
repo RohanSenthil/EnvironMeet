@@ -1,9 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 
-db = SQLAlchemy() # Our DB Handler
+db = SQLAlchemy() # DB Handler
 
 class Posts(db.Model):
+
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
