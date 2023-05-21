@@ -3,9 +3,9 @@ Application Security Project on Environment Sustainability
 
 ## Setup
 In your virtual environment type 
-`pip install -r requirements.txt`
-`set FLASK_APP=run.py`
-`set FLASK_ENV=development`
+`pip install -r requirements.txt`                
+`set FLASK_APP=run.py`                              
+`set FLASK_ENV=development`                        
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
