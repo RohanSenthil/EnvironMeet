@@ -22,3 +22,11 @@ class Profiles(db.Model):
 
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
     posts = db.relationship('Posts', backref='profiles', lazy=True)
+
+# class Member(db.Model):
+
+#     __tablename__ = 'member'
+
+#     id = db.Column(db.Integer,db.Sequence('member_id_seq'),primary_key=True)
+#     email = db.Column()
+#     posts = db.relationship('Posts', backref='profiles', lazy=True)
