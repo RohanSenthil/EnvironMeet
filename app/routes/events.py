@@ -2,5 +2,5 @@ from app import app
 from flask import render_template
 
 @app.route('/events')
-def eventspage():
-    return render_template('events.html')
+def events():
+    return render_template('templates/events.html')

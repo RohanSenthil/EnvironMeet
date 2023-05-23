@@ -1,0 +1,41 @@
+*:focus {
+    outline: none;
+}
+
+.SearchEventContainer {
+    width: 50%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.SearchEventBox {
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: row;
+}
+
+.SearchEventBox .textInput::placeholder {
+    color: #C0C0C0;
+}
+
+.SearchEventBox .textInput {
+    background-color: transparent;
+    border: none;
+    width: 90%;
+}
+
+.SearchEventBox .left {
+    flex: 1 1 auto;
+}
+
+.SearchEventBox .left .textInput {
+    display: inline-block;
+}
+
+.SearchEventBox .left svg {
+    display: inline-block;
+    vertical-align: middle;
+}
