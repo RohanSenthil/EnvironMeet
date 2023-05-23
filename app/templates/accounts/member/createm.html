@@ -1,0 +1,19 @@
+{% extends "admin_base.html" %}
+{% set active_page = "accounts" %}
+{% block title %}Environmeet - Create Member{% endblock %}
+{% block head %}
+<script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('reCAPTCHA_site_key', {action: 'submit'}).then(function(token) {
+            // Add your logic to submit to your backend server here.
+        });
+      });
+    }
+</script>
+
+{% endblock %}
+{% block content %}
+
+{% endblock %}
