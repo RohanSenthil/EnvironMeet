@@ -4,7 +4,8 @@
 
 .newPostContainer {
     width: 50%;
-    margin: 2rem auto;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
 .newPostBox {
@@ -19,6 +20,7 @@
 
 .newPostBox .textInput::placeholder {
     color: #C0C0C0;
+    font-size: 70%;
 }
 
 .newPostBox .textInput {

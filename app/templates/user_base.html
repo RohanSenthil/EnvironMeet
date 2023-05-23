@@ -9,303 +9,86 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins">
-    <style>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap");
-body {
-  font-family: "Poppins", Arial, Helvetica, sans-serif;
-  background-color: #FFF7DE;
-}
-nav {
-  height: 5rem;
-}
-
-nav div.container-fluid {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  background-color: white;
-  position: fixed;
-  z-index: 99;
-}
-
-.navbar-brand {
-  font-size: 28px;
-  font-weight: 900;
-  color: #2453D4;
-}
-
-.side-navbar {
-  position: fixed;
-  left: 0;
-  top: 5rem;
-  height: calc(100vh - 5rem);
-  width: 261px;
-  padding-top: 0;
-  padding-bottom: 2rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  background-color: white;
-}
-
-.nav-item {
-  border-radius: 0.375rem;
-  padding: 0.5rem 2rem;
-  margin-bottom: 1rem;
-  align-items: center;
-  color: #918c8c;
-}
-
-.nav-item svg {
-  width: 24px;
-  height: 24px;
-  margin-right: 5px;
-  fill: #918c8c;
-}
-
-.nav-item a {
-  font-size: 18px;
-  font-weight: bold;
-  color: inherit;
-}
-
-.nav-item.active {
-  border-radius: 0.375rem;
-  color: #2453D4;
-  background-color:#e5e8fa;
-}
-
-.nav-item.active svg {
-  fill: #2453D4;
-}
-
-.nav-buttons button {
-  border: none;
-}
-
-.alert-button {
-  background-color:#e5e8fa;
-  padding: 6px 9px;
-  margin-right: 1rem;
-  border-radius: 7px;
-  height: 24px;
-  box-sizing: content-box;
-  position: relative;
-}
-
-.alert-button img {
-  height: 23px;
-}
-
-.alert-button .alert-count {
-  font-size: 12px;
-  position: absolute;
-  right: -7px;
-  top: 28px;
-  box-sizing: content-box;
-  border-radius: 9999px;
-  background-color: #2453D4;
-  color: white;
-  height: 17px;
-  width: 17px;
-}
-
-.admin-profile-button {
-  background-color: transparent;
-}
-
-.admin-profile-button img {
-  margin-right: 0.5rem;
-  height: 30px;
-  width: 30px;
-}
-
-.content {
-  margin-left: 261px;
-}
-
-
-/* Set a style for all buttons */
-button:hover {
-  opacity:1;
-}
-
-/* Float cancel and delete buttons and add an equal width */
-.cancelbtn, .deletebtn {
-  float: left;
-  width: 50%;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  opacity: 0.9;
-}
-
-/* Add a color to the cancel button */
-.cancelbtn {
-  background-color: #ccc;
-  color: black;
-  border-radius: 10px;
-}
-
-/* Add a color to the delete button */
-.deletebtn {
-  background-color: #f44336;
-  border-radius: 10px;
-  text-decoration: none;
-}
-.deletebtn:hover{
-  color: white;
-  opacity: 1;
-}
-
-/* Add padding and center-align text to the container */
-.container {
-  padding: 16px;
-  text-align: center;
-  border-radius: 25px;
-}
-
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  /* z-index: 1; Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  overflow: auto; /* Enable scroll if needed */
-  /* background-color: #474e5d; */
-  padding-top: 50px;
-  
-}
-
-/* Modal Content/Box */
-.container{
-  background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-  border: 1px solid #888;
-  width: 60%; /* Could be more or less, depending on screen size */
-  opacity: 1;
-}
-
- 
-/* The Modal Close Button (x) */
-.close {
-  position: absolute;
-  right: 35px;
-  top: 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #f1f1f1;
-}
-
-.close:hover,
-.close:focus {
-  color: #f44336;
-  cursor: pointer;
-}
-
-/* Clear floats */
-.clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-.notifications {
-  position: absolute;
-  background-color: white;
-  padding: 1.5rem;
-  right: 1rem;
-  top: 6rem;
-  z-index: 9999;
-}
-
-.notifications .message {
-  width: 20rem;
-  height: 7rem;
-  background-color: #e5e8fa;
-  border-radius: 10px;
-  padding: 1rem;
-}
-
-.notifications .message .timestamp {
-  text-align: right;
-  font-size: 14px;
-  font-style: italic;
-}
-
-{% block style %}
-{% endblock %}
-    </style>
-{% block head %}
-{% endblock %}
-  </head>
-  <body>
-    <nav class="navbar navbar-expand py-0">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/admin">Environmeet</a>
-        <div class="side-navbar">
-          <ul class="navbar-nav flex-column">
-            <li class="nav-item d-flex {{ 'active' if active_page == 'orders' }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="22" viewBox="0 0 18 22">
-                <defs>
-                </defs>
-                <path id="ic_content_paste_24px" class="cls-1" d="M19,2H14.82A2.988,2.988,0,0,0,9.18,2H5A2.006,2.006,0,0,0,3,4V20a2.006,2.006,0,0,0,2,2H19a2.006,2.006,0,0,0,2-2V4A2.006,2.006,0,0,0,19,2ZM12,2a1,1,0,1,1-1,1A1,1,0,0,1,12,2Zm7,18H5V4H7V7H17V4h2Z" transform="translate(-3)"/>
-              </svg>
-              <a href="/orders" class="nav-link">Orders</a>
-            </li>
-            <li class="nav-item d-flex {{ 'active' if active_page == 'statistics' }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                <defs>
-                </defs>
-                <path id="ic_equalizer_24px" class="cls-1" d="M10,20h4V4H10ZM4,20H8V12H4ZM16,9V20h4V9Z" transform="translate(-4 -4)"/>
-              </svg>
-              <a href="/statistics" class="nav-link">Statistics</a>
-            </li>
-            <li class="nav-item d-flex {{ 'active' if active_page == 'inventory' }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-fill" viewBox="0 0 16 16" >
-                <path fill-rule="evenodd" d="M15.528 2.973a.75.75 0 0 1 .472.696v8.662a.75.75 0 0 1-.472.696l-7.25 2.9a.75.75 0 0 1-.557 0l-7.25-2.9A.75.75 0 0 1 0 12.331V3.669a.75.75 0 0 1 .471-.696L7.443.184l.004-.001.274-.11a.75.75 0 0 1 .558 0l.274.11.004.001 6.971 2.789Zm-1.374.527L8 5.962 1.846 3.5 1 3.839v.4l6.5 2.6v7.922l.5.2.5-.2V6.84l6.5-2.6v-.4l-.846-.339Z"/>
-              </svg>
-                <a href="/../inventory" class="nav-link">Inventory</a>
-            </li>
-            <li class="nav-item d-flex {{ 'active' if active_page == 'contactUs_tickets' }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-rolodex" viewBox="0 0 16 16">
-                  <path d="M8 9.05a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-                  <path d="M1 1a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h.5a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5.5.5 0 0 1 1 0 .5.5 0 0 0 .5.5h.5a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H6.707L6 1.293A1 1 0 0 0 5.293 1H1Zm0 1h4.293L6 2.707A1 1 0 0 0 6.707 3H15v10h-.085a1.5 1.5 0 0 0-2.4-.63C11.885 11.223 10.554 10 8 10c-2.555 0-3.886 1.224-4.514 2.37a1.5 1.5 0 0 0-2.4.63H1V2Z"/>
-              </svg>
-              <a href="/contactUs/ticket" class="nav-link">Tickets</a>
-            </li>
-            {% if g.privilege_level == "admin" %}
-            <li class="nav-item d-flex {{ 'active' if active_page == 'accounts' }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="19.454" height="20" viewBox="0 0 19.454 20">
-                <defs>
-                </defs>
-                <path id="ic_settings_24px" class="cls-1" d="M19.43,12.98A7.793,7.793,0,0,0,19.5,12a7.793,7.793,0,0,0-.07-.98l2.11-1.65a.5.5,0,0,0,.12-.64l-2-3.46a.5.5,0,0,0-.61-.22l-2.49,1a7.306,7.306,0,0,0-1.69-.98l-.38-2.65A.488.488,0,0,0,14,2H10a.488.488,0,0,0-.49.42L9.13,5.07a7.683,7.683,0,0,0-1.69.98l-2.49-1a.488.488,0,0,0-.61.22l-2,3.46a.493.493,0,0,0,.12.64l2.11,1.65A7.931,7.931,0,0,0,4.5,12a7.931,7.931,0,0,0,.07.98L2.46,14.63a.5.5,0,0,0-.12.64l2,3.46a.5.5,0,0,0,.61.22l2.49-1a7.306,7.306,0,0,0,1.69.98l.38,2.65A.488.488,0,0,0,10,22h4a.488.488,0,0,0,.49-.42l.38-2.65a7.683,7.683,0,0,0,1.69-.98l2.49,1a.488.488,0,0,0,.61-.22l2-3.46a.5.5,0,0,0-.12-.64ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z" transform="translate(-2.271 -2)"/>
-              </svg>
-              <a href="/accounts" class="nav-link">Settings</a>
-            </li>
-            {% endif %}
-            <a class="nav-link" data-bs-toggle="modal" data-bs-target="#modallogout">
-            <li class="nav-item d-flex" style="
-              font-size: 18px;
-              font-weight: bold;
-              color: inherit;
-            ">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16.773" height="14.677" viewBox="0 0 16.773 14.677" style="margin-right:10px">
-                <path id="Icon_open-account-logout" data-name="Icon open-account-logout" d="M6.29,0V2.1h8.387V12.58H6.29v2.1H16.773V0Zm-2.1,4.193L0,7.338l4.193,3.145v-2.1H12.58V6.29H4.193Z" fill="#918c8c"/>
-              </svg>
-              Logout
-            </li>
-          </a>
-          </ul>
-        </div>
-    </div>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
 
     <!-- Navbar -->
+    <div class="nav-container">
+      <div class="nav-bar">
 
+        <div class="logo">
+          <img src="../static/images/environman.png" alt="">
+          <h4>EnvironMeet</h4>
+        </div>
+
+        <div class="links">
+
+          <a class="{{ 'active' if active_page == 'feed' }}" href="">
+            <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3.61639" y="3.01181" width="7" height="7" rx="1" stroke="#222222" stroke-linecap="round"/>
+              <rect x="3.61639" y="14.0118" width="7" height="7" rx="1" stroke="#222222" stroke-linecap="round"/>
+              <rect x="14.6164" y="3.01181" width="7" height="7" rx="1" stroke="#222222" stroke-linecap="round"/>
+              <rect x="14.6164" y="14.0118" width="7" height="7" rx="1" stroke="#222222" stroke-linecap="round"/>
+            </svg>
+            <span>
+              Feed
+            </span>
+          </a>
+
+          <a class="{{ 'active' if active_page == 'events' }}" href="">
+            <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.9295 5.60629C18.4076 5.60629 19.1467 5.60629 19.6776 5.94833C19.9074 6.0964 20.1048 6.28667 20.2583 6.50828C20.6131 7.02017 20.6131 7.73277 20.6131 9.15797V18.7982C20.6131 20.7117 20.6131 21.6684 19.9966 22.2628C19.3801 22.8573 18.3878 22.8573 16.4033 22.8573H10.0885C8.10396 22.8573 7.11169 22.8573 6.49518 22.2628C5.87866 21.6684 5.87866 20.7117 5.87866 18.7982V9.15797C5.87866 7.73277 5.87866 7.02017 6.2334 6.50828C6.38698 6.28667 6.58431 6.0964 6.81415 5.94833C7.34506 5.60629 8.08413 5.60629 9.56227 5.60629" stroke="#222222"/>
+              <path d="M10.0885 5.60629C10.0885 4.48542 11.0309 3.57677 12.1934 3.57677H14.2983C15.4609 3.57677 16.4033 4.48542 16.4033 5.60629C16.4033 6.72717 15.4609 7.63582 14.2983 7.63582H12.1934C11.0309 7.63582 10.0885 6.72717 10.0885 5.60629Z" stroke="#222222"/>
+              <path d="M10.0885 12.7096L16.4033 12.7096" stroke="#222222" stroke-linecap="round"/>
+              <path d="M10.0885 16.7687L14.2983 16.7687" stroke="#222222" stroke-linecap="round"/>
+            </svg>
+            <span>
+              Events
+            </span>
+          </a>
+
+          <a class="{{ 'active' if active_page == 'leaderboard' }}" href="">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 10.7657L8 16.8543" stroke="#857676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 12.7953V16.8543" stroke="#857676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 8.73621V16.8543" stroke="#857676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="3" y="4.67715" width="18" height="16.2362" rx="2" stroke="#857676" stroke-width="2"/>
+            </svg> 
+            <span>
+              Leaderboard
+            </span>
+          </a>
+
+          <a class="{{ 'active' if active_page == 'profile' }}" href="">
+            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 12.1831C3 7.21252 7.02944 3.18309 12 3.18309C16.9706 3.18309 21 7.21252 21 12.1831V12.4488C21 17.4194 16.9706 21.4488 12 21.4488C7.02944 21.4488 3 17.4194 3 12.4488V12.1831Z" fill="#7E869E" fill-opacity="0.25"/>
+              <ellipse cx="12" cy="10.2864" rx="4" ry="4.05905" fill="#222222"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M18.2377 18.6828C18.2941 18.7788 18.276 18.9005 18.1953 18.9772C16.5817 20.509 14.4006 21.4488 12 21.4488C9.59951 21.4488 7.41849 20.509 5.80485 18.9772C5.72412 18.9006 5.70605 18.7789 5.76242 18.6829C6.92072 16.7106 9.2791 15.3603 12.0001 15.3603C14.7211 15.3603 17.0794 16.7106 18.2377 18.6828Z" fill="#222222"/>
+            </svg>
+            <span>
+              Profile
+            </span>
+          </a>
+
+          <a class="{{ 'active' if active_page == 'settings' }}" href="">
+            <svg width="24" height="26" viewBox="0 0 24 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.1365 4.13322C14.092 3.68182 14.0698 3.45612 13.9793 3.28362C13.8693 3.0739 13.6885 2.91001 13.469 2.82114C13.2885 2.74803 13.0657 2.74803 12.6201 2.74803H11.3797C10.9343 2.74803 10.7116 2.74803 10.5311 2.8211C10.3115 2.90998 10.1306 3.07392 10.0206 3.28372C9.93022 3.45618 9.90798 3.68178 9.86352 4.13298C9.7817 4.96323 9.74079 5.37836 9.57333 5.60189C9.35294 5.89608 8.98891 6.04564 8.62535 5.99137C8.34911 5.95013 8.03444 5.68887 7.40511 5.16636C7.07117 4.8891 6.9042 4.75048 6.72469 4.69114C6.48836 4.61303 6.23139 4.62587 6.00401 4.72714C5.83131 4.80406 5.67898 4.95863 5.37433 5.26778L4.48097 6.17434C4.16032 6.49972 3.99999 6.66241 3.92519 6.84847C3.84173 7.05606 3.8303 7.28563 3.89272 7.50048C3.94867 7.69305 4.09457 7.87401 4.38638 8.23592C4.92173 8.89991 5.18941 9.2319 5.22291 9.51875C5.26338 9.86525 5.12034 10.2078 4.84548 10.4226C4.61794 10.6005 4.20186 10.6427 3.36969 10.7271C2.92676 10.7721 2.70529 10.7946 2.53307 10.8855C2.32451 10.9956 2.16159 11.1759 2.07308 11.3945C2 11.575 2 11.7977 2 12.2429V13.5486C2 13.9937 2 14.2162 2.07305 14.3967C2.16156 14.6154 2.32453 14.7957 2.53316 14.9059C2.70534 14.9968 2.92675 15.0192 3.36957 15.0642C4.20151 15.1486 4.61749 15.1908 4.84499 15.3686C5.11997 15.5834 5.26305 15.9261 5.22252 16.2727C5.18899 16.5595 4.92139 16.8913 4.3862 17.5551C4.09451 17.9169 3.94867 18.0978 3.89271 18.2903C3.83024 18.5052 3.84168 18.7349 3.9252 18.9425C4 19.1285 4.16026 19.2912 4.4808 19.6164L5.37429 20.5231C5.67894 20.8323 5.83126 20.9868 6.00397 21.0638C6.23134 21.165 6.48831 21.1779 6.72464 21.0997C6.90415 21.0404 7.07112 20.9018 7.40506 20.6245C8.0344 20.102 8.34907 19.8408 8.62531 19.7995C8.98887 19.7452 9.3529 19.8948 9.57329 20.189C9.74075 20.4125 9.78166 20.8277 9.8635 21.6581C9.90798 22.1095 9.93022 22.3352 10.0207 22.5077C10.1307 22.7174 10.3115 22.8813 10.531 22.9702C10.7115 23.0433 10.9343 23.0433 11.3799 23.0433H12.62C13.0657 23.0433 13.2885 23.0433 13.4691 22.9702C13.6885 22.8813 13.8693 22.7175 13.9793 22.5078C14.0698 22.3353 14.092 22.1095 14.1365 21.6579C14.2184 20.8274 14.2593 20.4122 14.4267 20.1886C14.6471 19.8944 15.0112 19.7448 15.3748 19.7991C15.651 19.8404 15.9656 20.1016 16.5949 20.6241C16.9288 20.9013 17.0958 21.0399 17.2753 21.0993C17.5116 21.1774 17.7686 21.1646 17.996 21.0633C18.1687 20.9864 18.321 20.8318 18.6257 20.5227L19.5193 19.6158C19.8397 19.2907 19.9999 19.1281 20.0747 18.9422C20.1583 18.7345 20.1697 18.5047 20.1072 18.2897C20.0513 18.0973 19.9055 17.9165 19.6139 17.5548C19.0789 16.8913 18.8114 16.5595 18.7778 16.2728C18.7372 15.9261 18.8803 15.5833 19.1554 15.3685C19.3829 15.1908 19.7988 15.1486 20.6305 15.0642C21.0733 15.0192 21.2946 14.9968 21.4668 14.9059C21.6755 14.7958 21.8385 14.6154 21.927 14.3966C22 14.2162 22 13.9937 22 13.5487V12.2428C22 11.7977 22 11.5751 21.9269 11.3946C21.8384 11.1759 21.6755 10.9956 21.4669 10.8855C21.2947 10.7946 21.0732 10.7721 20.6304 10.7272C19.7984 10.6427 19.3824 10.6005 19.1549 10.4227C18.88 10.2079 18.7369 9.86525 18.7774 9.51866C18.8109 9.23188 19.0785 8.89999 19.6137 8.2362C19.9054 7.87445 20.0513 7.69357 20.1072 7.50108C20.1697 7.28614 20.1582 7.05646 20.0747 6.8488C19.9999 6.66282 19.8397 6.50019 19.5191 6.17492L18.6256 5.26822C18.321 4.95909 18.1687 4.80453 17.996 4.72761C17.7686 4.62633 17.5116 4.61349 17.2753 4.69161C17.0958 4.75094 16.9288 4.88956 16.5949 5.1668C15.9656 5.68928 15.6509 5.95051 15.3747 5.99176C15.0111 6.04605 14.6471 5.89648 14.4267 5.60226C14.2592 5.37874 14.2183 4.96357 14.1365 4.13322Z" fill="#7E869E" fill-opacity="0.25"/>
+              <ellipse cx="12" cy="12.8957" rx="3" ry="3.04429" fill="#222222"/>
+            </svg>
+            <span>
+              Settings
+            </span>
+          </a>
+          
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- Content -->
     {% block content %}
     {% endblock %}
 
