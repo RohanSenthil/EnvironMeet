@@ -15,18 +15,20 @@
     border-radius: 12px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
 }
 
 .newPostBox .textInput::placeholder {
     color: #C0C0C0;
-    font-size: 70%;
 }
 
 .newPostBox .textInput {
     background-color: transparent;
     border: none;
-    width: 70%;
+    width: 90%;
+}
+
+.newPostBox .left {
+    flex: 1 1 auto;
 }
 
 .newPostBox .left .textInput {
