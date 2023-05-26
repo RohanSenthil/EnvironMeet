@@ -1,8 +1,23 @@
-# from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-# from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 # from app.routes.helpers import privileged_route
-# from flask_mail import Message
-# from threading import Thread
+from flask_mail import Message
+from threading import Thread
+from flask import render_template
+from app import app
+
+@app.route('/accounts')
+def accounts():
+    return render_template('accounts.html')
+
+@app.route('/accounts/members')
+def members():
+    return render_template('/accounts/member/members.html')
+
+@app.route('/accounts/organisations')
+def organisations():
+    return render_template('/accounts/organisation/orgs.html')
+
 
 # #employees
 # @app.route('/accounts/employees')

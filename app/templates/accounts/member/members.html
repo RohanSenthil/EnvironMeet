@@ -1,52 +1,11 @@
 {% extends "admin_base.html" %}
-{% set active_page = "accounts" %}
-{% block title %}Environmeet - Management{% endblock %}
+{% set active_page = "members" %}
+{% block title %}Environmeet - Members{% endblock %}
 {% block head %}
-<script src="{{url_for('static', filename='scripts/accounts.js')}}"></script>
-<link rel="stylesheet" href="../../../static/styles/acchome.css">
 <link rel="stylesheet" href="../../../static/styles/accounts.css">
-<style>
-#create{
-    margin: 8px;
-    border-radius: 10px;
-}
-a{
-    text-decoration: none;
-    color: white;
-}
-
-#update{
-  fill: rgb(62, 170, 62);
-}
-
-#delete{
-  fill: rgb(242, 69, 69);
-}
-
-#update:hover{
-  opacity: 0.7;
-}
-
-#delete:hover{
-  opacity: 0.7;
-}
-/* Add padding and center-align text to the container */
-.container {
-  padding: 16px;
-  text-align: center;
-  border-radius: 25px;
-}
-
-td{
- overflow: hidden;
- text-overflow: ellipsis;
- white-space: nowrap;
-}
-
-</style>
 {% endblock %}
 {% block content %}
-<a href="/accounts"><img src="../../static/accounts/3916837.png" alt="" style="width: 30px; height: 30px;"></a>
+<a href="/accounts"><img src="../../static/accounts/backbutton.png" alt="" style="width: 30px; height: 30px;"></a>
 <h1>Members</h1>
 <button id="create" class="btn btn-primary btn-block" onclick="location.href='/accounts/members/create'">Create Account</button>
 <input type="text" id="myInput" onkeyup="search()" placeholder="Search for names.." title="Type in a name" style="border-radius: 10px; padding:5px">
