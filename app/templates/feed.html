@@ -10,8 +10,8 @@
 <div class="content">
 
     <div class="newPostContainer">
-        <div class="newPostBox">
-            <textarea class="textInput newPostInput" id="newPostInput" placeholder="What have you been up to?"></textarea>
+        <form class="newPostBox" method="POST" autocomplete="off">
+            <textarea name="desc" class="textInput newPostInput" id="newPostInput" placeholder="What have you been up to?"></textarea>
             <div class="buttonsContainer">
                 <div class="left">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,11 +27,15 @@
                 </div>
                 <div class="right">
                     <span id="charCounter">200</span>
-                    <button class="postBtn">Post</button>
+                    <button class="postBtn" type="submit">Post</button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
+
+    {% for post in posts %}
+    <p>{{ post.desc }}</p>
+    {% endfor %}
 
 </div>
 
