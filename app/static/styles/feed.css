@@ -3,17 +3,20 @@
 }
 
 .content {
-    width: 50%;
+    width: 55%;
     margin: 0 auto;
     padding: 2rem;
 }
 
-.newPostBox {
+.postBox {
     border: #D6D2D2 1px solid;
     padding: 1rem;
     background-color: #fff;
     border-radius: 12px;
+    margin-bottom: 3rem;
 }
+
+/* New Post Box */
 
 .newPostBox .textInput::placeholder {
     color: #C0C0C0;
@@ -64,4 +67,79 @@
     border: none;
     border-radius: 2rem;
     padding: 0.5rem 1rem;
+}
+
+/* Posts Box */
+
+.heading {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+}
+
+.posterName {
+    font-weight: 700;
+}
+
+.timestamp {
+    color: #857676;
+}
+
+.desc {
+    padding: .5rem 1.5rem;
+}
+
+.mediaFiles {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0rem 1.5rem 1.5rem 1.5rem;
+}
+
+.mediaFiles img {
+    max-width: 45%;
+    border-radius: 1rem;
+    max-height: 350px;
+}
+
+.mid {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: .75rem 1rem;
+}
+
+.mid svg {
+    width: 25px;
+    stroke: var(--env-green);
+}
+
+.like span {
+    font-size: small;
+}
+
+.like span.num {
+    color: var(--env-green);
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    padding: 0rem 2rem;
+    background-color: #D6D2D2;
 }
