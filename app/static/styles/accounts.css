@@ -1,0 +1,36 @@
+#create{
+    margin: 8px;
+    border-radius: 10px;
+}
+a{
+    text-decoration: none;
+    color: white;
+}
+
+#update{
+  fill: rgb(62, 170, 62);
+}
+
+#delete{
+  fill: rgb(242, 69, 69);
+}
+
+#update:hover{
+  opacity: 0.7;
+}
+
+#delete:hover{
+  opacity: 0.7;
+}
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+  border-radius: 25px;
+}
+
+td{
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
