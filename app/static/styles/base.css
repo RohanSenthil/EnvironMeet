@@ -13,6 +13,10 @@
 
 
 /* General Base */
+:root {
+    --env-green: #3acd83;
+}
+
 body {
     font-family: 'Raleway', sans-serif !important;
     background-color: #F2F3F3 !important;
@@ -84,3 +88,4 @@ body {
 }
 
 /* Admin Base */
+

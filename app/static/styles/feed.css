@@ -13,8 +13,6 @@
     padding: 1rem;
     background-color: #fff;
     border-radius: 12px;
-    display: flex;
-    flex-direction: row;
 }
 
 .newPostBox .textInput::placeholder {
@@ -24,18 +22,46 @@
 .newPostBox .textInput {
     background-color: transparent;
     border: none;
-    width: 90%;
 }
 
-.newPostBox .left {
-    flex: 1 1 auto;
+#yourProfilePhoto {
+    margin-left: .75rem;
 }
 
-.newPostBox .left .textInput {
+.newPostInput {
+    display: block;
+    overflow: hidden;
+    resize: none;
+    margin: 1rem;
+    cursor: text;
+    width: 95%;
+    overflow-y: auto;
+}
+
+.newPostInput[contenteditable]:empty::before {
+    content: 'What have you been up to?';
+    color: #C0C0C0;
+}
+
+.buttonsContainer {
+    margin-left: .75rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonsContainer svg {
     display: inline-block;
+    color: var(--env-green);
 }
 
-.newPostBox .left svg {
-    display: inline-block;
-    vertical-align: middle;
+#charCounter {
+    margin-right: .75rem;
+}
+
+.postBtn {
+    color: #fff;
+    background-color: var(--env-green);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
 }
