@@ -8,12 +8,14 @@ class Posts(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
-    profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
+    # profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
-    text = db.Column(db.Text())
+    desc = db.Column(db.Text())
+    # image
+    # associated event
 
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, desc):
+        self.desc = desc
 
 
 class Profiles(db.Model):
@@ -21,7 +23,7 @@ class Profiles(db.Model):
     __tablename__ = 'profiles'
 
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
-    posts = db.relationship('Posts', backref='profiles', lazy=True)
+    # posts = db.relationship('Posts', backref='profiles', lazy=True)
 
 # class Member(db.Model):
 
