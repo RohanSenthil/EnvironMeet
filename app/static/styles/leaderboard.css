@@ -1,3 +1,13 @@
+*:focus {
+    outline: none;
+}
+
+.content {
+    width: 55%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 .LeaderboardButtons {
     border: #D6D2D2 1px solid;
     padding: 1rem;
