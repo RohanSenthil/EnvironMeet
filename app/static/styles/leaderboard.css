@@ -1,0 +1,15 @@
+.LeaderboardButtons {
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.LeaderboardButtons button{
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
