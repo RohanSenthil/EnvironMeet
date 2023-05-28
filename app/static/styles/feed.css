@@ -98,7 +98,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0rem 1.5rem 1.5rem 1.5rem;
 }
 
@@ -106,6 +106,7 @@
     max-width: 45%;
     border-radius: 1rem;
     max-height: 350px;
+    margin: 0rem 1.25rem;
 }
 
 .mid {
@@ -149,7 +150,7 @@
 
 .commentInput {
     max-height: 40px;
-    font-size: 12px;
+    font-size: 14px;
     width: 100%;
     margin-top: 5px;
     margin-left: 10px;
@@ -172,7 +173,7 @@
 }
 
 .comments {
-    font-size: 12px;
+    font-size: 14px;
     width: 90%;
     margin: 0 auto;
     display: flex;
@@ -200,10 +201,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-right: 20px;
 }
 
 .comments .like svg {
     margin-top: 16px;
+    margin-bottom: 3px;
 }
 
 .comments .like span {

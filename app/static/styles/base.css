@@ -34,6 +34,7 @@ a {
     background-color: #fff;
     height: 100vh;
     width: 20%;
+    max-width: 300px;
 }
 
 .nav-bar {
