@@ -27,23 +27,16 @@
     border: none;
 }
 
-#yourProfilePhoto {
-    margin-left: .75rem;
-}
-
-.newPostInput {
+.textInput {
     display: block;
     overflow: hidden;
     resize: none;
-    margin: .75rem;
-    cursor: text;
-    width: 95%;
     overflow-y: auto;
 }
 
-.newPostInput[contenteditable]:empty::before {
-    content: 'What have you been up to?';
-    color: #C0C0C0;
+.newPostInput {
+    margin: .75rem;
+    width: 95%;
 }
 
 .buttonsContainer {
@@ -142,4 +135,38 @@
     height: 1px;
     padding: 0rem 2rem;
     background-color: #D6D2D2;
+}
+
+/* Comments */
+
+.commentBox {
+    width: 75%;
+    margin: 1rem auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.commentInput {
+    max-height: 40px;
+    font-size: 12px;
+    width: 100%;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.commentBox .left {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto;
+}
+
+.commentBox .avatar {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.commentBox svg {
+    margin-top: 3px;
 }
