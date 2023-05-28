@@ -140,7 +140,7 @@
 /* Comments */
 
 .commentBox {
-    width: 75%;
+    width: 90%;
     margin: 1rem auto;
     display: flex;
     flex-direction: row;
@@ -161,7 +161,7 @@
     flex: 1 1 auto;
 }
 
-.commentBox .avatar {
+.commentsContainer .avatar {
     width: 30px;
     height: 30px;
     vertical-align: middle;
@@ -169,4 +169,44 @@
 
 .commentBox svg {
     margin-top: 3px;
+}
+
+.comments {
+    font-size: 12px;
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.comments .desc {
+    padding: 0.25rem 0rem;
+}
+
+.comments .left {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    flex: 1 1 auto;
+}
+
+.comments .info, .desc {
+    width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.comments .like {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.comments .like svg {
+    margin-top: 16px;
+}
+
+.comments .like span {
+    color: var(--env-green);
+    font-weight: 700;
 }

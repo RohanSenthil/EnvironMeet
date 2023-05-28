@@ -16,3 +16,4 @@ with app.app_context():
 migrate = Migrate(app, db)
 
 from app import routes
+from app.util import filters
