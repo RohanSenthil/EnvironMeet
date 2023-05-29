@@ -6,15 +6,12 @@ from threading import Thread
 from flask import render_template
 from app import app
 
-@app.route('/accounts')
-def accounts():
-    return render_template('accounts.html')
 
-@app.route('/accounts/members')
+@app.route('/members')
 def members():
     return render_template('/accounts/member/members.html')
 
-@app.route('/accounts/organisations')
+@app.route('/organisations')
 def organisations():
     return render_template('/accounts/organisation/orgs.html')
 
