@@ -34,3 +34,10 @@ td{
  text-overflow: ellipsis;
  white-space: nowrap;
 }
+
+.content {
+  /* width: 60%; */
+  margin: 0 auto;
+  padding-left: 20%;
+  padding-top: 2%;
+}

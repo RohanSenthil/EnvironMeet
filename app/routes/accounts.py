@@ -15,6 +15,10 @@ def members():
 def organisations():
     return render_template('/accounts/organisation/orgs.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
 
 # #employees
 # @app.route('/accounts/employees')
