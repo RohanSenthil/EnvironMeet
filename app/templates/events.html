@@ -23,48 +23,49 @@
     </div>
     <div class="EventsContainer1">
         <div class="EventsBox1">
-            <img src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2021/11/07/ac_communitiy_071121.jpg?VersionId=ecvzWsy_Pa6d1lNjX8e9CBWndpWnI1F7" class="images">
-            <p class="title">Rooftop Gardening at Tiong Bahru</p>
-            <p>Friday, 16 June at 10am</p>
-            <p>Free</p>
-            <p class="Organiser">By: National Environmental Agency</p>
+            {% for event in events %}
+                <li>{{ events.title }}</li>
+            {% endfor %}
         </div>
         <div class="EventsBox1">
-            <img src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2022/11/30/ECBP120-20Credit20-20Clean202620Green20Singapore.jpg?VersionId=7WgZ2NnpL8NauFXNwWmrndsUACx0t3vw" class="images">
-            <p class="title">Beach Cleanup at East Coast Park</p>
-            <p>Saturday, 17 June at 9am</p>
-            <p>Free</p>
-            <p class="Organiser">By: East Coast GRC</p>
+<!--            <img src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2022/11/30/ECBP120-20Credit20-20Clean202620Green20Singapore.jpg?VersionId=7WgZ2NnpL8NauFXNwWmrndsUACx0t3vw" class="images">-->
+<!--            <p class="title">Beach Cleanup at East Coast Park</p>-->
+<!--            <p>Saturday, 17 June at 9am</p>-->
+<!--            <p>Free</p>-->
+<!--            <p class="Organiser">By: East Coast GRC</p>-->\
+            {% for event in events %}
+                <li>{{ events.desc }}</li>
+            {% endfor %}
         </div>
         <div class="EventsBox1">
-            <img src="https://images.squarespace-cdn.com/content/v1/5e280cf36a6c054956c3b3a1/1589347525809-DM9XCOZK7LWYCNNTVMLW/9-10%2BNov%2BWITP%2B%252832%2529-min.jpg?format=1000w" class="images">
-            <p class="title">Environmental Workshop</p>
-            <p>Saturday, 17 June at 7pm</p>
-            <p>Free</p>
-            <p class="Organiser">By: National Environmental Agency</p>
+<!--            <img src="https://images.squarespace-cdn.com/content/v1/5e280cf36a6c054956c3b3a1/1589347525809-DM9XCOZK7LWYCNNTVMLW/9-10%2BNov%2BWITP%2B%252832%2529-min.jpg?format=1000w" class="images">-->
+<!--            <p class="title">Environmental Workshop</p>-->
+<!--            <p>Saturday, 17 June at 7pm</p>-->
+<!--            <p>Free</p>-->
+<!--            <p class="Organiser">By: National Environmental Agency</p>-->
         </div>
     </div>
     <div class="EventsContainer1">
         <div class="EventsBox1">
-            <img src="https://friendofthesea.org/wp-content/uploads/turtle-cover-1-scaled.jpg" class="images">
-            <p class="title">Save the Turtles</p>
-            <p>Sunday, 19 June at 3pm</p>
-            <p>Free</p>
-            <p class="Organiser">By: WWF Singapore</p>
+<!--            <img src="https://friendofthesea.org/wp-content/uploads/turtle-cover-1-scaled.jpg" class="images">-->
+<!--            <p class="title">Save the Turtles</p>-->
+<!--            <p>Sunday, 19 June at 3pm</p>-->
+<!--            <p>Free</p>-->
+<!--            <p class="Organiser">By: WWF Singapore</p>-->
         </div>
         <div class="EventsBox1">
-            <img src="https://www.asaihotels.com/wp-content/uploads/2020/02/the-journal-Recycle-Your-Scrap-Paper-4.jpg" class="images">
-            <p class="title">Recycling Workshop</p>
-            <p>Monday, 26 June at 3pm</p>
-            <p>$10</p>
-            <p class="Organiser">By: WMRAS</p>
+<!--            <img src="https://www.asaihotels.com/wp-content/uploads/2020/02/the-journal-Recycle-Your-Scrap-Paper-4.jpg" class="images">-->
+<!--            <p class="title">Recycling Workshop</p>-->
+<!--            <p>Monday, 26 June at 3pm</p>-->
+<!--            <p>$10</p>-->
+<!--            <p class="Organiser">By: WMRAS</p>-->
         </div>
         <div class="EventsBox1">
-            <img src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2019/01/25/colin-ds-25.jpg?VersionId=_1iaj0OYdPJsqjJ6tUpPE7MbDnyNS484" class="images">
-            <p class="title">Tree Planting at Yishun</p>
-            <p>Saturday, 24 June at 10am</p>
-            <p>Free</p>
-            <p class="Organiser">By: Team Trees SG</p>
+<!--            <img src="https://static1.straitstimes.com.sg/s3fs-public/styles/large30x20/public/articles/2019/01/25/colin-ds-25.jpg?VersionId=_1iaj0OYdPJsqjJ6tUpPE7MbDnyNS484" class="images">-->
+<!--            <p class="title">Tree Planting at Yishun</p>-->
+<!--            <p>Saturday, 24 June at 10am</p>-->
+<!--            <p>Free</p>-->
+<!--            <p class="Organiser">By: Team Trees SG</p>-->
         </div>
     </div>
 </div>
