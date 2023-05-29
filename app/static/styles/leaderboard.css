@@ -8,12 +8,13 @@
     padding: 2rem;
 }
 
+button{
+    width: 100px
+}
+
 .LeaderboardButtons {
-    border: #D6D2D2 1px solid;
-    padding: 1rem;
-    background-color: #fff;
-    border-radius: 12px;
-    margin-bottom: 3rem;
+  overflow: hidden;
+  background-color: #f1f1f1;
 }
 
 .LeaderboardButtons button{
@@ -24,12 +25,12 @@
     margin-bottom: 3rem;
 }
 
-.LeaderBoardButtons button:hover {
+.LeaderboardButtons button:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.LeaderBoardButtons button.active {
+.LeaderboardButtons button.active {
   background-color: #ccc;
 }
 
@@ -37,6 +38,33 @@
 .tabcontent {
   display: none;
   padding: 6px 12px;
-  border: 1px solid #ccc;
   border-top: none;
 }
+
+
+.GlobalButtons {
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+.GlobalButtons button{
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.GlobalButtons button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.GlobalButtons button.active {
+  background-color: #ccc;
+}
+
+.globalcontent {
+  display: none;
+  padding: 6px 12px;
+  border-top: none;

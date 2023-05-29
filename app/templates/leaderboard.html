@@ -10,16 +10,27 @@
 <div class="content">
 
     <div class="LeaderboardButtons">
-        <button class="tablinks" onclick="openTab(event, 'Global')" id="defaultOpen">Global</button>
+        <button class="tablinks" onclick="openTab(event, 'Global')" id="defaultGlobalOpen">Global</button>
         <button class="tablinks" onclick="openTab(event, 'Invite')">Invite</button>
     </div>
 
     <div id="Global" class="tabcontent">
-        <p>global leaderboard</p>
+        <div class="GlobalButtons">
+            <button class=globallinks" onclick="openGlobal(event, 'AllTime')" id="defaultAlltimeOpen">All-Time</button>
+            <button class=globallinks" onclick="openGlobal(event, 'Yearly')">Yearly</button>
+        </div>
+        <div id="AllTime" class="globalcontent">
+            <p>all time</p>
+        </div>
+        <div id="Yearly" class="globalcontent">
+            <p>yearly</p>
+        </div>
     </div>
     <div id="Invite" class="tabcontent">
-        <p>invite leaderboard</p>
+        <p>invite leaderboard </p>
     </div>
+
+
 
 </div>
 
