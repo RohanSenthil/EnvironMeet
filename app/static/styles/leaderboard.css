@@ -37,7 +37,6 @@ button{
 /* Style the tab content */
 .tabcontent {
   display: none;
-  padding: 6px 12px;
   border-top: none;
 }
 
@@ -66,5 +65,4 @@ button{
 
 .globalcontent {
   display: none;
-  padding: 6px 12px;
   border-top: none;

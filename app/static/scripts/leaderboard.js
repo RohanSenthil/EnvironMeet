@@ -32,13 +32,12 @@ function openGlobal(evt, GlobalType) {
   // Get all elements with class="globallinks" and remove the class "active"
   globallinks = document.getElementsByClassName("globallinks");
   for (i = 0; i < globallinks.length; i++) {
-    globallinks[i].className = globallinks[i].className.replace(" active", "");
+    globallinks[i].classList.remove("active");
   }
 
   // Show the current global, and add an "active" class to the button that opened the global
   document.getElementById(GlobalType).style.display = "block";
-  evt.currentTarget.className += " active";
+  evt.currentTarget.classList.add("active");
 }
 
 document.getElementById("defaultGlobalOpen").click();
-document.getElementById("defaultAllTimeOpen").click();
