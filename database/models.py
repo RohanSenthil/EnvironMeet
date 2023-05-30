@@ -49,8 +49,9 @@ class Events(db.Model):
     id = db.Column(db.Integer,db.Sequence('events_id_seq'),primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    date = db.Column(db.DateTime)
-    location = db.Column(db.String(100))
+    datetime = db.Column(db.DateTime)
+    price = db.Column(db.Price)
+    organiser = db.Column(db.String(100))
     # image
     # associated event
 
