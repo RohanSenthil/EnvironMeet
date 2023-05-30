@@ -8,22 +8,34 @@
 
 {% block content %}
 
-<h1>Create Events</h1>
+<div class="contentcreate">
+<h1 class="hiaa">Create Events</h1>
+    <div class="stuff">
 <form method="POST" action="">
- <div>
-     {{ render_field(form.name, class="form-control") }}
- </div>
-     <div>
-     {{ render_field(form.date, class="form-control") }}
- </div>
-     <div>
-     {{ render_field(form.time, class="form-control") }}
- </div>
-     <div>
-     {{ render_field(form.price, class="form-control") }}
- </div>
-    <div>
+        <div class="form-group col" id="remainings">
      {{ render_field(form.organiser, class="form-control") }}
  </div>
+ <div class="form-group col" id="remainings2">
+     {{ render_field(form.name, class="form-control") }}
+ </div>
+            <div class="form-row">
+    <div class="form-group col">
+     {{ render_field(form.date, class="form-control") }}
+ </div>
+     <div class="form-group col">
+     {{ render_field(form.time, class="form-control") }}
+ </div>
+            </div>
+                <div class="form-row">
+     <div class="form-group col">
+     {{ render_field(form.price, class="form-control") }}
+ </div>
+    <div id="syvnieg" class="form-group col">
+    <a class="btn btn-primary" href="/events" role="button">Submit</a>
+</div>
+                     </div>
 </form>
+</div>
+
+    </div>
 {% endblock %}

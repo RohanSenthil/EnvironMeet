@@ -41,3 +41,4 @@ function openGlobal(evt, GlobalType) {
 }
 
 document.getElementById("defaultGlobalOpen").click();
+document.getElementById("defaultAllTimeOpen").click();

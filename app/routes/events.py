@@ -33,3 +33,7 @@ def add_events():
     #     return app.login_manager.unauthorized()
     # else:
     return render_template('addevents.html', form=form)
+
+@app.route('/events/thankyou')
+def thankyouforcreatingevents():
+    return render_template('eventscreatethankyou.html', thankyouforcreatingevents=thankyouforcreatingevents)
