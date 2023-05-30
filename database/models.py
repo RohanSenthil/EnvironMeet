@@ -26,14 +26,19 @@ class Profiles(db.Model):
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
     # posts = db.relationship('Posts', backref='profiles', lazy=True)
 
-# class Member(db.Model):
+class Members(db.Model):
 
-#     __tablename__ = 'member'
+    __tablename__ = 'members'
 
-#     id = db.Column(db.Integer,db.Sequence('member_id_seq'),primary_key=True)
-#     email = db.Column()
-#     posts = db.relationship('Posts', backref='profiles', lazy=True)
+    id = db.Column(db.Integer,db.Sequence('member_id_seq'),primary_key=True)
+    email = db.Column(db.String,db.Sequence('member_email_seq'),primary_key=True)
+    name = db.Column(db.String,db.Sequence('member_name_seq'),primary_key=True)
+    gender = db.Column(db.Boolean,db.Sequence('member_gender_seq'),primary_key=True)
+    contact = db.Column(db.Integer,db.Sequence('member_contact_seq'),primary_key=True)
 
+class Organisations(db.Model):
+
+    __tablename__ = 'organisations'
 
 dbevents = SQLAlchemy()
 

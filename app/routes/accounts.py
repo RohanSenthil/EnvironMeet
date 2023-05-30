@@ -5,11 +5,13 @@ from flask_mail import Message
 from threading import Thread
 from flask import render_template
 from app import app
+from database.models import Members
 
 
 @app.route('/members')
 def members():
-    return render_template('/accounts/member/members.html')
+    members = Members.query.all()
+    return render_template('/accounts/member/members.html', members=members)
 
 @app.route('/organisations')
 def organisations():
@@ -19,6 +21,9 @@ def organisations():
 def login():
     return render_template('login.html')
 
+@app.route('/members/create')
+def createm():
+    return render_template('/accounts/createm.html')
 
 # #employees
 # @app.route('/accounts/employees')
@@ -37,24 +42,24 @@ def login():
 # def updatesuccess_emp():
 #     return render_template('accounts/emp/updatesuccess.html')
 
-@app.route('/accounts/employees/create', methods=["GET","POST"])
-@privileged_route("admin")
-def create_employee():
-    createemployee_form = createemp(request.form)
-    if request.method == "POST" and createemployee_form.validate():
-        hashed_password = generate_password_hash(createemployee_form.password.data)
-        email = str(createemployee_form.email.data).lower()
-        if createemployee_form.position.data == "Others":
-            position = createemployee_form.positionothers.data
-        else:
-            position = createemployee_form.position.data
-        newemployee = Employee(name=createemployee_form.name.data, gender=createemployee_form.gender.data, email=email, password=hashed_password, contact=createemployee_form.contact.data, position=position)
-        db.session.add(newemployee)
-        db.session.commit()
-        db.session.close()
-        return redirect(url_for('createsuccess_emp'))
+# @app.route('/accounts/employees/create', methods=["GET","POST"])
+# @privileged_route("admin")
+# def create_employee():
+#     createemployee_form = createemp(request.form)
+#     if request.method == "POST" and createemployee_form.validate():
+#         hashed_password = generate_password_hash(createemployee_form.password.data)
+#         email = str(createemployee_form.email.data).lower()
+#         if createemployee_form.position.data == "Others":
+#             position = createemployee_form.positionothers.data
+#         else:
+#             position = createemployee_form.position.data
+#         newemployee = Employee(name=createemployee_form.name.data, gender=createemployee_form.gender.data, email=email, password=hashed_password, contact=createemployee_form.contact.data, position=position)
+#         db.session.add(newemployee)
+#         db.session.commit()
+#         db.session.close()
+#         return redirect(url_for('createsuccess_emp'))
 
-    return render_template('accounts/emp/createemp.html',form=createemployee_form)
+#    return render_template('accounts/emp/createemp.html',form=createemployee_form)
 
 # @app.route('/accounts/employees/delete/<id>')
 # @privileged_route("admin")
