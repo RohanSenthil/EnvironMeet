@@ -5,7 +5,9 @@ from flask_mail import Message
 from threading import Thread
 from flask import render_template
 from app import app
-from database.models import Members
+from database.models import Members, Organisations, db
+from app.forms.accountsform import registerm
+from flask import request
 
 
 @app.route('/members')
@@ -24,6 +26,45 @@ def login():
 @app.route('/members/create')
 def createm():
     return render_template('/accounts/createm.html')
+
+@app.route('/registerm', methods=['GET', 'POST'])
+def registerm():
+    registerform = registerm()
+    if registerform.validate() and request.method == "POST":
+        # Process the form data
+        member = Members(name=registerform.name.data, email=registerform.email.data, password=registerform.password.data, gender=registerform.gender.data, contact=registerform.contact.data)
+        db.session.add(member)
+        db.session.commit()
+        db.session.close()
+        return 'Registration successful'
+
+    return render_template('registerm.html', form=registerform)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # #employees
 # @app.route('/accounts/employees')
