@@ -6,10 +6,14 @@ import os
 
 app = Flask(__name__)
 
+# DB Config
 db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
+# Other Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['UPLOAD_PATH'] = os.environ.get('UPLOAD_PATH')
 
 # For Testing
 app.config['TEMPLATES_AUTO_RELOAD'] = True

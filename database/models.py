@@ -12,7 +12,7 @@ class Posts(db.Model):
     # profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text())
-    # image
+    image = db.Column(db.String(140))
     # associated event
 
     def __init__(self, desc):
