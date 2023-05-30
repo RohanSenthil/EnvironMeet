@@ -3,11 +3,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # from app.routes.helpers import privileged_route
 from flask_mail import Message
 from threading import Thread
-from flask import render_template
+from flask import request, render_template, redirect, url_for, flash
 from app import app
 from database.models import Members, Organisations, db
-from app.forms.accountsform import createm
-from flask import request
+from app.forms.accountsform import createm, updatem
 
 
 @app.route('/members')
@@ -25,12 +24,43 @@ def login():
 
 @app.route('/members/create', methods=['GET','POST'])
 def createmember():
-    createform = createm()
+    createform = createm(request.form)
+    if request.method == "POST" and createform.validate():
+        # Process the form data
+        member = Members(name=createform.name.data, email=createform.email.data, password=createform.password.data, gender=createform.gender.data, contact=createform.contact.data, points=0)
+        db.session.add(member)
+        db.session.commit()
+        db.session.close()
+        return render_template('/accounts/member/members.html', members=members)
     return render_template('/accounts/member/createm.html', form=createform)
+
+@app.route('/members/update<id>', methods=['GET','POST'])
+def updatemember(id):
+    form = updatem(request.form)
+    oldmem = Members.query.get(id)
+    if request.method == "POST" and form.validate():
+        name = request.form['name']
+        gender = request.form['gender']
+        contact = request.form['contact']
+        
+        oldmem.name = name
+        oldmem.gender = gender
+        oldmem.contact = contact
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(url_for('members'))
+    else:
+        form.name.data = oldmem.name
+        form.gender.data = oldmem.gender
+        form.contact.data = oldmem.contact
+
+        return render_template('accounts/member/updatem.html', form=form, oldmem=oldmem)
 
 @app.route('/registerm', methods=['GET', 'POST'])
 def registermember():
-    registerform = createm()
+    registerform = createm(request.form)
     if registerform.validate() and request.method == "POST":
         # Process the form data
         member = Members(name=registerform.name.data, email=registerform.email.data, password=registerform.password.data, gender=registerform.gender.data, contact=registerform.contact.data)

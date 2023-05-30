@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
 from sqlalchemy.orm import backref
+from flask_login import UserMixin
 
 db = SQLAlchemy() # DB Handler
 
@@ -26,7 +27,7 @@ class Profiles(db.Model):
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
     # posts = db.relationship('Posts', backref='profiles', lazy=True)
 
-class Members(db.Model):
+class Members(db.Model, UserMixin):
 
     __tablename__ = 'members'
 
