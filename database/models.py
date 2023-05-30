@@ -50,7 +50,7 @@ class Events(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     datetime = db.Column(db.DateTime)
-    price = db.Column(db.Price)
+    # price = db.Column(db.Price)
     organiser = db.Column(db.String(100))
     # image
     # associated event

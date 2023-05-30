@@ -1,0 +1,28 @@
+{% extends "user_base.html" %}
+{% set active_page = "addevents" %}
+{% block title %} EnvironMeet - Create Events Page {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/events.css">
+{% endblock %}
+
+{% block content %}
+
+<h1>Create Events</h1>
+<form method="POST" action="">
+ <div>
+     {{ render_field(eventsform.name, class="form-control" }}
+ </div>
+     <div>
+     {{ render_field(eventsform.date, class="form-control" }}
+ </div>
+     <div>
+     {{ render_field(eventsform.time, class="form-control" }}
+ </div>
+     <div>
+     {{ render_field(eventsform.price, class="form-control" }}
+ </div>\
+    <div>
+     {{ render_field(eventsform.organiser, class="form-control" }}
+ </div>
+</form>
+{% endblock %}

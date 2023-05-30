@@ -1,8 +1,8 @@
-from wtforms import Form, StringField, SelectField, TextAreaField, validators, IntegerField , FileField , FloatField
+from wtforms import Form, StringField, SelectField, TextAreaField, validators, IntegerField , FileField , FloatField, TimeField
 from wtforms.validators import ValidationError, InputRequired,DataRequired
 from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
-from database.models import Products
+# from database.models import Products
 
 
 # def unique(form, field):
@@ -28,16 +28,20 @@ from database.models import Products
 #         raise ValidationError("Input is required")
 #     elif field.data < 0 or field.data > 100:
 #         raise ValidationError("Discount must be between 0 and 100")
-class FormProducts(Form):
-    name = StringField('Name:',validators=[exists,unique])
-    type = SelectField('Type:',validators=[exists],choices=[('', 'Select'), ('H', 'Home Office'), ('D', 'Dining'), ('B', 'Bedding'),('L', 'Living')], default='')
-    price = FloatField('Price:',[positive])
-    quantity= IntegerField('Quantity:',[positive])
-    color = StringField('Color:',[exists])
-    product_nature = SelectField('Product Nature:',validators=[exists],choices=[('', 'Select'), ('P','Promotional'),('N','New Arrivals') , ('R','Regular Products')], default='')
-    description = TextAreaField('Description:',validators=[exists])
-    picture_1 = FileField(label='Picture:', validators=[FileAllowed(['jpg', 'png'])])
-    discount = FloatField('Discount in % :',validators=[discount])
+class FormEvents(Form):
+    name = StringField('Name:', validators= [InputRequired()])
+    date = DateField('Date: ',  validators= [InputRequired()])
+    time = TimeField('Time: ',  validators= [InputRequired()])
+    price = StringField('Price: ', validators=[InputRequired()])
+    organiser = StringField('Organiser: ', validators=[InputRequired()])
+    # type = SelectField('Type:',validators=[exists],choices=[('', 'Select'), ('H', 'Home Office'), ('D', 'Dining'), ('B', 'Bedding'),('L', 'Living')], default='')
+    # price = FloatField('Price:',[positive])
+    # quantity= IntegerField('Quantity:',[positive])
+    # color = StringField('Color:',[exists])
+    # product_nature = SelectField('Product Nature:',validators=[exists],choices=[('', 'Select'), ('P','Promotional'),('N','New Arrivals') , ('R','Regular Products')], default='')
+    # description = TextAreaField('Description:',validators=[exists])
+    # picture_1 = FileField(label='Picture:', validators=[FileAllowed(['jpg', 'png'])])
+    # discount = FloatField('Discount in % :',validators=[discount])
 
 # class Restock(Form):
 #     name = StringField('Name:', render_kw={"disabled":"disabled"})
