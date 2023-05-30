@@ -30,15 +30,31 @@ class Members(db.Model):
 
     __tablename__ = 'members'
 
-    id = db.Column(db.Integer,db.Sequence('member_id_seq'))
-    email = db.Column(db.String(100),db.Sequence('member_email_seq'),primary_key=True)
-    name = db.Column(db.Text,db.Sequence('member_name_seq'))
-    gender = db.Column(db.Boolean,db.Sequence('member_gender_seq'))
+    id = db.Column(db.Integer,db.Sequence('member_id_seq'), unique=True)
+    email = db.Column(db.String(100),db.Sequence('member_email_seq'),primary_key=True, unique=True)
+    password = db.Column(db.String(100),db.Sequence('member_password_seq'))
+    name = db.Column(db.String(100),db.Sequence('member_name_seq'))
+    gender = db.Column(db.Enum('Male','Female'),db.Sequence('member_gender_seq'))
     contact = db.Column(db.Integer,db.Sequence('member_contact_seq'))
+    points = db.Column(db.Integer,db.Sequence('member_points_seq'))
+    #db.Column(db.,db.Sequence('member_events_seq'))
 
-# class Organisations(db.Model):
+    # def __repr__(self):
+    #     return f"<Member(id={self.id}, name='{self.name}', email='{self.email}')>"
 
-#     __tablename__ = 'organisations'
+class Organisations(db.Model):
+    __tablename__ = 'organisations'
+
+    id = db.Column(db.Integer, db.Sequence('org_id_seq'), primary_key=True)
+    name = db.Column(db.String(100),db.Sequence('org_name_seq'))
+    address = db.Column(db.String(100),db.Sequence('org_address_seq'))
+    contact = db.Column(db.String(100),db.Sequence('org_contact_seq'))
+    email = db.Column(db.String(100),db.Sequence('org_email_seq'))
+    password = db.Column(db.String(100),db.Sequence('org_password_seq'))
+    #events
+
+    # def __repr__(self):
+    #     return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
 
 dbevents = SQLAlchemy()
 
