@@ -91,3 +91,36 @@
 .EventsBox1 p{
     text-align:center
 }
+.form-control{
+    background-color: white;
+}
+label {
+    display: inline-block;
+    text-alight: right;
+}
+.stuff {
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #ECE4CB;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+.contentcreate{
+    width: 55%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.wwe{
+    display:inline-block;
+}
+.form-row{
+    display: flex;
+    flex-wrap: wrap;
+    margin-right:-10px;
+    margin-left:-10px;
+}
+.form-group{
+    flex: 1 0 50%;
+    padding-right:10px;
+    padding-left:10px;
+}
