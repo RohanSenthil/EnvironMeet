@@ -9,6 +9,9 @@ db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
+# For Testing
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 db.init_app(app)
 with app.app_context():
     db.create_all()
