@@ -6,7 +6,7 @@ from threading import Thread
 from flask import render_template
 from app import app
 from database.models import Members, Organisations, db
-from app.forms.accountsform import registerm
+from app.forms.accountsform import createm
 from flask import request
 
 
@@ -23,13 +23,14 @@ def organisations():
 def login():
     return render_template('login.html')
 
-@app.route('/members/create')
-def createm():
-    return render_template('/accounts/createm.html')
+@app.route('/members/create', methods=['GET','POST'])
+def createmember():
+    createform = createm()
+    return render_template('/accounts/member/createm.html', form=createform)
 
 @app.route('/registerm', methods=['GET', 'POST'])
-def registerm():
-    registerform = registerm()
+def registermember():
+    registerform = createm()
     if registerform.validate() and request.method == "POST":
         # Process the form data
         member = Members(name=registerform.name.data, email=registerform.email.data, password=registerform.password.data, gender=registerform.gender.data, contact=registerform.contact.data)
