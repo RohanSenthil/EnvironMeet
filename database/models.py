@@ -30,15 +30,15 @@ class Members(db.Model):
 
     __tablename__ = 'members'
 
-    id = db.Column(db.Integer,db.Sequence('member_id_seq'),primary_key=True)
-    email = db.Column(db.String,db.Sequence('member_email_seq'),primary_key=True)
-    name = db.Column(db.String,db.Sequence('member_name_seq'),primary_key=True)
-    gender = db.Column(db.Boolean,db.Sequence('member_gender_seq'),primary_key=True)
-    contact = db.Column(db.Integer,db.Sequence('member_contact_seq'),primary_key=True)
+    id = db.Column(db.Integer,db.Sequence('member_id_seq'))
+    email = db.Column(db.String(100),db.Sequence('member_email_seq'),primary_key=True)
+    name = db.Column(db.Text,db.Sequence('member_name_seq'))
+    gender = db.Column(db.Boolean,db.Sequence('member_gender_seq'))
+    contact = db.Column(db.Integer,db.Sequence('member_contact_seq'))
 
-class Organisations(db.Model):
+# class Organisations(db.Model):
 
-    __tablename__ = 'organisations'
+#     __tablename__ = 'organisations'
 
 dbevents = SQLAlchemy()
 
