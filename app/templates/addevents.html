@@ -1,5 +1,6 @@
 {% extends "user_base.html" %}
-{% set active_page = "addevents" %}
+{% set active_page = "events" %}
+{% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Create Events Page {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="../../static/styles/events.css">
@@ -10,19 +11,19 @@
 <h1>Create Events</h1>
 <form method="POST" action="">
  <div>
-     {{ render_field(eventsform.name, class="form-control" }}
+     {{ render_field(form.name, class="form-control") }}
  </div>
      <div>
-     {{ render_field(eventsform.date, class="form-control" }}
+     {{ render_field(form.date, class="form-control") }}
  </div>
      <div>
-     {{ render_field(eventsform.time, class="form-control" }}
+     {{ render_field(form.time, class="form-control") }}
  </div>
      <div>
-     {{ render_field(eventsform.price, class="form-control" }}
- </div>\
+     {{ render_field(form.price, class="form-control") }}
+ </div>
     <div>
-     {{ render_field(eventsform.organiser, class="form-control" }}
+     {{ render_field(form.organiser, class="form-control") }}
  </div>
 </form>
 {% endblock %}
