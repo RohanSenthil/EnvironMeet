@@ -4,8 +4,8 @@ from database.models import Events, dbevents
 
 @app.route('/events')
 def events():
-    dbevents.create_all()
-    events = Events.query.all()
+    # dbevents.create_all()
+    # events = Events.query.all()
     return render_template('events.html', events=events)
 
 #NAVIN CODE
