@@ -19,10 +19,17 @@
             <button class="globallinks" onclick="openGlobal(event, 'AllTime')" id="defaultAllTimeOpen">All-Time</button>
             <button class="globallinks" onclick="openGlobal(event, 'Yearly')">Yearly</button>
         </div>
+
         <div id="AllTime" class="globalcontent">
-        {% for alltime in alltimes %}
-            <p>{{ alltime.points }}</p>
-        {% endfor %}
+            {% for member in members %}
+            <table>
+                    <tr>
+                        <td>{{loop.index}}. {{ member.name}}: {{member.points }}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
+
+
         </div>
         <div id="Yearly" class="globalcontent">
             <p>yearly</p>
