@@ -57,7 +57,37 @@
 
         </div>
         <div id="Yearly" class="globalcontent">
-            <p>yearly</p>
+            <table class="alltimeleaderboard">
+                <tbody>
+                    {% for member in yearlymembers %}
+                    {% if loop.index == 1 %}
+                    <tr class="leaderboardfirst">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ member.name }}</td>
+                        <td>{{ member.yearlypoints }} Points</td>
+                    </tr>
+                    {% elif loop.index == 2 %}
+                    <tr class="leaderboardsecond">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ member.name }}</td>
+                        <td>{{ member.yearlypoints }} Points</td>
+                    </tr>
+                    {% elif loop.index == 3 %}
+                    <tr class="leaderboardthird">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ member.name }}</td>
+                        <td>{{ member.yearlypoints }} Points</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ member.name }}</td>
+                        <td>{{ member.yearlypoints }} Points</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
     <div id="Invite" class="tabcontent">

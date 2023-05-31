@@ -25,7 +25,7 @@ def createmember():
         # Process the form data
         emaild = str(createform.email.data).lower()
         passwordd = generate_password_hash(createform.password.data)
-        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0)
+        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
         db.session.close()
