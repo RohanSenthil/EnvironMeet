@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from database.models import db
 from database.tools import generate_uri_from_file
 import os
-from flask_login import LoginManager
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_mail import Mail
 app = Flask(__name__)
 
@@ -26,7 +26,7 @@ with app.app_context():
 migrate = Migrate(app, db)
 
 #xavier
-loginmanager = LoginManager()
+loginmanager = LoginManager(app)
 loginmanager.init_app(app)
 loginmanager.login_view = 'login_'
 loginmanager.login_message = 'Please log in to access this page.'

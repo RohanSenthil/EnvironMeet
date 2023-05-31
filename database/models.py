@@ -38,6 +38,7 @@ class Members(db.Model, UserMixin):
     gender = db.Column(db.Enum('Male','Female'))
     contact = db.Column(db.Integer)
     points = db.Column(db.Integer)
+    profilepic = db.Column(db.String(140))
     #db.Column(db.,db.Sequence('member_events_seq'))
 
     # def __repr__(self):
@@ -53,6 +54,7 @@ class Organisations(db.Model, UserMixin):
     email = db.Column(db.String(100), primary_key = True)
     password = db.Column(db.String(100))
     description = db.Column(db.Text)
+    mainpic = db.Column(db.String(140))
     #events
 
     # def __repr__(self):

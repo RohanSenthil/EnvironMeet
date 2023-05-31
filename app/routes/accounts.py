@@ -83,40 +83,6 @@ def registermember():
 
     return render_template('registerm.html', form=registerform)
 
-#login
-@app.route('/login', methods=['GET', 'POST'])
-def login1():
-    login_form = login(request.form)
-
-    if request.method == "POST" and login_form.validate():
-        loginemail = str(login_form.email.data).lower()
-        member = Members.query.filter_by(email=loginemail).first()
-        # organisation = Organisations.query.filter_by(email=loginemail).first()
-        if not member: # and not organisation
-            flash("Invalid email or password", "danger")
-            return redirect(url_for('login1'))
-        elif member:
-            if check_password_hash(member.password, login_form.password.data):
-                #login_user(member, remember = login_form.remember.data)
-                #provide_new_login_token(member.email, "member")
-                flash("Login Successful!", "success")
-                return redirect(url_for('profile'))
-
-        # elif emp.position == "Admin":
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "admin")
-        #         return redirect(url_for('admin'))
-
-        # elif emp:
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "emp")
-        #         return redirect(url_for('employee'))
-        
-        
-        #flash("Invalid email or password", "danger")
-    return render_template('login.html', form=login_form)
 
 
 
