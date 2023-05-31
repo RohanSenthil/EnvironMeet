@@ -1,7 +1,7 @@
 
 const newPostInput = document.getElementById('newPostInput');
 const charCounter = document.getElementById('charCounter');
-const commentInput = document.getElementById('commentInput');
+const commentInputs = document.getElementsByClassName('commentInput');
 const addImageForPost = document.getElementById('addImageForPost');
 const previewImageHolder = document.getElementById('previewImage');
 
@@ -69,12 +69,14 @@ newPostInput.addEventListener('input', (e) => {
     charLimit(e.target, maxChars);
 })
 
-commentInput.addEventListener('input', (e) => {
+for (let i = 0; i < commentInputs.length; i++) {
+    commentInputs[i].addEventListener('input', (e) => {
 
-    maxChars = 250;
+        maxChars = 250;
 
-    charLimit(e.target, maxChars);
-})
+        charLimit(e.target, maxChars);
+    })
+}
 
 addImageForPost.addEventListener('input', (e) => {
     previewImage(e.target, previewImageHolder)
