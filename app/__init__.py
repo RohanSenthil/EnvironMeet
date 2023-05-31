@@ -3,7 +3,6 @@ from flask_migrate import Migrate
 from database.models import db
 from database.tools import generate_uri_from_file
 import os
-
 app = Flask(__name__)
 
 # DB Config

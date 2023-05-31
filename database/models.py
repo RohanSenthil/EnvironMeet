@@ -31,8 +31,8 @@ class Members(db.Model, UserMixin):
 
     __tablename__ = 'members'
 
-    id = db.Column(db.Integer, unique=True)
-    email = db.Column(db.String(100),db.Sequence('member_id_seq'),primary_key=True, unique=True)
+    id = db.Column(db.Integer, db.Sequence('member_id_seq'), unique=True)
+    email = db.Column(db.String(100),primary_key=True, unique=True)
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
     gender = db.Column(db.Enum('Male','Female'))
@@ -46,11 +46,11 @@ class Members(db.Model, UserMixin):
 class Organisations(db.Model, UserMixin):
     __tablename__ = 'organisations'
 
-    id = db.Column(db.Integer)
+    id = db.Column(db.Integer, db.Sequence('org_id_seq'), unique=True)
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
-    email = db.Column(db.String(100),db.Sequence('org_id_seq'), primary_key = True)
+    email = db.Column(db.String(100), primary_key = True)
     password = db.Column(db.String(100))
     description = db.Column(db.Text)
     #events
@@ -62,9 +62,9 @@ class Events(db.Model):
 
     __tablename__ = 'events'
 
-    id = db.Column(db.Integer,db.Sequence('events_id_seq'),primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.String(100))
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100))
     date = db.Column(db.DateTime)
     price = db.Column(db.Text)
     # price = db.Column(db.Price)
