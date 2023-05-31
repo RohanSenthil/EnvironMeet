@@ -32,7 +32,6 @@ def createPost():
             new_path = '/'.join(path_list)
             
             newPost.image = new_path
-            print(new_path)
 
         db.session.add(newPost)
         db.session.commit()
@@ -44,6 +43,15 @@ def createPost():
 def editPost(postid):
 
     # Implement Authorisation Check
+
+    post = Posts.query.get(postid)
+    form = request.form
+
+    if post is not None:
+        post.desc = form[f'desc_{postid}']
+
+        db.session.commit()
+
     return redirect(url_for('feed'))
 
 

@@ -35,7 +35,7 @@
                 </div>
                 <div class="right">
                     <span id="charCounter">500</span>
-                    <button class="postBtn" type="submit">Post</button>
+                    <button class="postBtn" type="submit" id="newPostBtn">Post</button>
                 </div>
             </div>
         </form>
@@ -63,11 +63,40 @@
                         <button class="actions-menu">
                             <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
                         </button>
+
+                        <!-- Edit Modal -->
+                        <form method="POST" autocomplete="off" action="{{ url_for('editPost', postid=post.id) }}">
+                            {{ newPostForm.csrf_token }}
+                            <div class="modal fade" id="editModal_{{ post.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="closeModalBtn" data-bs-dismiss="modal">
+                                                <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"/></svg>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="desc">
+                                                <textarea name="desc_{{ post.id }}" class="textInput newPostInput editPostInput" id="newPostInput" placeholder="What have you been up to?" required minlength="1" maxlength="500">{{ post.desc }}</textarea>
+                                            </div>
+                                            <div class="mediaFiles">
+                                                {% if post.image is not none %}
+                                                <img src="{{ post.image }}">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer col-12 mt-5">
+                                            <span class="charCounters">{{ 500 - post.desc|length }}</span>
+                                            <button type="submit" class="postBtn editPostBtn" value="{{ post.id }}">Post</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="dropdown-content">
                             <span class="editAction">
-                                <form method="POST" autocomplete="off" action="{{ url_for('editPost', postid=post.id) }}">
-                                    <button type="submit">Edit</button>
-                                </form>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ post.id }}" value="{{ post.id }}">Edit</button>
                             </span>
 
                             <span class="deleteAction">
@@ -85,8 +114,6 @@
                     {% if post.image is not none %}
                     <img src="{{ post.image }}">
                     {% endif %}
-                    <!-- <img src="../static/images/placeholders/beach1.jpg">
-                    <img src="../static/images/placeholders/beach2.jpg"> -->
                 </div>
             </div>
 

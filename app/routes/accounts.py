@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
-from app import app
+from app import app, loginmanager
 from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login
 from app.routes.helpers import provide_new_login_token, privileged_route
@@ -18,10 +18,6 @@ def members():
 def organisations():
     return render_template('/accounts/organisation/orgs.html')
 
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-
 @app.route('/members/create', methods=['GET','POST'])
 def createmember():
     createform = createm(request.form)
@@ -29,7 +25,7 @@ def createmember():
         # Process the form data
         emaild = str(createform.email.data).lower()
         passwordd = generate_password_hash(createform.password.data)
-        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0)
+        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
         db.session.close()
@@ -83,40 +79,6 @@ def registermember():
 
     return render_template('registerm.html', form=registerform)
 
-#login
-@app.route('/login', methods=['GET', 'POST'])
-def login1():
-    login_form = login(request.form)
-
-    if request.method == "POST" and login_form.validate():
-        loginemail = str(login_form.email.data).lower()
-        member = Members.query.filter_by(email=loginemail).first()
-        # organisation = Organisations.query.filter_by(email=loginemail).first()
-        if not member: # and not organisation
-            flash("Invalid email or password", "danger")
-            return redirect(url_for('login1'))
-        elif member:
-            if check_password_hash(member.password, login_form.password.data):
-                #login_user(member, remember = login_form.remember.data)
-                #provide_new_login_token(member.email, "member")
-                flash("Login Successful!", "success")
-                return redirect(url_for('profile'))
-
-        # elif emp.position == "Admin":
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "admin")
-        #         return redirect(url_for('admin'))
-
-        # elif emp:
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "emp")
-        #         return redirect(url_for('employee'))
-        
-        
-        #flash("Invalid email or password", "danger")
-    return render_template('login.html', form=login_form)
 
 
 
@@ -143,12 +105,7 @@ def login1():
 
 
 
-# #employees
-# @app.route('/accounts/employees')
-# @privileged_route("admin")
-# def retrieve_employees():
-#     employees = Employee.query.all()
-#     return render_template('accounts/emp/home_employees.html', employees=employees)
+
 
 # @app.route('/accounts/employees/create/success')
 # @privileged_route("admin")
@@ -159,25 +116,6 @@ def login1():
 # @privileged_route("admin")
 # def updatesuccess_emp():
 #     return render_template('accounts/emp/updatesuccess.html')
-
-# @app.route('/accounts/employees/create', methods=["GET","POST"])
-# @privileged_route("admin")
-# def create_employee():
-#     createemployee_form = createemp(request.form)
-#     if request.method == "POST" and createemployee_form.validate():
-#         hashed_password = generate_password_hash(createemployee_form.password.data)
-#         email = str(createemployee_form.email.data).lower()
-#         if createemployee_form.position.data == "Others":
-#             position = createemployee_form.positionothers.data
-#         else:
-#             position = createemployee_form.position.data
-#         newemployee = Employee(name=createemployee_form.name.data, gender=createemployee_form.gender.data, email=email, password=hashed_password, contact=createemployee_form.contact.data, position=position)
-#         db.session.add(newemployee)
-#         db.session.commit()
-#         db.session.close()
-#         return redirect(url_for('createsuccess_emp'))
-
-#    return render_template('accounts/emp/createemp.html',form=createemployee_form)
 
 # @app.route('/accounts/employees/delete/<id>')
 # @privileged_route("admin")
@@ -229,40 +167,6 @@ def login1():
 #         return render_template('accounts/emp/updateemp.html', form=form, oldemp=oldemp, position_others=position_others)
 
 
-
-
-
-
-
-
-
-# @app.route('/accounts')
-# @privileged_route("admin")
-# def go_home():
-#     return render_template('accounts/home.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# #CUSTOMERS
-# @app.route('/accounts/customers')
-# @privileged_route("admin")
-# def retrieve_customers():
-#     customers = Customer.query.all()
-#     return render_template('accounts/cust/home_customers.html', customers=customers)
-
 # @app.route('/accounts/customers/create/success')
 # @privileged_route("admin")
 # def createsuccess_cust():
@@ -273,20 +177,6 @@ def login1():
 # def updatesuccess_cust():
 #     return render_template('accounts/cust/updatesuccess.html')
 
-# @app.route('/accounts/customers/create', methods=["GET","POST"])
-# @privileged_route("admin")
-# def create_customer():
-#     createcustomer_form = createcust(request.form)
-#     if request.method == "POST" and createcustomer_form.validate():
-#         hashed_password = generate_password_hash(createcustomer_form.password.data)
-#         email = str(createcustomer_form.email.data).lower()
-#         newcustomer = Customer(name=createcustomer_form.name.data, gender=createcustomer_form.gender.data, email=email, password=hashed_password, contact=createcustomer_form.contact.data)
-#         db.session.add(newcustomer)
-#         db.session.commit()
-#         db.session.close()
-#         return redirect(url_for('createsuccess_cust'))
-
-#     return render_template('accounts/cust/createcust.html',form=createcustomer_form)
 
 # @app.route('/accounts/customers/delete/<id>')
 # @privileged_route("admin")
@@ -323,15 +213,6 @@ def login1():
 #         return render_template('accounts/cust/updatecust.html', form=form, oldcust=oldcust)
 
 
-
-
-
-
-
-
-
-
-# #login
 # @app.route('/login', methods=['GET', 'POST'])
 # def login_():
 #     login_form = login(request.form)
@@ -366,53 +247,6 @@ def login1():
 #         flash("Invalid email or password", "danger")
 #     return render_template('login/login.html', form=login_form)
 
-# @app.route('/login/create', methods=["GET","POST"])
-# def create_customer_login():
-#     createcustomer_form = createcust(request.form)
-#     if request.method == "POST" and createcustomer_form.validate():
-#         hashed_password = generate_password_hash(createcustomer_form.password.data)
-#         email = str(createcustomer_form.email.data).lower()
-#         newcustomer = Customer(name=createcustomer_form.name.data, gender=createcustomer_form.gender.data, email=email, password=hashed_password, contact=createcustomer_form.contact.data)
-#         db.session.add(newcustomer)
-#         db.session.commit()
-#         db.session.close()
-#         return redirect(url_for('createsuccess_login'))
-
-#     return render_template('login/logincreate.html', form=createcustomer_form)
-
-# @app.route('/login/create/success')
-# def createsuccess_login():
-#     return render_template('login/createsuccess_login.html')
-
-    
-
-
-
-# @app.route('/logout', methods=['GET', 'POST'])
-# @login_required
-# def logout():
-#     logout_user()
-#     revoke_login_token()
-#     return redirect(url_for('login_'))
-
-# @loginmanager.user_loader
-# def load_user(user_id):
-#     try:
-#         return Customer.query.get(int(user_id))
-#     except:
-#         return Employee.query.get(int(user_id))
-
-
-
-
-
-
-
-# #custdash
-# @app.route('/settings')
-# @login_required
-# def settings():
-#     return render_template('accounts/cust/dashboard/settings.html', current_user=current_user)
 
 # @app.route('/settings/update', methods=["GET","POST"])
 # @login_required
@@ -440,64 +274,7 @@ def login1():
 #         return render_template("accounts/cust/dashboard/updatecust2.html", form=form, oldcust=oldcust)
 
 
-
-
-
-
-
-
-
 # #FORGETPASSWORD
-
-# def sendemail(user):
-#     token = user.get_reset_token()
-#     msg = Message()
-#     msg.subject = "Password Reset"
-#     msg.recipients = [user.email]
-#     msg.sender = 'admin@odlanahor.store'
-#     msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Odlanaccount. 
-#     \nYou can reset the password by clicking the link: 
-#     {url_for('reset_token', token=token, _external=True)}
-#     \nIf you did not request this password reset, please let us know immediately.
-#     \nBest regards,
-#     The Odlanahor Team
-#     '''
-#     mail.send(msg)
-
-
-
-# @app.route('/forget', methods=['GET', 'POST'])
-# def forgetpw():
-#     forget_form = forget(request.form)
-#     if request.method == "POST" and forget_form.validate():
-#         forgetemail = str(forget_form.email.data).lower()
-#         cust = Customer.query.filter_by(email=forgetemail).first()
-#         if cust:
-#             sendemail(cust)
-#             flash("Email has been sent! Please check your inbox and junk folder for the reset link.", "success")
-#         else:
-#             flash("No account with that email exists. Please try again.", "warning")
-#             return redirect(url_for('forgetpw'))
-#     return render_template('login/forget.html', form=forget_form)
-
-
-# @app.route('/resetpw/<token>', methods=['GET', 'POST'])
-# def reset_token(token):
-#     user = Customer.verify_reset_token(token)
-#     if not user:
-#         flash('That is an invalid token.', "danger")
-#         return redirect(url_for('login_'))
-#     resetform = reset(request.form)
-#     if request.method == "POST" and resetform.validate():
-#         hashed_password = generate_password_hash(resetform.password.data)
-#         user.password = hashed_password
-#         db.session.commit()
-#         db.session.close()
-#         flash('Your password has been updated! You are now able to log in.','success')
-#         return redirect(url_for('login_'))
-
-#     return render_template('login/reset.html', form=resetform)
-
 
 # @app.route('/settings/updatepw', methods=['GET', 'POST'])
 # @login_required
