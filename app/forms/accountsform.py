@@ -3,6 +3,7 @@ from wtforms.validators import ValidationError, InputRequired,DataRequired, Equa
 from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
 from database.models import Members, Organisations
+from flask_wtf import RecaptchaField
 
 class createm(Form):
     name = StringField('Name', validators=[DataRequired()])
@@ -39,6 +40,7 @@ class updatem(Form):
     contact = StringField('Contact', validators=[DataRequired()])
 
 class login(Form):
+    recaptcha = RecaptchaField()
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
