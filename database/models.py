@@ -58,8 +58,6 @@ class Organisations(db.Model, UserMixin):
     # def __repr__(self):
     #     return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
 
-dbevents = SQLAlchemy()
-
 class Events(db.Model):
 
     __tablename__ = 'events'
