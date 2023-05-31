@@ -3,7 +3,6 @@ from database.models import Members, db
 from flask import render_template, request
 from sqlalchemy import desc
 import time
-#import mysql.connector
 
 @app.route('/leaderboard')
 def leaderboard():
