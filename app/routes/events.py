@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Events, db
 from app.forms.eventsform import FormEvents
+from datetime import datetime
 
 @app.route('/events')
 def events():

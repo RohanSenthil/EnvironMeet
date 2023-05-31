@@ -56,7 +56,7 @@
 .eventsCard {
     flex-grow: 1;
 	width: 25%;
-	height: 300px;
+	height: 250px;
 	background: #ffffff;
 	border: 1px solid black;
 	margin: 1rem;
@@ -160,6 +160,19 @@ label {
     margin-left:-10px;
 }
 .eventname{
+    font-weight: bold;
+    font-size:80%;
+}
+.eventorg{
+    margin-top:75px;
+}
+.lol{
     font-size: 80%;
-    show-default-value = True;
+}
+.lavel{
+    margin-bottom:-5px;
+    font-weight:bold;
+}
+#PRICE{
+    margin-top:40px;
 }

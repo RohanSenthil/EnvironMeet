@@ -11,7 +11,7 @@ class Posts(db.Model):
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
     # profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+    date = db.Column(db.DateTime)
     desc = db.Column(db.Text())
     image = db.Column(db.String(140))
     # associated event
@@ -60,12 +60,12 @@ class Organisations(db.Model, UserMixin):
 
 class Events(db.Model):
 
-    __tablename__ = 'events'
+    __tablename__ = 'eventsda'
 
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.String(100))
     name = db.Column(db.String(100))
-    date = db.Column(db.DateTime)
+    date = db.Column(db.Text)
     price = db.Column(db.Text)
     # price = db.Column(db.Price)
     # image
