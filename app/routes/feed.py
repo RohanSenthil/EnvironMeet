@@ -21,7 +21,7 @@ def createPost():
         newPost = Posts(desc=newPostForm.desc.data)
 
         # Handling file upload
-        uploaded_file = newPostForm.image_1.data
+        uploaded_file = newPostForm.image.data
 
         if uploaded_file is not None:
             filename = secure_filename(uploaded_file.filename)
@@ -32,6 +32,7 @@ def createPost():
             new_path = '/'.join(path_list)
             
             newPost.image = new_path
+            print(new_path)
 
         db.session.add(newPost)
         db.session.commit()
@@ -54,7 +55,15 @@ def deletePost(postid):
     post = Posts.query.get(postid)
 
     if post is not None:
+
+        imageFileName = post.image
+
+        if os.path.exists('app/' + imageFileName):
+            os.remove('app/' + imageFileName)
+
         db.session.delete(post)
         db.session.commit()
+
+
 
     return redirect(url_for('feed'))
