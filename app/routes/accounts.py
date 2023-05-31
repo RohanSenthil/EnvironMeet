@@ -18,9 +18,9 @@ def members():
 def organisations():
     return render_template('/accounts/organisation/orgs.html')
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
+# @app.route('/login')
+# def login():
+#     return render_template('login.html')
 
 @app.route('/members/create', methods=['GET','POST'])
 def createmember():
@@ -85,16 +85,16 @@ def registermember():
 
 #login
 @app.route('/login', methods=['GET', 'POST'])
-def login_():
+def login1():
     login_form = login(request.form)
-    
+
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         member = Members.query.filter_by(email=loginemail).first()
         # organisation = Organisations.query.filter_by(email=loginemail).first()
         if not member: # and not organisation
             flash("Invalid email or password", "danger")
-            return redirect(url_for('login_'))
+            return redirect(url_for('login1'))
         elif member:
             if check_password_hash(member.password, login_form.password.data):
                 login_user(member, remember = login_form.remember.data)
@@ -116,7 +116,7 @@ def login_():
         
         
         #flash("Invalid email or password", "danger")
-    return render_template('login.html', login_form=login_form)
+    return render_template('login.html', form=login_form)
 
 
 
