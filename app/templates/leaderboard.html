@@ -20,7 +20,9 @@
             <button class="globallinks" onclick="openGlobal(event, 'Yearly')">Yearly</button>
         </div>
         <div id="AllTime" class="globalcontent">
-            <p>all time</p>
+        {% for alltime in alltimes %}
+            <p>{{ alltime.points }}</p>
+        {% endfor %}
         </div>
         <div id="Yearly" class="globalcontent">
             <p>yearly</p>
