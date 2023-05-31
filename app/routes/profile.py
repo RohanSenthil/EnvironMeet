@@ -10,7 +10,7 @@ from app.forms.accountsform import createm, updatem
 
 
 @app.route('/profile')
-# @login_required
+#@login_required
 def profile():
     # if not current_user.is_authenticated:
         # loginmanager.login_message = "Please login to access this page"

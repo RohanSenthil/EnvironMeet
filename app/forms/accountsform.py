@@ -37,3 +37,10 @@ class updatem(Form):
     confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact', validators=[DataRequired()])
+
+class login(Form):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password:', [
+        validators.Length(min=10),
+        validators.DataRequired(),
+    ])
