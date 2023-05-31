@@ -32,7 +32,6 @@ def createPost():
             new_path = '/'.join(path_list)
             
             newPost.image = new_path
-            print(new_path)
 
         db.session.add(newPost)
         db.session.commit()
