@@ -3,6 +3,8 @@ from flask_migrate import Migrate
 from database.models import db
 from database.tools import generate_uri_from_file
 import os
+from flask_login import LoginManager
+from flask_mail import Mail
 app = Flask(__name__)
 
 # DB Config
@@ -23,5 +25,14 @@ with app.app_context():
 
 migrate = Migrate(app, db)
 
+#xavier
+loginmanager = LoginManager()
+loginmanager.init_app(app)
+loginmanager.login_view = 'login_'
+loginmanager.login_message = 'Please log in to access this page.'
+
+SECURITY_EMAIL_SENDER = 'admin@odlanahor.store'
+
+mail = Mail(app)
 from app import routes
 from app.util import filters
