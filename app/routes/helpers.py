@@ -52,45 +52,6 @@ def get_user_id_from_token():
 def get_user_permission_level_from_token():
     return get_token_claims()["permission_level"]
 
-def get_working_cart():
-    if "ShoppingCart" in session:
-        return session["ShoppingCart"]
-    else:
-        session["ShoppingCart"] = {}
-        return session["ShoppingCart"]
-
-def build_cart_key(product_id, colour):
-    return json.dumps([product_id, colour])
-app.add_template_global(build_cart_key)
-
-def disassemble_cart_key(cart_key):
-    return json.loads(cart_key)
-app.add_template_global(disassemble_cart_key)
-
-def update_cart():
-    session.modified = True
-
-def clear_cart():
-    session["ShoppingCart"] = {}
-
-def get_cart_value():
-    cart = get_working_cart()
-    cart_value = 0
-    for product_id, product_dictionary in cart.items():
-        cart_value += product_dictionary["quantity"] * product_dictionary["price"]
-    return cart_value
-
-def get_shipping_fee():
-    cart_value = get_cart_value()
-    if cart_value < 500:
-        return 15
-    else:
-        return 0
-
-def get_product_image_url(product):
-    return url_for("static", filename=f"productsDB/{product.picture_1}")
-app.add_template_global(get_product_image_url)
-
 def privileged_route(permission_level):
     def wrapper(view_func):
         @wraps(view_func)
