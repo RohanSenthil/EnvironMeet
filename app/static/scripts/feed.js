@@ -4,14 +4,18 @@ const charCounter = document.getElementById('charCounter');
 const commentInputs = document.getElementsByClassName('commentInput');
 const addImageForPost = document.getElementById('addImageForPost');
 const previewImageHolder = document.getElementById('previewImage');
+const editPostInputs = document.getElementsByClassName('editPostInput');
+const charCounters = document.getElementsByClassName('charCounters');
+const editPostBtns = document.getElementsByClassName('editPostBtn');
+const newPostBtn = document.getElementById('newPostBtn');
 
 newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
 
-const charLimit = (limitField, limitNum) => {
+const charLimit = (limitField, limitNum, counter) => {
 
     if (limitField.value.length > limitNum) {
         limitField.value = limitField.value.substring(0, limitNum)
-        charCounter.innerText = 0;
+        counter.innerText = 0;
     }
 }
 
@@ -60,13 +64,17 @@ newPostInput.addEventListener('input', (e) => {
     e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
 
+    if (newPostInput.value.length > 0) {
+        newPostInput.classList.remove('error-border');
+    }
+
     maxChars = 500;
 
     if (Number(charCounter.innerText) >= 0) {
         charCounter.innerText = maxChars - newPostInput.value.length;
     }
 
-    charLimit(e.target, maxChars);
+    charLimit(e.target, maxChars, charCounter);
 })
 
 for (let i = 0; i < commentInputs.length; i++) {
@@ -80,4 +88,52 @@ for (let i = 0; i < commentInputs.length; i++) {
 
 addImageForPost.addEventListener('input', (e) => {
     previewImage(e.target, previewImageHolder)
+})
+
+for (let i = 0; i < editPostInputs.length; i++) {
+    editPostInputs[i].style.height = `height: ${editPostInputs[i].scrollHeight}`;
+
+    editPostInputs[i].addEventListener('input', (e) => {
+        e.target.style.height = "auto";
+        e.target.style.height = `${e.target.scrollHeight}px`;
+        
+        if (editPostInputs[i].value.length > 0) {
+            editPostInputs[i].classList.remove('error-border');
+        }
+
+        maxChars = 500;
+
+        if (Number(charCounters[i].innerText) >= 0) {
+            charCounters[i].innerText = maxChars - editPostInputs[i].value.length;
+        }
+
+        charLimit(e.target, maxChars, charCounters[i]);
+    })
+}
+
+for (let i = 0; i < editPostBtns.length; i++) {
+
+    editPostBtns[i].addEventListener('click', (e) => {
+
+        if (editPostInputs[i].value.length <= 0 || editPostInputs[i].value.length > 500) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            editPostInputs[i].classList.add('error-border');
+        } else {
+            editPostInputs[i].classList.remove('error-border');
+        }
+
+    })
+}
+
+newPostBtn.addEventListener('click', (e) => {
+    if (newPostInput.value.length <= 0 || newPostInput.value.length > 500) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        newPostInput.classList.add('error-border');
+    } else {
+        newPostInput.classList.remove('error-border');
+    }
 })

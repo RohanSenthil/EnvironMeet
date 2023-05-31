@@ -45,9 +45,12 @@ def editPost(postid):
     # Implement Authorisation Check
 
     post = Posts.query.get(postid)
+    form = request.form
 
     if post is not None:
-        pass
+        post.desc = form[f'desc_{postid}']
+
+        db.session.commit()
 
     return redirect(url_for('feed'))
 
