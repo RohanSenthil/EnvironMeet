@@ -11,7 +11,7 @@
 <div class="contentcreate">
 <h1 class="hiaa">Create Events</h1>
     <div class="stuff">
-<form method="POST" action="">
+<form method="POST">
         <div class="form-group col" id="remainings">
      {{ render_field(form.organiser, class="form-control") }}
  </div>
@@ -31,9 +31,9 @@
      {{ render_field(form.price, class="form-control") }}
  </div>
     <div id="syvnieg" class="form-group col">
-    <a class="btn btn-primary" href="/events" role="button">Submit</a>
+    <button class="btn btn-primary" type="submit">Submit</button>
 </div>
-                     </div>
+                </div>
 </form>
 </div>
 
