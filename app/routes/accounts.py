@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
-from app import app, login_manager
+from app import app, loginmanager
 from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login
 from app.routes.helpers import provide_new_login_token, privileged_route
@@ -85,13 +85,6 @@ def registermember():
 
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    pass
-    # try:
-    #     return Customer.query.get(int(user_id))
-    # except:
-    #     return Employee.query.get(int(user_id))
 
 
 
