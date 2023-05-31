@@ -2,6 +2,22 @@
     outline: none;
 }
 
+table, th, td {
+  border: 1px solid;
+}
+
+.leaderboardfirst {
+  background-color: gold;
+}
+
+.leaderboardsecond{
+  background-color: silver;
+}
+
+.leaderboardthird{
+  background-color: #CD7F32;
+}
+
 .content {
     width: 55%;
     margin: 0 auto;
@@ -66,3 +82,4 @@ button{
 .globalcontent {
   display: none;
   border-top: none;
+

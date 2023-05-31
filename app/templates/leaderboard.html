@@ -21,13 +21,38 @@
         </div>
 
         <div id="AllTime" class="globalcontent">
-            {% for member in members %}
-            <table>
-                    <tr>
-                        <td>{{loop.index}}. {{ member.name}}: {{member.points }}</td>
+            <table class="alltimeleaderboard">
+                <tbody>
+                    {% for member in members %}
+                    {% if loop.index == 1 %}
+                    <tr class="leaderboardfirst">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.points }}</td>
                     </tr>
+                    {% elif loop.index == 2 %}
+                    <tr class="leaderboardsecond">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.points }}</td>
+                    </tr>
+                    {% elif loop.index == 3 %}
+                    <tr class="leaderboardthird">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.points }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.points }}</td>
+                    </tr>
+                    {% endif %}
                     {% endfor %}
+                </tbody>
             </table>
+
 
 
         </div>
