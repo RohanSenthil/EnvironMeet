@@ -35,6 +35,7 @@ a {
     height: 100vh;
     width: 20%;
     max-width: 300px;
+    transition: 1s ease;
 }
 
 .nav-bar {
@@ -55,6 +56,11 @@ a {
     vertical-align: middle;
 }
 
+.nav-container-small .logo img {
+    margin: 0 auto;
+    transition: 1s ease;
+}
+
 .nav-bar .logo h4 {
     display: inline;
     margin-left: 1rem;
@@ -65,6 +71,7 @@ a {
 .links {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .links a {
@@ -74,6 +81,12 @@ a {
     padding: 1rem;
     width: 75%;
     border-radius: 16px;
+}
+
+.links-small a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .links a:hover {
@@ -92,6 +105,63 @@ a {
 
 .links a span {
     vertical-align: middle;
+}
+
+.collapseNav {
+    position: absolute;
+    border: none;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    box-shadow: 0px 1px 4px 1px rgba(0 ,0, 0, .3);
+    left: 100%;
+    top: 50%;
+    transform: translateX(-60%);
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.collapseNavIconBack {
+    width: 16px;
+    height: 16px;
+    margin: 0 auto;
+    background-image: url('data:image/svg+xml, %3Csvg%20clip-rule%3D%22evenodd%22%20fill-rule%3D%22evenodd%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%222%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22m9.474%205.209s-4.501%204.505-6.254%206.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752%201.754%206.252%206.257%206.252%206.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414%200%20.75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z%22%20fill-rule%3D%22nonzero%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: 1s ease;
+}
+
+.collapseNavIconFront{
+    width: 16px;
+    height: 16px;
+    margin: 0 auto;
+    background-image: url('data:image/svg+xml, %3Csvg%20clip-rule%3D%22evenodd%22%20fill-rule%3D%22evenodd%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%222%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%3E%3Cpath%20d%3D%22m14.523%2018.787s4.501-4.505%206.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193%200-.385.074-.532.221-.293.292-.295.766-.004%201.056l4.978%204.978h-14.692c-.414%200-.75.336-.75.75s.336.75.75.75h14.692l-4.979%204.979c-.289.289-.286.762.006%201.054.148.148.341.222.533.222.19%200%20.378-.072.522-.215z%22%20fill-rule%3D%22nonzero%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: 1s ease;
+}
+
+.hide {
+    display: none !important;
+    transition: 1s ease;
+}
+
+.main-content {
+    width: 80%;
+    transition: 1s ease;
+}
+
+.nav-container-small .logo {
+    flex-direction: column;
+    justify-content: center;
+}
+
+.nav-container-small {
+    width: 10%;
+}
+
+.main-content-large {
+    width: 90%;
 }
 
 /* Admin Base */
