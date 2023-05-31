@@ -15,4 +15,4 @@ def profile():
     # if not current_user.is_authenticated:
         # loginmanager.login_message = "Please login to access this page"
         # loginmanager.login_message_category = "warning"
-    return render_template('/accounts/profile/memprofile.html') #, name=current_user.name
+    return render_template('/accounts/profile/memprofile.html', name=current_user.name)

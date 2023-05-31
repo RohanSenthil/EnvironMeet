@@ -97,7 +97,7 @@ def login1():
             return redirect(url_for('login1'))
         elif member:
             if check_password_hash(member.password, login_form.password.data):
-                login_user(member, remember = login_form.remember.data)
+                #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 flash("Login Successful!", "success")
                 return redirect(url_for('profile'))

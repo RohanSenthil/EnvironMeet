@@ -62,9 +62,9 @@ class Events(db.Model):
 
     __tablename__ = 'events'
 
-    id = db.Column(db.Integer,db.Sequence('events_id_seq'),primary_key=True)
+    id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.String(100))
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100))
     date = db.Column(db.DateTime)
     price = db.Column(db.Text)
     # price = db.Column(db.Price)
