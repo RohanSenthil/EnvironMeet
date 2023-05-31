@@ -51,14 +51,13 @@ a {
 }
 
 .nav-bar .logo img {
-    width: 64px;
     display: inline;
     vertical-align: middle;
-}
-
-.nav-container-small .logo img {
+    width: 100%;
+    max-width: 64px;
+    min-width: 24px;
     margin: 0 auto;
-    transition: 1s ease;
+    transition: 5s ease;
 }
 
 .nav-bar .logo h4 {
@@ -66,6 +65,7 @@ a {
     margin-left: 1rem;
     margin-top: 2rem;
     font-weight: 700;
+    font-size: 1.25rem;
 }
 
 .links {
@@ -83,12 +83,6 @@ a {
     border-radius: 16px;
 }
 
-.links-small a {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
 .links a:hover {
     background-color: #F6F5F5;
     color: #000;
@@ -101,6 +95,7 @@ a {
 .links a svg {
     margin-right: 1rem;
     vertical-align: middle;
+    transition: 1s ease;
 }
 
 .links a span {
@@ -156,12 +151,94 @@ a {
     justify-content: center;
 }
 
+.nav-container-small svg {
+    margin-right: 0rem !important;
+}
+
 .nav-container-small {
     width: 10%;
 }
 
+.nav-container-small .logo img {
+    margin: 0 auto;
+}
+
 .main-content-large {
     width: 90%;
+}
+
+.links-small a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+@media (max-width: 1260px) {
+    .nav-container .logo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 24px;
+    }
+
+    .nav-container .logo h4 {
+        display: none;
+    }
+    
+    .nav-container svg {
+        margin-right: 0rem !important;
+    }
+    
+    .nav-container {
+        width: 10%;
+    }
+    
+    .nav-container .logo img {
+        margin: 0 auto;
+        transition: 1s ease;
+    }
+    
+    .main-content {
+        width: 90%;
+    }
+    
+    .links a {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .links-text {
+        display: none;
+    }
+
+    #collapseNavBtn {
+        display: none;
+    }
+}
+
+@media (max-width: 960px) {
+    .nav-bar .logo {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .links {
+        display: none; 
+    }
+
+    .nav-bar .logo {
+        display: none;
+    }
+
+    #collapseNavBtn {
+        display: block;
+    }
+
+    .main-content {
+        width: 98%;
+    }
 }
 
 /* Admin Base */
