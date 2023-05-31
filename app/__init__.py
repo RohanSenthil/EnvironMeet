@@ -32,6 +32,7 @@ loginmanager.login_view = 'login_'
 loginmanager.login_message = 'Please log in to access this page.'
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+mail = Mail(app)
 
 from app import routes
 from app.util import filters
