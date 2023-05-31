@@ -71,8 +71,7 @@ class Events(db.Model):
     # image
     # associated event
 
-    def __init__(self, id, organiser, name, date, price):
-        self.id = id
+    def __init__(self, organiser, name, date, price):
         self.organiser = organiser
         self.name = name
         self.date = date
