@@ -330,3 +330,9 @@
     color: var(--env-green);
     font-weight: 700;
 }
+
+/* Edit Modal */
+.closeModalBtn svg {
+    width: 24px;
+    height: 24px;
+}
