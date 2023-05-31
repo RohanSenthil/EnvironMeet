@@ -35,7 +35,7 @@
                 </div>
                 <div class="right">
                     <span id="charCounter">500</span>
-                    <button class="postBtn" type="submit">Post</button>
+                    <button class="postBtn" type="submit" id="newPostBtn">Post</button>
                 </div>
             </div>
         </form>
@@ -76,10 +76,18 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea name="desc_{{ post.id }}" class="textInput newPostInput" id="newPostInput" placeholder="What have you been up to?">{{ post.desc }}</textarea>
+                                            <div class="desc">
+                                                <textarea name="desc_{{ post.id }}" class="textInput newPostInput editPostInput" id="newPostInput" placeholder="What have you been up to?" required minlength="1" maxlength="500">{{ post.desc }}</textarea>
+                                            </div>
+                                            <div class="mediaFiles">
+                                                {% if post.image is not none %}
+                                                <img src="{{ post.image }}">
+                                                {% endif %}
+                                            </div>
                                         </div>
                                         <div class="modal-footer col-12 mt-5">
-                                            <button type="submit" class="postBtn" value="{{ post.id }}">Post</button>
+                                            <span class="charCounters">{{ 500 - post.desc|length }}</span>
+                                            <button type="submit" class="postBtn editPostBtn" value="{{ post.id }}">Post</button>
                                         </div>
                                     </div>
                                 </div>
@@ -106,8 +114,6 @@
                     {% if post.image is not none %}
                     <img src="{{ post.image }}">
                     {% endif %}
-                    <!-- <img src="../static/images/placeholders/beach1.jpg">
-                    <img src="../static/images/placeholders/beach2.jpg"> -->
                 </div>
             </div>
 

@@ -60,6 +60,10 @@
     margin-right: .75rem;
 }
 
+.charCounters {
+    margin-right: .75rem;
+}
+
 .postBtn {
     color: #fff;
     background-color: var(--env-green);
@@ -123,6 +127,12 @@
     background-image: url('data:image/svg+xml, %3Csvg%20clip-rule%3D%22evenodd%22%20fill-rule%3D%22evenodd%22%20stroke-linejoin%3D%22round%22%20stroke-miterlimit%3D%222%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22m12%2010.93%205.719-5.72c.146-.146.339-.219.531-.219.404%200%20.75.324.75.749%200%20.193-.073.385-.219.532l-5.72%205.719%205.719%205.719c.147.147.22.339.22.531%200%20.427-.349.75-.75.75-.192%200-.385-.073-.531-.219l-5.719-5.719-5.719%205.719c-.146.146-.339.219-.531.219-.401%200-.75-.323-.75-.75%200-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532%200-.425.346-.749.75-.749.192%200%20.385.073.531.219z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+.error-border {
+    border: 1px solid red !important;
+    border-radius: .5rem;
+    padding: .5rem;
 }
 
 /* Posts Box */
@@ -332,6 +342,7 @@
 }
 
 /* Edit Modal */
+
 .closeModalBtn svg {
     width: 24px;
     height: 24px;
