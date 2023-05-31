@@ -9,12 +9,12 @@ from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login
 
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    # if not current_user.is_authenticated:
-        # loginmanager.login_message = "Please login to access this page"
-        # loginmanager.login_message_category = "warning"
+    if not current_user.is_authenticated:
+        loginmanager.login_message = "Please login to access this page"
+        loginmanager.login_message_category = "warning"
     return render_template('/accounts/profile/memprofile.html', name=current_user.name)
 
 @loginmanager.user_loader
@@ -54,5 +54,10 @@ def login_():
         #         return redirect(url_for('employee'))
         
         
-        #flash("Invalid email or password", "danger")
+        flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout_():
+    logout_user()
+    return redirect(url_for('login_'))

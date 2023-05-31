@@ -18,10 +18,6 @@ def members():
 def organisations():
     return render_template('/accounts/organisation/orgs.html')
 
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-
 @app.route('/members/create', methods=['GET','POST'])
 def createmember():
     createform = createm(request.form)
