@@ -43,6 +43,12 @@ def createPost():
 def editPost(postid):
 
     # Implement Authorisation Check
+
+    post = Posts.query.get(postid)
+
+    if post is not None:
+        pass
+
     return redirect(url_for('feed'))
 
 
