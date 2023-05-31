@@ -27,18 +27,20 @@ def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
         # Process the form data
-        member = Members(name=createform.name.data, email=createform.email.data, password=createform.password.data, gender=createform.gender.data, contact=createform.contact.data, points=0)
+        emaild = str(createform.email.data).lower()
+        passwordd = generate_password_hash(createform.password.data)
+        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0)
         db.session.add(member)
         db.session.commit()
         db.session.close()
-        return render_template('/accounts/member/members.html', members=members)
+        return redirect(url_for('members'))
     return render_template('/accounts/member/createm.html', form=createform)
 
-@app.route('/members/update<id>', methods=['GET','POST'])
-def updatemember(id):
-    form = updatem(request.form)
-    oldmem = Members.query.get(id)
-    if request.method == "POST" and form.validate():
+@app.route('/members/update/<email>', methods=['GET','POST'])
+def updatemember(email):
+    updateform = updatem(request.form)
+    oldmem = Members.query.get(email)
+    if request.method == "POST" and updateform.validate():
         name = request.form['name']
         gender = request.form['gender']
         contact = request.form['contact']
@@ -52,11 +54,21 @@ def updatemember(id):
 
         return redirect(url_for('members'))
     else:
-        form.name.data = oldmem.name
-        form.gender.data = oldmem.gender
-        form.contact.data = oldmem.contact
+        updateform.name.data = oldmem.name
+        updateform.gender.data = oldmem.gender
+        updateform.contact.data = oldmem.contact
 
-        return render_template('accounts/member/updatem.html', form=form, oldmem=oldmem)
+        return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
+
+@app.route('/members/delete/<email>')
+# @privileged_route("admin")
+def deletemember(email):
+    mem = Members.query.filter_by(email=email).first()
+    if mem:
+        db.session.delete(mem)
+        db.session.commit()
+    return redirect(url_for('members'))
+
 
 @app.route('/registerm', methods=['GET', 'POST'])
 def registermember():

@@ -19,11 +19,11 @@
     <table class="table table-striped" id="myTable">
       <thead>
         <tr>
-          <th>ID</th>
+          <th>Email</th>
           <th>Name</th>
           <th>Gender</th>
-          <th>Email</th>
           <th>Contact</th>
+          <th>Points</th>
           <th></th>
         </tr>
       </thead>
@@ -33,13 +33,13 @@
         </tr> -->
         {% for member in members %}
         <tr>
-          <td>{{ member.id }}</td>
+          <td>{{ member.email }}</td>
           <td>{{ member.name }}</td>
           <td>{{ member.gender }}</td>
-          <td>{{ member.email }}</td>
           <td>{{ member.contact }}</td>
+          <td>{{ member.points }}</td>
           <td>
-            <!-- <a href="{{ url_for('updatemember', id=member.id) }}">
+            <a href="{{ url_for('updatemember', email=member.email) }}">
               <svg id="update" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
                 <g id="ic_border_color_24px" transform="translate(0 0.003)">
                   <path id="Path_81" data-name="Path 81" d="M17.75,7,14,3.25l-10,10V17H7.75Zm2.96-2.96a1,1,0,0,0,0-1.41L18.37.29a1,1,0,0,0-1.41,0L15,2.25,18.75,6Z"/>
@@ -51,12 +51,11 @@
               <svg id="delete" xmlns="http://www.w3.org/2000/svg" width="18.669" height="24.003" viewBox="0 0 18.669 24.003">
                 <path id="ic_delete_24px" d="M6.333,24.336A2.675,2.675,0,0,0,9,27H19.668a2.675,2.675,0,0,0,2.667-2.667v-16h-16Zm17.335-20H19L17.668,3H11L9.667,4.333H5V7H23.669Z" transform="translate(-5 -3)"/>
               </svg>
-            </button> -->
+            </button>
 
           </td>
-          {% endfor %}
   <!-- Modal -->
-  <!-- <div class="modal fade" id="modal-{{member.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="modal-{{member.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -68,7 +67,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-danger"><a href="{{ url_for('delete_member', id=member.id) }}" id="deletebtn" style="color: white;">Delete</a></button>
+          <button type="button" class="btn btn-danger"><a href="{{ url_for('deletemember', email=member.email) }}" id="deletebtn" style="color: white;">Delete</a></button>
         </div>
       </div>
     </div>
@@ -77,6 +76,6 @@
         {% endfor %}
       </tbody>
     </table>
-  </div> -->
+  </div>
 </div>
 {% endblock %}
