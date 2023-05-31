@@ -10,7 +10,7 @@
 <div class="content">
 
     <div class="newPostContainer">
-        <form class="newPostBox postBox" method="POST" autocomplete="off" enctype="multipart/form-data">
+        <form class="newPostBox postBox" action="/post/create" method="POST" autocomplete="off" enctype="multipart/form-data">
             {{ newPostForm.csrf_token }}
             {{ newPostForm.desc(class="textInput newPostInput", id="newPostInput", placeholder="What have you been up to?") }}
             <div id="previewImage">
@@ -47,14 +47,35 @@
 
             <div class="top">
                 <div class="heading">
-                    <img class="avatar" src="../static/images/placeholders/siu.PNG" alt="Avatar">
-                    <div class="info">
-                        <span class="infoTop">
-                            <span class="posterName"> Cristiano Ronaldo</span> is at <a href="#">East Coast Park Beach Cleanup</a>
-                        </span>
-                        <span class="timestamp">
-                            {{ post.timestamp|formatTimestamp }}
-                        </span>
+                    <div class="left">
+                        <img class="avatar" src="../static/images/placeholders/siu.PNG" alt="Avatar">
+                        <div class="info">
+                            <span class="infoTop">
+                                <span class="posterName"> Cristiano Ronaldo</span> is at <a href="#">East Coast Park Beach Cleanup</a>
+                            </span>
+                            <span class="timestamp">
+                                {{ post.timestamp|formatTimestamp }}
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Some logic if post belong to account show actions menu -->
+                    <div class="actions-dropdown">
+                        <button class="actions-menu">
+                            <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
+                        </button>
+                        <div class="dropdown-content">
+                            <span class="editAction">
+                                <form method="POST" autocomplete="off" action="{{ url_for('editPost', postid=post.id) }}">
+                                    <button type="submit">Edit</button>
+                                </form>
+                            </span>
+
+                            <span class="deleteAction">
+                                <form method="POST" autocomplete="off" action="{{ url_for('deletePost', postid=post.id) }}">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div class="desc">
