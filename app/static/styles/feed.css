@@ -8,6 +8,12 @@
     padding: 2rem;
 }
 
+@media (max-width: 760px) {
+    .content {
+        width: 75%;
+    }
+}
+
 .postBox {
     border: #D6D2D2 1px solid;
     padding: 1rem;

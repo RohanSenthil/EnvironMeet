@@ -31,8 +31,5 @@ loginmanager.init_app(app)
 loginmanager.login_view = 'login_'
 loginmanager.login_message = 'Please log in to access this page.'
 
-SECURITY_EMAIL_SENDER = 'admin@odlanahor.store'
-
-mail = Mail(app)
 from app import routes
 from app.util import filters

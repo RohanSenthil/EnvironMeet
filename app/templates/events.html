@@ -30,9 +30,14 @@
 <!--        </div>-->
 <!--        <div class="EventsBox1">-->
 <!--        </div>-->
-        {% for event in events %}
+                {% for event in events %}
         <div class="eventsCard">
+            <div class="eventname">
             {{ event.name }}
+                </div>
+            {{ event.date }}<p>pm</p>
+            {{ event.price }}
+            <p>By:</p>{{ event.organiser }}
         </div>
         {% endfor %}
     </div>

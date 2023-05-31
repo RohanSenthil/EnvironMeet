@@ -56,7 +56,7 @@
 .eventsCard {
     flex-grow: 1;
 	width: 25%;
-	height: 100px;
+	height: 300px;
 	background: #ffffff;
 	border: 1px solid black;
 	margin: 1rem;
@@ -158,4 +158,8 @@ label {
 #remainings2{
     margin-right:-10px;
     margin-left:-10px;
+}
+.eventname{
+    font-size: 80%;
+    show-default-value = True;
 }
