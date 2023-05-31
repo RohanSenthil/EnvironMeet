@@ -6,7 +6,8 @@ from app.forms.eventsform import FormEvents
 @app.route('/events')
 def events():
     # dbevents.create_all()
-    # events = Events.query.all()
+    events = Events.query.all()
+
     return render_template('events.html', events=events)
 
 #NAVIN CODE
