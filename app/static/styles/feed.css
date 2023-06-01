@@ -347,3 +347,22 @@
     width: 24px;
     height: 24px;
 }
+
+/* Delete Modal */
+
+.deleteModal .modal-content {
+    width: 40%;
+    padding: 2rem;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+.deleteModal h2 {
+    font-weight: 700;
+    text-align: center;
+}
+
+.deleteModal .modal-footer {
+    justify-content: space-between;
+    padding: 0rem 5rem;
+}

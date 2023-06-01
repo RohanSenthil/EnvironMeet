@@ -12,7 +12,7 @@ class Posts(db.Model):
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
     # profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
-    date = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text())
     image = db.Column(db.String(140))
     # associated event
@@ -53,7 +53,7 @@ class Organisations(db.Model, UserMixin):
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
-    email = db.Column(db.String(100), primary_key = True)
+    email = db.Column(db.String(100), primary_key = True, unique=True)
     password = db.Column(db.String(100))
     description = db.Column(db.Text)
     mainpic = db.Column(db.String(140))
