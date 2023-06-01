@@ -15,7 +15,7 @@
   </svg>
 </a>
     <h1>
-    Environmeet - Create Member
+    EnvironMeet - Create Member
     </h1>
   <div class="cont">
     <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
@@ -34,25 +34,12 @@
       <div class="form-group p-1">
         {{ render_field(form.gender, class="form-check", style="list-style-type:none") }}
       </div>
-      <!-- {% for message in get_flashed_messages() %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-              {{ message }}
-          </div>
-      {% endfor %} -->
         <div class="form-group p-1">
           {{ render_field(form.contact, class="form-control") }}
         </div>
-        <!-- <label for="contact">Contact:</label>
-        <input type="number" name="contact" id="contact" required min="0" max="99999999">
-      <div class="form-group p-1">
-        <input type="text" value="" name="positionothers" id="others" class="form-control">
-      </div> -->
       <input type="submit" value="Submit" class="btn btn-primary p-1"/>
     </form>
   </div>
 </div>
-
-
-
 
 {% endblock %}
