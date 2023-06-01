@@ -2,6 +2,13 @@
     outline: none;
 }
 
+.egioesigseions{
+    color: #fff !important;
+    background-color: var(--env-green);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+}
 .SearchEventContainer {
     width: 50%;
     margin: 0 auto;
