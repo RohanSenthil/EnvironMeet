@@ -58,7 +58,7 @@ button{
 
 /* Create an active/current tablink class */
 .LeaderboardButtons button.active {
-  background-color: #ccc;
+  background-color: var(--env-green);
 }
 
 /* Style the tab content */
@@ -87,7 +87,7 @@ button{
 
 /* Create an active/current tablink class */
 .GlobalButtons button.active {
-  background-color: #ccc;
+  background-color: var(--env-green);
 }
 
 .globalcontent {
