@@ -53,7 +53,7 @@ class Organisations(db.Model, UserMixin):
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
-    email = db.Column(db.String(100), primary_key = True)
+    email = db.Column(db.String(100), primary_key = True, unique=True)
     password = db.Column(db.String(100))
     description = db.Column(db.Text)
     mainpic = db.Column(db.String(140))

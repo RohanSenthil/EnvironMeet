@@ -34,8 +34,6 @@ class createm(Form):
 
 class updatem(Form):
     name = StringField('Name', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact', validators=[DataRequired()])
 
@@ -46,7 +44,6 @@ class login(Form):
         validators.Length(min=10),
         validators.DataRequired(),
     ])
-    remember = BooleanField('Remember me?')
 
 class forget(Form):
     email = StringField('Email', validators=[DataRequired(), Email()])
