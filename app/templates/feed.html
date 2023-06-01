@@ -94,6 +94,24 @@
                             </div>
                         </form>
 
+                        <!-- Delete Modal -->
+                        <!-- <form method="POST" autocomplete="off" action="{{ url_for('deletePost', postid=post.id) }}">
+                            {{ newPostForm.csrf_token }}
+                            <div class="modal fade deleteModal" id="deleteModal_{{ post.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-body">
+                                        <h2>Delete Post?</h2>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                      <button type="submit" class="btn btn-primary">Yes</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </form> -->
+
                         <div class="dropdown-content">
                             <span class="editAction">
                                 <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ post.id }}" value="{{ post.id }}">Edit</button>
@@ -103,6 +121,7 @@
                                 <form method="POST" autocomplete="off" action="{{ url_for('deletePost', postid=post.id) }}">
                                     <button type="submit">Delete</button>
                                 </form>
+                                <!-- <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal__{{ post.id }}" value="{{ post.id }}">Delete</button> -->
                             </span>
                         </div>
                     </div>
