@@ -15,8 +15,8 @@
     border-radius: 12px;
     display: flex;
     flex-direction: row;
-    width: 250%;
-    margin-left: -2000px;
+    width: 235%;
+    margin-left: -250px;
 }
 
 .SearchEventBox .textInput::placeholder {
