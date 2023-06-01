@@ -64,10 +64,11 @@ def deletePost(postid):
 
     if post is not None:
 
-        imageFileName = post.image
+        if post.image is not None:
+            imageFileName = post.image
 
-        if os.path.exists('app/' + imageFileName):
-            os.remove('app/' + imageFileName)
+            if os.path.exists('app/' + imageFileName):
+                os.remove('app/' + imageFileName)
 
         db.session.delete(post)
         db.session.commit()
