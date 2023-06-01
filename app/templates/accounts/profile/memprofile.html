@@ -26,10 +26,24 @@ span{
 }
 </style> -->
 <div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class='flashes'>
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} " id='alert'>
+    <span>{{ message }}</span>
+    <button type="button" style='float:right;'class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+
+    </div>
+
+    {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
     <h1>Dashboard</h1>
-    <h2>Welcome {{ current_user.name }}</h2>
-    <div class="container">
-    
+    <h2>Welcome!</h2>
+    <div class="">
+        <a href="/logout">Logout</a>
     </div>
 </div>
 

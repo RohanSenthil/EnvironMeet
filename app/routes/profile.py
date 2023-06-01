@@ -7,7 +7,7 @@ from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
 from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login, forget, reset
-from app.routes.helpers import revoke_login_token
+from app.routes.helpers import revoke_login_token, provide_new_login_token
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -15,12 +15,12 @@ from app.routes.helpers import revoke_login_token
 def profile():
     if not current_user.is_authenticated:
         loginmanager.login_message = "Please login to access this page"
-        loginmanager.login_message_category = "warning"
-    return render_template('/accounts/profile/memprofile.html', name=current_user.name)
+        loginmanager.login_message_category = "danger"
+    return render_template('/accounts/profile/memprofile.html')#, name=current_user.name
 
 @loginmanager.user_loader
-def load_user(member_email):
-    return Members.query.get(member_email)
+def load_user(email):
+    return Members.query.get(email)
 # @loginmanager.user_loader
 # def load_user(user_id):
 #     try:

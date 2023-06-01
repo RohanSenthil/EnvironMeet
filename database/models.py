@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
 from sqlalchemy.orm import backref
 from flask_login import UserMixin
+from sqlalchemy import Enum
 
 db = SQLAlchemy() # DB Handler
 

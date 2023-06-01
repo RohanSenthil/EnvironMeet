@@ -11,9 +11,10 @@
   {% for category, message in messages %}
   <div class="alert alert-{{ category }} " id='alert'>
   <span>{{ message }}</span>
-  
+  <button type="button" style='float:right;'class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+
   </div>
-  
+
   {% endfor %}
   </div>
   {% endif %}
@@ -26,7 +27,7 @@
         </div>
       <span class="h1 fw-bold mb-0">EnvironMeet</span>
     </div>
-
+    <h6 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Back to <a href="/feed">feed</a></h5>
     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign In</h5>
     
     <div class="form-outline mb-4">
@@ -36,6 +37,10 @@
     <div class="form-outline mb-4">
       {{ render_field(form.password, class="form-control") }}
     </div>
+
+    <!-- <div class="form-outline mb-4">
+      {{ render_field(form.remember, class="form-checkbox") }}
+    </div> -->
 
     <div class="form-outline mb-4">
       {{ render_field(form.recaptcha) }}
