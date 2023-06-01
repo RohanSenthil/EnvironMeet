@@ -10,10 +10,10 @@ class Config:
     # JWK = JWK(kid=1, kty="oct", alg="A128KW", enc="A128GCM", k=base64url_encode(SECRET_KEY[:16]))
     # UPLOAD_FOLDER = '/static/productsDB'
 
-    MAIL_SERVER = 'smtp..com'
+    MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
-    MAIL_USERNAME = ""
-    MAIL_PASSWORD = f""
-    MAIL_DEFAULT_SENDER = ""
+    MAIL_USERNAME = "environmeet@gmail.com"
+    MAIL_PASSWORD = f"rohanaldomcDONALDO4927"
+    MAIL_DEFAULT_SENDER = "environmeet@gmail.com"
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
