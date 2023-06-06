@@ -198,6 +198,16 @@
 .mid svg {
     width: 25px;
     stroke: var(--env-green);
+    cursor: pointer;
+}
+
+.like svg {
+    stroke: #222222 !important;
+}
+
+.like-active {
+    fill: var(--env-green) !important;
+    stroke: var(--env-green) !important;
 }
 
 .like span {

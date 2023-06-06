@@ -11,15 +11,45 @@ class Posts(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
-    # profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
-    desc = db.Column(db.Text())
+    # author = db.Column(db.Integer, db.ForeignKey('profiles.id', ondelete='CASCADE'), nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
+    desc = db.Column(db.Text(), nullable=False)
     image = db.Column(db.String(140))
+    comments = db.relationship('Comments', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
+    likes = db.relationship('Likes', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
     # associated event
 
     def __init__(self, desc):
         self.desc = desc
 
+
+class Comments(db.Model):
+
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, db.Sequence('comments_id_seq'), primary_key=True)
+    text = db.Column(db.Text(), nullable=False)
+    time = db.Column(db.DateTime(timezone=True), default=db.func.now())
+    author = db.Column(db.Integer, db.ForeignKey('profiles.id', ondelete='CASCADE'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
+
+    def __init__(self, text, post_id):
+        # self.author = author
+        self.text = text
+        self.post_id = post_id
+
+class Likes(db.Model):
+
+    __tablename__ = 'likes'
+
+    id = db.Column(db.Integer, db.Sequence('likes_id_seq'), primary_key=True)
+    time = db.Column(db.DateTime(timezone=True), default=db.func.now())
+    # author = db.Column(db.Integer, db.ForeignKey('profiles.id', ondelete='CASCADE'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
+
+    def __init__(self, post_id):
+        # self.author = author
+        self.post_id = post_id
 
 class Profiles(db.Model):
 

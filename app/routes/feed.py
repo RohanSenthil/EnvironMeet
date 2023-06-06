@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Posts
+from database.models import Posts, Likes
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os
@@ -76,3 +76,25 @@ def deletePost(postid):
 
 
     return redirect(url_for('feed'))
+
+
+@app.route('/post/like/<postid>', methods=['POST'])
+def like_post(post_id):
+    print('works')
+    pass
+    # post = Posts.query.filter_by(id=post_id).first()
+    # like = Likes.query.filter_by(
+    #     author=current_user.id, post_id=post_id).first()
+    # if not post:
+    #     return jsonify({'error': 'Post doesn\'t exist'}, 400)
+
+    # elif like:
+    #     db.session.delete(like)
+    #     db.session.commit()
+    # else:
+    #     like = Like(author=current_user.id, post_id=post_id)
+    #     db.session.add(like)
+    #     db.session.commit()
+
+    # return jsonify({'likes': len(post.likes),
+    #                 'liked': current_user.id in map(lambda n: n.author, post.likes)})
