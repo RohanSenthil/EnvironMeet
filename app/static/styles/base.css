@@ -56,7 +56,6 @@ a {
     width: 100%;
     max-width: 64px;
     min-width: 24px;
-    margin: 0 auto;
     transition: 5s ease;
 }
 
