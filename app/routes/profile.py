@@ -11,7 +11,7 @@ from app.routes.helpers import revoke_login_token, provide_new_login_token
 
 
 @app.route('/profile', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def profile():
     # if not current_user.is_authenticated:
     #     loginmanager.login_message = "Please login to access this page"
@@ -45,20 +45,8 @@ def login_():
                 #provide_new_login_token(member.email, "member")
                 login_user(member)
                 flash("Login Successful!", "success")
+                print(current_user)
                 return redirect(url_for('profile'))
-
-        # elif emp.position == "Admin":
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "admin")
-        #         return redirect(url_for('admin'))
-
-        # elif emp:
-        #     if check_password_hash(emp.password, login_form.password.data):
-        #         login_user(emp, remember = login_form.remember.data)
-        #         provide_new_login_token(emp.id, "emp")
-        #         return redirect(url_for('employee'))
-        
         
         flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)

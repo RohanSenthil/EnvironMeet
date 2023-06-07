@@ -26,7 +26,7 @@ with app.app_context():
 migrate = Migrate(app, db)
 
 #xavier
-loginmanager = LoginManager(app)
+loginmanager = LoginManager()
 loginmanager.init_app(app)
 loginmanager.login_view = 'login_' 
 loginmanager.login_message = 'Please log in to access this page.'

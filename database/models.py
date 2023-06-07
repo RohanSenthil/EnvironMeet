@@ -94,6 +94,9 @@ class Members(db.Model, UserMixin):
         except:
             return None
         return Members.query.filter_by(id=userid).first()
+    
+    def get_id(self):
+        return self.email
     #db.Column(db.,db.Sequence('member_events_seq'))
 
     # def __repr__(self):
