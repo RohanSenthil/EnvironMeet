@@ -3,6 +3,9 @@ from flask import Flask, render_template
 from sqlalchemy.orm import backref
 from flask_login import UserMixin
 from sqlalchemy import Enum
+import app
+import jwt
+import datetime
 
 db = SQLAlchemy() # DB Handler
 
@@ -71,6 +74,26 @@ class Members(db.Model, UserMixin):
     points = db.Column(db.Integer)
     yearlypoints = db.Column(db.Integer)
     profilepic = db.Column(db.String(140))
+
+    def get_reset_token(self, expires_sec=1800):
+        reset_token = jwt.encode(
+            payload=
+            {
+                "user_id": self.id,
+                "exp": datetime.datetime.now(tz=datetime.timezone.utc)
+                       + datetime.timedelta(seconds=expires_sec)
+            },
+            key = app.app.config['SECRET_KEY'],
+            algorithm="HS256"
+        )
+        return reset_token
+
+    def verify_reset_token(token):
+        try:
+            userid = jwt.decode(token, key = app.app.config['SECRET_KEY'], leeway=datetime.timedelta(seconds=10), algorithms=['HS256', ])["user_id"]
+        except:
+            return None
+        return Members.query.filter_by(id=userid).first()
     #db.Column(db.,db.Sequence('member_events_seq'))
 
     # def __repr__(self):
