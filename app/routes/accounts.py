@@ -58,8 +58,8 @@ def updatemember(email):
 
 @app.route('/members/delete/<email>')
 # @privileged_route("admin")
-def deletemember(id):
-    member = Members.query.filter_by(id=id).first()
+def deletemember(email):
+    member = Members.query.filter_by(email=email).first()
     if member:
         db.session.delete(member)
         db.session.commit()
