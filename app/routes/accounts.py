@@ -58,10 +58,10 @@ def updatemember(email):
 
 @app.route('/members/delete/<email>')
 # @privileged_route("admin")
-def deletemember(email):
-    mem = Members.query.filter_by(email=email).first()
-    if mem:
-        db.session.delete(mem)
+def deletemember(id):
+    member = Members.query.filter_by(id=id).first()
+    if member:
+        db.session.delete(member)
         db.session.commit()
     return redirect(url_for('members'))
 

@@ -41,7 +41,7 @@ span{
     {% endif %}
     {% endwith %}
     <h1>Dashboard</h1>
-    <h2>Welcome!</h2>
+    <h2>Welcome {{ current_user.name }}!</h2>
     <div class="">
         <a href="/logout">Logout</a>
     </div>

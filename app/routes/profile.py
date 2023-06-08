@@ -13,10 +13,10 @@ from app.routes.helpers import revoke_login_token, provide_new_login_token
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    # if not current_user.is_authenticated:
-    #     loginmanager.login_message = "Please login to access this page"
-    #     loginmanager.login_message_category = "danger"
-    return render_template('/accounts/profile/memprofile.html')#, name=current_user.name
+    if not current_user.is_authenticated:
+        loginmanager.login_message = "Please login to access this page"
+        loginmanager.login_message_category = "danger"
+    return render_template('/accounts/profile/memprofile.html', current_user = current_user)
 
 @loginmanager.user_loader
 def load_user(email):
