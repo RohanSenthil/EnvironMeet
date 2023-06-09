@@ -1,6 +1,6 @@
 const likePost = (postid) => {
-    btn = document.getElementById('post{{ post.id }}LikesBtn');
-    count = document.getElementById('post{{ post.id }}LikesCount');
+    btn = document.getElementById(`post${ postid }LikesBtn`);
+    count = document.getElementById(`post${ postid }LikesCount`);
 
     fetch(`/post/like/${postid}`, {method:'POST'}).then((res) => res.json()).then((data) => {
         count.innerText = data['likes'];
@@ -12,5 +12,5 @@ const likePost = (postid) => {
             btn.classList.remove('like-active');
         }
     })
-    .catch((e) => alert('ERROR: Post cannot be liked'));
+    .catch((e) => alert(e, 'ERROR: Post cannot be liked'));
 }

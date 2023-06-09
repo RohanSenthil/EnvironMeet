@@ -202,7 +202,7 @@
 }
 
 .like svg {
-    stroke: #222222 !important;
+    stroke: #222222;
 }
 
 .like-active {

@@ -5,6 +5,7 @@ from database.models import Posts, Likes
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os
+from flask.json import jsonify
 
 
 @app.route('/feed', methods=['GET'])
@@ -22,7 +23,7 @@ def createPost():
     newPostForm = PostForm()
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
-        newPost = Posts(desc=newPostForm.desc.data)
+        newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
 
         # Handling file upload
         uploaded_file = newPostForm.image.data
@@ -46,17 +47,23 @@ def createPost():
 @app.route('/post/edit/<int:postid>', methods=['POST'])
 @login_required
 def editPost(postid):
-
-    # Implement Authorisation Check
-
+    
     post = Posts.query.get(postid)
-    form = request.form
 
     if post is not None:
-        post.desc = form[f'desc_{postid}']
 
-        db.session.commit()
+        # Authorisation Check
+        if post.author == current_user.id:
+            form = request.form
+            post.desc = form[f'desc_{postid}']
 
+            db.session.commit()
+
+        else:
+            return jsonify({'error': 'Unauthorized'}, 401)
+    else:
+        return jsonify({'error': 'Post doesn\'t exist'}, 400)
+    
     return redirect(url_for('feed'))
 
 
@@ -86,22 +93,22 @@ def deletePost(postid):
 
 @app.route('/post/like/<postid>', methods=['POST'])
 @login_required
-def like_post(post_id):
-    print(current_user.id)
-    pass
-    # post = Posts.query.filter_by(id=post_id).first()
-    # like = Likes.query.filter_by(
-    #     author=current_user.id, post_id=post_id).first()
-    # if not post:
-    #     return jsonify({'error': 'Post doesn\'t exist'}, 400)
+def likePost(postid):
+    
+    post = Posts.query.get(postid)
+    like = Likes.query.filter_by(author=current_user.id, post_id=postid).first()
+    
+    if not post:
+        return jsonify({'error': 'Post doesn\'t exist'}, 400)
 
-    # elif like:
-    #     db.session.delete(like)
-    #     db.session.commit()
-    # else:
-    #     like = Like(author=current_user.id, post_id=post_id)
-    #     db.session.add(like)
-    #     db.session.commit()
+    elif like:
+        db.session.delete(like)
+        db.session.commit()
 
-    # return jsonify({'likes': len(post.likes),
-    #                 'liked': current_user.id in map(lambda n: n.author, post.likes)})
+    else:
+        like = Likes(author=current_user.id, post_id=postid)
+        db.session.add(like)
+        db.session.commit()
+
+    return jsonify({'likes': len(post.likes),
+                    'liked': current_user.id in map(lambda n: n.author, post.likes)})
