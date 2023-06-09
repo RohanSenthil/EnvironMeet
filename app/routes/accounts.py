@@ -5,18 +5,16 @@ from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager
 from database.models import Members, Organisations, db
-from app.forms.accountsform import createm, updatem, login
+from app.forms.accountsform import createm, updatem, login, createo, updateo
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt
 
+#MEMBERS
 @app.route('/members')
 def members():
     members = Members.query.all()
     return render_template('/accounts/member/members.html', members=members)
 
-@app.route('/organisations')
-def organisations():
-    return render_template('/accounts/organisation/orgs.html')
 
 @app.route('/members/create', methods=['GET','POST'])
 def createmember():
@@ -83,6 +81,90 @@ def registermember():
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ORGANISATIONS
+@app.route('/organisations')
+def organisations():
+    organisations = Organisations.query.all()
+    return render_template('/accounts/organisation/orgs.html', organisations=organisations)
+
+@app.route('/organisations/create', methods=['GET','POST'])
+def createorganisations():
+    createform = createo(request.form)
+    if request.method == "POST" and createform.validate():
+        # Process the form data
+        emaild = str(createform.email.data).lower()
+        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
+        organisation = Members(name=createform.name.data, email=emaild, password=passwordd, contact=createform.contact.data, description=createform.desc.data, address=createform.address.data)
+        db.session.add(organisation)
+        db.session.commit()
+        db.session.close()
+        return redirect(url_for('organisations'))
+    return render_template('/accounts/organisation/createo.html', form=createform)
+
+@app.route('/orgnanisations/update/<id>', methods=['GET','POST'])
+def updateorganisation(id):
+    updateform = updatem(request.form)
+    oldorg = Organisations.query.get(id)
+    if request.method == "POST" and updateform.validate():
+        name = request.form['name']
+        contact = request.form['contact']
+        address = request.form['address']
+        description = request.form['desc']
+
+        oldorg.name = name
+        oldorg.contact = contact
+        oldorg.description = description
+        oldorg.address = address
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(url_for('organisations'))
+    else:
+        updateform.name.data = oldorg.name
+        updateform.contact.data = oldorg.contact
+        updateform.desc.data = oldorg.description
+        updateform.address.data = oldorg.address
+
+        return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
+
+@app.route('/organisations/delete/<id>')
+# @privileged_route("admin")
+def deleteorganisation(id):
+    organisation = Organisations.query.filter_by(id=id).first()
+    if organisation:
+        db.session.delete(organisation)
+        db.session.commit()
+    return redirect(url_for('organisations'))
 
 
 

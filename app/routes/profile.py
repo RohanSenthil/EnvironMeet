@@ -35,12 +35,12 @@ def login_():
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         member = Members.query.filter_by(email=loginemail).first()
-        # organisation = Organisations.query.filter_by(email=loginemail).first()
-        if not member: # and not organisation
+        #organisation = Organisations.query.filter_by(email=loginemail).first()
+        if not member: #and not organisation
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
         elif member:
-            if bcrypt.checkpw(member.password.encode('utf-8'), login_form.password.data.encode('utf-8')):
+            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), member.password.encode('utf-8')):
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 login_user(member)
