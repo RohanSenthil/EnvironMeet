@@ -54,11 +54,11 @@
           </a>
 
           {% if current_user.is_authenticated %}
-            <a class="nav-item d-flex {{ 'active' if active_page == 'logout' }}" href="" title="Logout">
+            <a class="{{ 'active' if active_page == 'logout' }}" href="/logout" title="Logout">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18">
                 <path id="Path_24" data-name="Path 24" d="M17,7,15.59,8.41,18.17,11H8v2H18.17l-2.58,2.58L17,17l5-5ZM4,5h8V3H4A2.006,2.006,0,0,0,2,5V19a2.006,2.006,0,0,0,2,2h8V19H4Z" transform="translate(-2 -3)"/>
               </svg>
-              <a href="/logout" class="nav-link">Logout</a>
+              <span href="/logout" class="links-text">Logout</span>
           {% endif %}
         </div>
 
