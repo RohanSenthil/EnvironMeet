@@ -1,4 +1,4 @@
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes
@@ -87,7 +87,7 @@ def deletePost(postid):
 @app.route('/post/like/<postid>', methods=['POST'])
 @login_required
 def like_post(post_id):
-    print('works')
+    print(current_user.id)
     pass
     # post = Posts.query.filter_by(id=post_id).first()
     # like = Likes.query.filter_by(
