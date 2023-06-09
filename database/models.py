@@ -137,4 +137,9 @@ class Events(db.Model):
         self.date = date
         self.price = price
 
+class Leaderboard(db.Model):
+    __tablename__ = 'leaderboard'
 
+    id = db.Column(db.Integer, db.Sequence('member_id_seq'))
+    url = db.Column(db.String(100))
+    name = db.Column(db.String(20))
