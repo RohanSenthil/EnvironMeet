@@ -32,10 +32,10 @@ def createmember():
         return redirect(url_for('members'))
     return render_template('/accounts/member/createm.html', form=createform)
 
-@app.route('/members/update/<email>', methods=['GET','POST'])
-def updatemember(email):
+@app.route('/members/update/<id>', methods=['GET','POST'])
+def updatemember(id):
     updateform = updatem(request.form)
-    oldmem = Members.query.get(email)
+    oldmem = Members.query.get(id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
         gender = request.form['gender']
@@ -56,10 +56,10 @@ def updatemember(email):
 
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 
-@app.route('/members/delete/<email>')
+@app.route('/members/delete/<id>')
 # @privileged_route("admin")
-def deletemember(email):
-    member = Members.query.filter_by(email=email).first()
+def deletemember(id):
+    member = Members.query.filter_by(id=id).first()
     if member:
         db.session.delete(member)
         db.session.commit()
