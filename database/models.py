@@ -137,4 +137,19 @@ class Events(db.Model):
         self.date = date
         self.price = price
 
+class SignUp(db.Model):
+
+    __tablename__ = 'eventssignups'
+
+    id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100), primary_key=True, unique=True)
+    # price = db.Column(db.Price)
+    # image
+    # associated event
+
+    def __init__(self, name, email):
+        self.name = name
+        self.email = email
+
 

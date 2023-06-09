@@ -1,8 +1,19 @@
 *:focus {
     outline: none;
 }
-
+.content{
+    width: 55%;
+    margin: 0 auto;
+    padding: 2rem;
+}
 .egioesigseions{
+    color: #fff !important;
+    background-color: var(--env-green);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+}
+.egioesigseions wwww{
     color: #fff !important;
     background-color: var(--env-green);
     border: none;
@@ -23,7 +34,8 @@
     display: flex;
     flex-direction: row;
     width: 235%;
-    margin-left: -250px;
+    margin-left: -100px;
+    margin-bottom: 20px;
 }
 
 .SearchEventBox .textInput::placeholder {
@@ -137,11 +149,6 @@ label {
     margin: 0 auto;
     padding: 2rem;
 }
-.content{
-    width: 55%;
-    margin: 0 auto;
-    padding: 2rem;
-}
 .wwe{
     display:inline-block;
 }
@@ -177,10 +184,12 @@ label {
 }
 .lol{
     font-size: 80%;
+    margin-bottom:20px;
 }
 .lavel{
     margin-bottom:-5px;
     font-weight:bold;
+    margin-top:-50px;
 }
 #PRICE{
     margin-top:40px;

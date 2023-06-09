@@ -1,7 +1,8 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Events, db
+from database.models import Events, SignUp, db
 from app.forms.eventsform import FormEvents
+from app.forms.eventssignup import SignUp
 from datetime import datetime
 
 @app.route('/events')
@@ -25,6 +26,14 @@ def add_events():
 
     return render_template('addevents.html', form=form)
 
-@app.route('/events/thankyou')
-def thankyouforcreatingevents():
-    return render_template('eventscreatethankyou.html', thankyouforcreatingevents=thankyouforcreatingevents)
+@app.route('/events/signup')
+def signup_events():
+    signup = SignUp(request.form)
+    if request.method == "POST" and signup.validate():
+        signupevent = SignUp(name=signup.name.data, email=signup.email.data)
+        db.session.add(signupevent)
+        db.session.commit()
+        db.session.close()
+        return redirect(url_for('events'))
+
+    return render_template('eventssignup.html', signup=signup)

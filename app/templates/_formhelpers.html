@@ -6,6 +6,9 @@
     {% for error in field.errors %}
       <li>{{ error }}</li>
     {% endfor %}
+      {% for email in form.name.errors %}
+   <div>{{ email }}</div>
+{% endfor %}
     </ul>
   {% endif %}
   </dd>
