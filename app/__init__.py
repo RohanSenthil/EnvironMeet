@@ -6,6 +6,7 @@ import os
 from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_mail import Mail
 app = Flask(__name__)
+import bcrypt
 
 # DB Config
 db_uri = generate_uri_from_file('database/db_config.yml')

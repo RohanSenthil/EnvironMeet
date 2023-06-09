@@ -1,5 +1,4 @@
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 # from app.routes.helpers import privileged_route
 from flask_mail import Message
 from threading import Thread
@@ -8,6 +7,7 @@ from app import app, loginmanager
 from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login
 from app.routes.helpers import provide_new_login_token, privileged_route
+import bcrypt
 
 @app.route('/members')
 def members():
@@ -24,7 +24,7 @@ def createmember():
     if request.method == "POST" and createform.validate():
         # Process the form data
         emaild = str(createform.email.data).lower()
-        passwordd = generate_password_hash(createform.password.data)
+        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
@@ -71,6 +71,8 @@ def registermember():
     registerform = createm(request.form)
     if registerform.validate() and request.method == "POST":
         # Process the form data
+        emaild = str(registerform.email.data).lower()
+        passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=registerform.name.data, email=registerform.email.data, password=registerform.password.data, gender=registerform.gender.data, contact=registerform.contact.data)
         db.session.add(member)
         db.session.commit()
