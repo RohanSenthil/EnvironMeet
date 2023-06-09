@@ -1,3 +1,4 @@
+from flask_login import login_required
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes
@@ -5,7 +6,9 @@ from app.forms.feedForms import PostForm
 from werkzeug.utils import secure_filename
 import os
 
+
 @app.route('/feed', methods=['GET'])
+@login_required
 def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
@@ -14,6 +17,7 @@ def feed():
     
 
 @app.route('/post/create', methods=['POST'])
+@login_required
 def createPost():
     newPostForm = PostForm()
     if request.method == 'POST' and newPostForm.validate_on_submit():
@@ -40,6 +44,7 @@ def createPost():
 
 
 @app.route('/post/edit/<int:postid>', methods=['POST'])
+@login_required
 def editPost(postid):
 
     # Implement Authorisation Check
@@ -56,6 +61,7 @@ def editPost(postid):
 
 
 @app.route('/post/delete/<int:postid>', methods=['POST'])
+@login_required
 def deletePost(postid):
 
     # Implement Authorisation Check
@@ -79,6 +85,7 @@ def deletePost(postid):
 
 
 @app.route('/post/like/<postid>', methods=['POST'])
+@login_required
 def like_post(post_id):
     print('works')
     pass

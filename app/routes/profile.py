@@ -1,5 +1,4 @@
 from flask_login import UserMixin, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 # from app.routes.helpers import privileged_route
 from flask_mail import Message
 from threading import Thread
@@ -8,6 +7,7 @@ from app import app, loginmanager, mail
 from database.models import Members, Organisations, db
 from app.forms.accountsform import createm, updatem, login, forget, reset
 from app.routes.helpers import revoke_login_token, provide_new_login_token
+import bcrypt
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -35,12 +35,12 @@ def login_():
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         member = Members.query.filter_by(email=loginemail).first()
-        # organisation = Organisations.query.filter_by(email=loginemail).first()
-        if not member: # and not organisation
+        #organisation = Organisations.query.filter_by(email=loginemail).first()
+        if not member: #and not organisation
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
         elif member:
-            if check_password_hash(member.password, login_form.password.data):
+            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), member.password.encode('utf-8')):
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 login_user(member)
@@ -82,11 +82,11 @@ def sendemail(user):
     {url_for('reset_token', token=token, _external=True)}
     \nIf you did not request this password reset, please let us know immediately.
     \nBest regards,
-    The Odlanahor Team
+    The Environmeet Team
     '''
     mail.send(msg)
 
-@app.route('/resetpw/<token>', methods=['GET', 'POST'])
+@app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_token(token):
     user = Members.verify_reset_token(token)
     if not user:

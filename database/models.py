@@ -65,8 +65,8 @@ class Members(db.Model, UserMixin):
 
     __tablename__ = 'members'
 
-    id = db.Column(db.Integer, db.Sequence('member_id_seq'), unique=True)
-    email = db.Column(db.String(100),primary_key=True, unique=True)
+    id = db.Column(db.Integer, db.Sequence('member_id_seq'), primary_key=True, unique=True)
+    email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
     gender = db.Column(db.Enum('Male','Female'))
@@ -94,9 +94,7 @@ class Members(db.Model, UserMixin):
         except:
             return None
         return Members.query.filter_by(id=userid).first()
-    
-    def get_id(self):
-        return self.email
+
     #db.Column(db.,db.Sequence('member_events_seq'))
 
     # def __repr__(self):
@@ -105,11 +103,11 @@ class Members(db.Model, UserMixin):
 class Organisations(db.Model, UserMixin):
     __tablename__ = 'organisations'
 
-    id = db.Column(db.Integer, db.Sequence('org_id_seq'), unique=True)
+    id = db.Column(db.Integer, db.Sequence('org_id_seq'), unique=True, primary_key = True)
     name = db.Column(db.String(100))
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
-    email = db.Column(db.String(100), primary_key = True, unique=True)
+    email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     description = db.Column(db.Text)
     mainpic = db.Column(db.String(140))
@@ -152,4 +150,12 @@ class SignUp(db.Model):
         self.name = name
         self.email = email
 
+
+
+# class Leaderboard(db.Model):
+#     __tablename__ = 'leaderboard'
+#
+#     id = db.Column(db.Integer, db.Sequence('member_id_seq'), primary_key = True)
+#     url = db.Column(db.String(100))
+#     name = db.Column(db.String(20))
 
