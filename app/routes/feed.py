@@ -1,7 +1,7 @@
 from flask_login import login_required, current_user
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Posts, Likes
+from database.models import Posts, Likes, Comments
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os
@@ -110,5 +110,30 @@ def likePost(postid):
         db.session.add(like)
         db.session.commit()
 
-    return jsonify({'likes': len(post.likes),
-                    'liked': current_user.id in map(lambda n: n.author, post.likes)})
+    return jsonify({'likes': len(post.likes), 'liked': current_user.id in map(lambda n: n.author, post.likes)})
+
+
+@app.route('/post/comment/add/<postid>', methods=['GET', 'POST'])
+@login_required
+def addComment(postid):
+
+    if request.method == 'POST':
+
+        comment = request.form.get('desc')
+
+        if not comment or len(comment) <= 0:
+            return jsonify({'error': 'No comment to add'}, 400)
+        else:
+            post = Posts.query.get(postid)
+            if post:
+                newComment = Comments(author=current_user.id, text=comment, post_id=postid)
+                db.session.add(newComment)
+                db.session.commit()
+                flash('Comment added!', category='success')
+            else:
+                flash('No post available', category='error')
+
+    post = Posts.query.get(postid)
+    post_id = post.id
+
+    return jsonify({'success': 'facts', 'postid': post_id})
