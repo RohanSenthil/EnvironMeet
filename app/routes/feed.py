@@ -13,8 +13,9 @@ from flask.json import jsonify
 def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
+    user = current_user
 
-    return render_template('feed.html', posts=posts, newPostForm=newPostForm)
+    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user)
     
 
 @app.route('/post/create', methods=['POST'])
@@ -113,27 +114,61 @@ def likePost(postid):
     return jsonify({'likes': len(post.likes), 'liked': current_user.id in map(lambda n: n.author, post.likes)})
 
 
-@app.route('/post/comment/add/<postid>', methods=['GET', 'POST'])
+@app.route('/post/comment/add/<postid>', methods=['POST'])
 @login_required
 def addComment(postid):
 
-    if request.method == 'POST':
+    comment = request.form.get('desc')
 
-        comment = request.form.get('desc')
-
-        if not comment or len(comment) <= 0:
-            return jsonify({'error': 'No comment to add'}, 400)
-        else:
-            post = Posts.query.get(postid)
-            if post:
-                newComment = Comments(author=current_user.id, text=comment, post_id=postid)
-                db.session.add(newComment)
-                db.session.commit()
-                flash('Comment added!', category='success')
-            else:
-                flash('No post available', category='error')
+    if not comment or len(comment) <= 0:
+        return jsonify({'error': 'No comment to add'}, 400)
+    else:
+        post = Posts.query.get(postid)
+        if post:
+            newComment = Comments(author=current_user.id, text=comment, post_id=postid)
+            db.session.add(newComment)
+            db.session.commit()
 
     post = Posts.query.get(postid)
     post_id = post.id
+
+    return jsonify({'success': 'facts', 'postid': post_id})
+
+
+@app.route('/post/comment/edit/<commentid>', methods=['POST'])
+@login_required
+def editComment(commentid):
+
+    newComment = request.form.get('desc')
+    comment = Comments.query.get(commentid)
+
+    if not newComment or len(newComment) <= 0:
+        return jsonify({'error': 'Comment cannot be blank'}, 400)
+    elif current_user.id != comment.author:
+        return jsonify({'error': 'Unauthorized'}, 401)
+    else:
+        comment.text = newComment
+        db.session.commit()
+
+    post_id = comment.post_id
+
+    return jsonify({'success': 'facts', 'postid': post_id})
+
+
+@app.route('/post/comment/delete/<commentid>', methods=['POST'])
+@login_required
+def deleteComment(commentid):
+
+    comment = Comments.query.get(commentid)
+
+    if not comment:
+        return jsonify({'error': 'Comment does not exists'}, 400)
+    elif current_user.id != comment.author:
+        return jsonify({'error': 'Unauthorized'}, 401)
+    else:
+        db.session.delete(comment)
+        db.session.commit()
+
+    post_id = comment.post_id
 
     return jsonify({'success': 'facts', 'postid': post_id})

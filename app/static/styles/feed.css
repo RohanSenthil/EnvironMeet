@@ -351,6 +351,20 @@
     font-weight: 700;
 }
 
+.showBtns {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem auto;
+    width: 85%;
+    align-items: start;
+}
+
+.showBtns button {
+    color: var(--hyperlinks);
+    font-size: 12px;
+    margin-bottom: 1rem;
+}
+
 /* Edit Modal */
 
 .closeModalBtn svg {
@@ -361,7 +375,7 @@
 /* Delete Modal */
 
 .deleteModal .modal-content {
-    width: 40%;
+    width: 100%;
     padding: 2rem;
     border-radius: 20px;
     margin: 0 auto;
@@ -372,7 +386,7 @@
     text-align: center;
 }
 
-.deleteModal .modal-footer {
-    justify-content: space-between;
-    padding: 0rem 5rem;
+.deleteModal .btn-primary  {
+    background-color: red;
+    border: 1px solid #fff;
 }

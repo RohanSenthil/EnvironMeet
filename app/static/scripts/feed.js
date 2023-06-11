@@ -12,7 +12,6 @@ const newPostBtn = document.getElementById('newPostBtn');
 newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
 
 const charLimit = (limitField, limitNum, counter) => {
-
     if (limitField.value.length > limitNum) {
         limitField.value = limitField.value.substring(0, limitNum)
         counter.innerText = 0;
