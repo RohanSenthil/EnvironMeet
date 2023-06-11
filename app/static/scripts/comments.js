@@ -84,9 +84,6 @@ const updateItemsVisbility = (postid, commentsToShow) => {
         moreBtn.style.display = 'block';
     }
 
-    console.log(commentsToShow)
-}
-
 
 const showMoreComments = (postid) => {
     let commentsToShowElement = document.getElementById(`commentsShowing-${postid}`)
