@@ -267,9 +267,13 @@
 
                     {% if post.comments|length > 3 %}
                     <div class="showBtns">
-                        <button class="moreComments" type="button">View All</button>
+                        <button class="moreComments" id="moreComments-{{ post.id }}" type="button" onclick="showMoreComments({{ post.id }})">View More</button>
+                        <button class="lessComments" id="lessComments-{{ post.id }}" type="button" onclick="showLessComments({{ post.id }})">View Less</button>
+                        <input id="commentsShowing-{{ post.id }}" type="hidden" value="3">
                     </div>
                     {% endif %}
+
+                    <script> updateItemsVisbility({{ post.id }}, 3) </script>
 
                     {% endif %}
                     </div>

@@ -55,3 +55,50 @@ const deleteComment = (commentid) => {
     })
     .catch((e) => alert('ERROR: This comment cannot be deleted'));
 }
+
+
+const updateItemsVisbility = (postid, commentsToShow) => {
+    let commentsContainer = document.getElementById(`commentSection-${postid}`);
+    let comments = commentsContainer.getElementsByClassName('comments');
+
+    for (let i = 0; i < comments.length; i++) {
+        if (i < commentsToShow) {
+            comments[i].style.display = 'flex';
+        } else {
+            comments[i].style.display = 'none';
+        }
+    }
+
+    let moreBtn = document.getElementById(`moreComments-${postid}`);
+    let lessBtn = document.getElementById(`lessComments-${postid}`);
+
+    if (commentsToShow <= 3) {
+        lessBtn.style.display = 'none';
+    } else {
+        lessBtn.style.display = 'block';
+    }
+    
+    if (commentsToShow >= comments.length) {
+        moreBtn.style.display = 'none';
+    } else {
+        moreBtn.style.display = 'block';
+    }
+
+    console.log(commentsToShow)
+}
+
+
+const showMoreComments = (postid) => {
+    let commentsToShowElement = document.getElementById(`commentsShowing-${postid}`)
+    commentsToShow = Number(commentsToShowElement.value);
+    commentsToShowElement.value = commentsToShow + 3
+    updateItemsVisbility(postid, commentsToShow + 3);
+}
+
+
+const showLessComments = (postid) => {
+    let commentsToShowElement = document.getElementById(`commentsShowing-${postid}`)
+    commentsToShow = Number(commentsToShowElement.value);
+    commentsToShowElement.value = commentsToShow - 3
+    updateItemsVisbility(postid, commentsToShow - 3);
+}
