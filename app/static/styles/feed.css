@@ -365,6 +365,11 @@
     margin-bottom: 1rem;
 }
 
+.comments .actions-menu {
+    margin-top: 1.05rem;
+    scale: 75%;
+}
+
 /* Edit Modal */
 
 .closeModalBtn svg {
