@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager
-from database.models import Members, Organisations, db
+from database.models import Members, Organisations, db, Users
 from app.forms.accountsform import createm, updatem, login, createo, updateo
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt

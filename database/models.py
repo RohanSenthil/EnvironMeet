@@ -6,6 +6,9 @@ from sqlalchemy import Enum
 import app
 import jwt
 import datetime
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 db = SQLAlchemy() # DB Handler
 
@@ -62,19 +65,19 @@ class Profiles(db.Model):
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
     # posts = db.relationship('Posts', backref='profiles', lazy=True)
 
-class Members(db.Model, UserMixin):
+class Users(db.Model, UserMixin):
+    __tablename__ = 'users'
 
-    __tablename__ = 'members'
-
-    id = db.Column(db.Integer, db.Sequence('member_id_seq'), primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
-    gender = db.Column(db.Enum('Male','Female'))
-    contact = db.Column(db.Integer)
-    points = db.Column(db.Integer)
-    yearlypoints = db.Column(db.Integer)
-    profilepic = db.Column(db.String(140))
+
+    discriminator = db.Column(db.String(50))
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': discriminator
+    }
 
     def get_reset_token(self, expires_sec=1800):
         reset_token = jwt.encode(
@@ -94,25 +97,41 @@ class Members(db.Model, UserMixin):
             userid = jwt.decode(token, key = app.app.config['SECRET_KEY'], leeway=datetime.timedelta(seconds=10), algorithms=['HS256', ])["user_id"]
         except:
             return None
-        return Members.query.filter_by(id=userid).first()
+        return Users.query.filter_by(id=userid).first()
+
+class Members(Users):
+
+    __tablename__ = 'members'
+
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    gender = db.Column(db.Enum('Male','Female'))
+    contact = db.Column(db.Integer)
+    points = db.Column(db.Integer)
+    yearlypoints = db.Column(db.Integer)
+    profilepic = db.Column(db.String(140))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'member',
+    }
 
     #db.Column(db.,db.Sequence('member_events_seq'))
 
     # def __repr__(self):
     #     return f"<Member(id={self.id}, name='{self.name}', email='{self.email}')>"
 
-class Organisations(db.Model, UserMixin):
+class Organisations(Users):
     __tablename__ = 'organisations'
 
-    id = db.Column(db.Integer, db.Sequence('org_id_seq'), unique=True, primary_key = True)
-    name = db.Column(db.String(100))
+    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
-    email = db.Column(db.String(100), unique=True)
-    password = db.Column(db.String(100))
     description = db.Column(db.Text)
     mainpic = db.Column(db.String(140))
-    #events
+    # events
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'organisation',
+    }
 
     # def __repr__(self):
     #     return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
