@@ -4,5 +4,6 @@ from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
 
 class SignUp(Form):
-    name = StringField('Name of event:', validators= [InputRequired()])
+    name = StringField('Name:', validators= [InputRequired()])
     email = StringField('Email:', validators=[DataRequired(), Email()])
+    eventname = StringField('Event Name:', validators=[InputRequired()])
