@@ -37,11 +37,16 @@
             <div class="eventname">
             {{ event.name }}
                 </div>
+            <div class="eventimage">
+            <img src="{{ event.image }}"> </br>
+                </div>
             {{ event.date }} </br>
             <p class="lavel" id="PRICE">Price:</p>{{ event.price }}
             <div class="eventorg">
             <p class="lavel">Organiser:</p><span class="lol">{{ event.organiser }}</span></br>
+                <div class="pull">
                 <a href="events/signup" role="button" class="egioesigseions">Sign up</a>
+                </div>
                 </div>
         </div>
         {% endfor %}

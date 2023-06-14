@@ -18,7 +18,7 @@ def add_events():
 
     form = FormEvents(request.form)
     if request.method == "POST" and form.validate():
-        event = Events(organiser=form.organiser.data, name=form.name.data, date=form.date.data, price=form.price.data)
+        event = Events(organiser=form.organiser.data, name=form.name.data, date=form.date.data, price=form.price.data, points=form.points.data, image=form.image.data)
         db.session.add(event)
         db.session.commit()
         db.session.close()

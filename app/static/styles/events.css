@@ -80,12 +80,19 @@
 .eventsCard {
     flex-grow: 1;
 	width: 25%;
-	height: 250px;
+	height: 500px;
 	background: #ffffff;
 	border: 1px solid black;
 	margin: 1rem;
+	text-align:center;
 }
-
+img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.pull{
+    margin-top: 10px;
+}
 .title{
     margin-top: -11px;
 }
@@ -184,7 +191,7 @@ label {
 }
 .eventname{
     font-weight: bold;
-    font-size:80%;
+    font-size:120%;
 }
 .eventorg{
     margin-top:75px;
@@ -196,8 +203,9 @@ label {
 .lavel{
     margin-bottom:-5px;
     font-weight:bold;
-    margin-top:-50px;
+    margin-top:-80px;
+    font-size: 150%;
 }
 #PRICE{
-    margin-top:40px;
+    margin-top:15px;
 }
