@@ -6,6 +6,7 @@ from app.forms.feedForms import PostForm
 from werkzeug.utils import secure_filename
 import os
 from flask.json import jsonify
+from app.util import share
 
 
 @app.route('/feed', methods=['GET'])
@@ -172,3 +173,12 @@ def deleteComment(commentid):
     post_id = comment.post_id
 
     return jsonify({'success': 'facts', 'postid': post_id})
+
+
+@app.route('/post/share/<postid>', methods=['POST'])
+@login_required
+def sharePost(postid):
+
+    native = share.generateNativeLink(postid, request.url_root)
+    
+    return jsonify({'success': 'facts', 'native': native})

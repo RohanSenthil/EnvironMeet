@@ -83,12 +83,13 @@ const updateItemsVisbility = (postid, commentsToShow) => {
     } else {
         moreBtn.style.display = 'block';
     }
+}
 
 
 const showMoreComments = (postid) => {
     let commentsToShowElement = document.getElementById(`commentsShowing-${postid}`)
     commentsToShow = Number(commentsToShowElement.value);
-    commentsToShowElement.value = commentsToShow + 3
+    commentsToShowElement.value = commentsToShow + 3;
     updateItemsVisbility(postid, commentsToShow + 3);
 }
 
@@ -96,6 +97,6 @@ const showMoreComments = (postid) => {
 const showLessComments = (postid) => {
     let commentsToShowElement = document.getElementById(`commentsShowing-${postid}`)
     commentsToShow = Number(commentsToShowElement.value);
-    commentsToShowElement.value = commentsToShow - 3
+    commentsToShowElement.value = commentsToShow - 3;
     updateItemsVisbility(postid, commentsToShow - 3);
 }

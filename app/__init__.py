@@ -5,8 +5,10 @@ from database.tools import generate_uri_from_file
 import os
 from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_mail import Mail
-app = Flask(__name__)
 import bcrypt
+from flask_share import Share
+
+app = Flask(__name__)
 
 # DB Config
 db_uri = generate_uri_from_file('database/db_config.yml')
@@ -26,14 +28,18 @@ with app.app_context():
 
 migrate = Migrate(app, db)
 
-#xavier
+# Auth
 loginmanager = LoginManager()
 loginmanager.init_app(app)
 loginmanager.login_view = 'login_' 
 loginmanager.login_message = 'Please log in to access this page.'
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
 mail = Mail(app)
+
+# Share
+share = Share(app)
 
 from app import routes
 from app.util import filters
