@@ -14,7 +14,7 @@ newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
 const charLimit = (limitField, limitNum, counter) => {
     if (limitField.value.length > limitNum) {
         limitField.value = limitField.value.substring(0, limitNum)
-        counter.innerText = 0;
+        counter.textContent = 0;
     }
 }
 
@@ -69,8 +69,8 @@ newPostInput.addEventListener('input', (e) => {
 
     maxChars = 500;
 
-    if (Number(charCounter.innerText) >= 0) {
-        charCounter.innerText = maxChars - newPostInput.value.length;
+    if (Number(charCounter.textContent) >= 0) {
+        charCounter.textContent = maxChars - newPostInput.value.length;
     }
 
     charLimit(e.target, maxChars, charCounter);
@@ -102,8 +102,8 @@ for (let i = 0; i < editPostInputs.length; i++) {
 
         maxChars = 500;
 
-        if (Number(charCounters[i].innerText) >= 0) {
-            charCounters[i].innerText = maxChars - editPostInputs[i].value.length;
+        if (Number(charCounters[i].textContent) >= 0) {
+            charCounters[i].textContent= maxChars - editPostInputs[i].value.length;
         }
 
         charLimit(e.target, maxChars, charCounters[i]);

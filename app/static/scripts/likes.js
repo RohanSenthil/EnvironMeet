@@ -3,7 +3,7 @@ const likePost = (postid) => {
     count = document.getElementById(`post${ postid }LikesCount`);
 
     fetch(`/post/like/${postid}`, {method:'POST'}).then((res) => res.json()).then((data) => {
-        count.innerText = data['likes'];
+        count.textContent = data['likes'];
         
         if (data['liked'] == true) {
             btn.classList.add('like-active');
