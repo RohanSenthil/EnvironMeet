@@ -17,7 +17,22 @@ def feed():
     user = current_user
 
     return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user)
+
+
+@app.route('/post/view/<encoded_postid>', methods=['GET'])
+def viewPost(encoded_postid):
+
+    postid = share.decode_url(encoded_postid)
+    post = Posts.query.get(postid)
+
+    user = current_user
+
+    if post is not None:
+        return render_template('post.html', post=post, user=user)
+    else:
+        return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
+
 
 @app.route('/post/create', methods=['POST'])
 @login_required
@@ -43,7 +58,7 @@ def createPost():
         db.session.add(newPost)
         db.session.commit()
 
-    return redirect(url_for('feed'))
+    return redirect(url_for('viewPost'))
 
 
 @app.route('/post/edit/<int:postid>', methods=['POST'])
@@ -66,7 +81,7 @@ def editPost(postid):
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
-    return redirect(url_for('feed'))
+    return redirect(url_for('viewPost'))
 
 
 @app.route('/post/delete/<int:postid>', methods=['POST'])

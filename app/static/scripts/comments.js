@@ -1,3 +1,32 @@
+const updateItemsVisbility = (postid, commentsToShow) => {
+    let commentsContainer = document.getElementById(`commentSection-${postid}`);
+    let comments = commentsContainer.getElementsByClassName('comments');
+
+    for (let i = 0; i < comments.length; i++) {
+        if (i < commentsToShow) {
+            comments[i].style.display = 'flex';
+        } else {
+            comments[i].style.display = 'none';
+        }
+    }
+
+    let moreBtn = document.getElementById(`moreComments-${postid}`);
+    let lessBtn = document.getElementById(`lessComments-${postid}`);
+
+    if (commentsToShow <= 3) {
+        lessBtn.style.display = 'none';
+    } else {
+        lessBtn.style.display = 'block';
+    }
+    
+    if (commentsToShow >= comments.length) {
+        moreBtn.style.display = 'none';
+    } else {
+        moreBtn.style.display = 'block';
+    }
+}
+
+
 const addComment = (postid) => {
     let searchData = new URLSearchParams();
     searchData.append('desc', document.getElementById(`commentInput-${postid}`).value);
@@ -36,6 +65,9 @@ const editComment = (commentid) => {
 
     })
     .catch((e) => alert('ERROR: This comment cannot be posted'));
+
+
+    return false;
 }
 
 
@@ -54,35 +86,8 @@ const deleteComment = (commentid) => {
         }
     })
     .catch((e) => alert('ERROR: This comment cannot be deleted'));
-}
 
-
-const updateItemsVisbility = (postid, commentsToShow) => {
-    let commentsContainer = document.getElementById(`commentSection-${postid}`);
-    let comments = commentsContainer.getElementsByClassName('comments');
-
-    for (let i = 0; i < comments.length; i++) {
-        if (i < commentsToShow) {
-            comments[i].style.display = 'flex';
-        } else {
-            comments[i].style.display = 'none';
-        }
-    }
-
-    let moreBtn = document.getElementById(`moreComments-${postid}`);
-    let lessBtn = document.getElementById(`lessComments-${postid}`);
-
-    if (commentsToShow <= 3) {
-        lessBtn.style.display = 'none';
-    } else {
-        lessBtn.style.display = 'block';
-    }
-    
-    if (commentsToShow >= comments.length) {
-        moreBtn.style.display = 'none';
-    } else {
-        moreBtn.style.display = 'block';
-    }
+    return false;
 }
 
 

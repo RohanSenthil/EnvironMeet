@@ -19,7 +19,3 @@ def decode_url(encoded_data):
 
 def generateNativeLink(identifier, root):
     return f'{root}post/view/{encode_url(identifier)}'
-
-
-class ShareLinks:
-    pass
