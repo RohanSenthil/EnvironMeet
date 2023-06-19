@@ -17,7 +17,7 @@ class Posts(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
-    author = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text(), nullable=False)
     image = db.Column(db.String(140))
@@ -37,7 +37,7 @@ class Comments(db.Model):
     id = db.Column(db.Integer, db.Sequence('comments_id_seq'), primary_key=True)
     text = db.Column(db.Text(), nullable=False)
     time = db.Column(db.DateTime(timezone=True), default=db.func.now())
-    author = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
 
     def __init__(self, author, text, post_id):
@@ -51,7 +51,7 @@ class Likes(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('likes_id_seq'), primary_key=True)
     time = db.Column(db.DateTime(timezone=True), default=db.func.now())
-    author = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
 
     def __init__(self, author, post_id):
@@ -69,7 +69,7 @@ class Users(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
-    email = db.Column(db.String(100), unique=True)
+    email = db.Column(db.String(100), unique=True, default='mail@example.com')
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
 
@@ -78,7 +78,6 @@ class Users(db.Model, UserMixin):
         'polymorphic_identity': 'user',
         'polymorphic_on': discriminator
     }
-
     def get_reset_token(self, expires_sec=1800):
         reset_token = jwt.encode(
             payload=
@@ -103,7 +102,8 @@ class Members(Users):
 
     __tablename__ = 'members'
 
-    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     gender = db.Column(db.Enum('Male','Female'))
     contact = db.Column(db.Integer)
     points = db.Column(db.Integer)
@@ -122,7 +122,8 @@ class Members(Users):
 class Organisations(Users):
     __tablename__ = 'organisations'
 
-    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
     description = db.Column(db.Text)
