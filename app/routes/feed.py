@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 import os
 from flask.json import jsonify
 from app.util import share
+import uuid
 
 
 @app.route('/feed', methods=['GET'])
@@ -46,8 +47,9 @@ def createPost():
         uploaded_file = newPostForm.image.data
 
         if uploaded_file is not None:
-            filename = secure_filename(uploaded_file.filename)
-            image_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+            filename = uploaded_file.filename
+            secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
+            image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
             uploaded_file.save(image_path)
             newPost.image = image_path
             path_list = newPost.image.split('/')[1:]
@@ -58,7 +60,7 @@ def createPost():
         db.session.add(newPost)
         db.session.commit()
 
-    return redirect(url_for('viewPost'))
+    return redirect(url_for('viewPost', encoded_postid=share.encode_url(str(newPost.id))))
 
 
 @app.route('/post/edit/<int:postid>', methods=['POST'])
@@ -81,7 +83,7 @@ def editPost(postid):
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
-    return redirect(url_for('viewPost'))
+    return redirect(url_for('viewPost', encoded_postid=share.encode_url(str(post.id))))
 
 
 @app.route('/post/delete/<int:postid>', methods=['POST'])

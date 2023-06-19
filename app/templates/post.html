@@ -2,10 +2,10 @@
 {% set active_page = "feed" %}
 {% block title %} EnvironMeet - Feed {% endblock %}
 {% block head %}
-<link rel="stylesheet" href="../../static/styles/feed.css">
-<script src="../../static/scripts/likes.js"></script>
-<script src="../../static/scripts/comments.js"></script>
-<script src="../../static/scripts/share.js"></script>
+<link rel="stylesheet" href="/static/styles/feed.css">
+<script src="/static/scripts/likes.js"></script>
+<script src="/static/scripts/comments.js"></script>
+<script src="/static/scripts/share.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
             <div class="top">
                 <div class="heading">
                     <div class="left">
-                        <img class="avatar" src="../../static/images/placeholders/siu.PNG" alt="Avatar">
+                        <img class="avatar" src="/static/images/placeholders/siu.PNG" alt="Avatar">
                         <div class="info">
                             <span class="infoTop">
                                 <span class="posterName"> Cristiano Ronaldo</span> is at <a href="#">East Coast Park Beach Cleanup</a>
@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="mediaFiles">
                                                 {% if post.image is not none %}
-                                                <img src="{{ post.image }}">
+                                                <img src="/{{ post.image }}">
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="mediaFiles">
                     {% if post.image is not none %}
-                    <img src="{{ post.image }}">
+                    <img src="/{{ post.image }}">
                     {% endif %}
                 </div>
             </div>
@@ -175,7 +175,7 @@
                     <div id="form-reload-{{ post.id }}">
                     <form class="postBox commentBox" onsubmit="return addComment({{ post.id }})" method="POST" autocomplete="off" id="commentForm-{{ post.id }}">
                         <div class="left">
-                            <img src="../../static/images/placeholders/wc.PNG" alt="Avatar" class="avatar">
+                            <img src="/static/images/placeholders/wc.PNG" alt="Avatar" class="avatar">
                             <textarea name="desc" class="textInput commentInput" id="commentInput-{{ post.id }}" placeholder="Write a comment..." rows="1"></textarea>
                         </div>
                         <button type="submit" id="commentButton-{{ post.id }}">
@@ -191,7 +191,7 @@
                     {% for comment in post.comments %}
                     <div class="comments" id="commentText-{{ comment.id }}">
                         <div class="left">
-                            <img class="avatar" src="../../static/images/placeholders/wc.PNG" alt="Avatar">
+                            <img class="avatar" src="/static/images/placeholders/wc.PNG" alt="Avatar">
                             <div class="info">
                                 
                                 <span class="infoTop">
@@ -296,6 +296,6 @@
 
 </div>
 
-<script src="../../static/scripts/feed.js"></script>
+<script src="/static/scripts/feed.js"></script>
 
 {% endblock %}

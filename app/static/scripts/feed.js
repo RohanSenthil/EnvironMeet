@@ -85,9 +85,11 @@ for (let i = 0; i < commentInputs.length; i++) {
     })
 }
 
-addImageForPost.addEventListener('input', (e) => {
-    previewImage(e.target, previewImageHolder)
-})
+if (addImageForPost) {
+    addImageForPost.addEventListener('input', (e) => {
+        previewImage(e.target, previewImageHolder)
+    })
+}
 
 for (let i = 0; i < editPostInputs.length; i++) {
     editPostInputs[i].style.height = `height: ${editPostInputs[i].scrollHeight}`;
@@ -126,13 +128,15 @@ for (let i = 0; i < editPostBtns.length; i++) {
     })
 }
 
-newPostBtn.addEventListener('click', (e) => {
-    if (newPostInput.value.length <= 0 || newPostInput.value.length > 500) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        newPostInput.classList.add('error-border');
-    } else {
-        newPostInput.classList.remove('error-border');
-    }
-})
+if (newPostBtn) {
+    newPostBtn.addEventListener('click', (e) => {
+        if (newPostInput.value.length <= 0 || newPostInput.value.length > 500) {
+            e.preventDefault()
+            e.stopPropagation()
+    
+            newPostInput.classList.add('error-border');
+        } else {
+            newPostInput.classList.remove('error-border');
+        }
+    })
+}
