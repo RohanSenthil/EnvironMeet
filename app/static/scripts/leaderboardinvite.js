@@ -19,27 +19,6 @@ function openTab(evt, LeaderboardType) {
   evt.currentTarget.className += " active";
 }
 
-function openGlobal(evt, GlobalType) {
-  // Declare all variables
-  var i, globalcontent, globallinks;
-
-  // Get all elements with class="globalcontent" and hide them
-  globalcontent = document.getElementsByClassName("globalcontent");
-  for (i = 0; i < globalcontent.length; i++) {
-    globalcontent[i].style.display = "none";
-  }
-
-  // Get all elements with class="globallinks" and remove the class "active"
-  globallinks = document.getElementsByClassName("globallinks");
-  for (i = 0; i < globallinks.length; i++) {
-    globallinks[i].classList.remove("active");
-  }
-
-  // Show the current global, and add an "active" class to the button that opened the global
-  document.getElementById(GlobalType).style.display = "block";
-  evt.currentTarget.classList.add("active");
-}
-
 function openInvite(evt, InviteType) {
   // Declare all variables
   var i, invitecontent, invitelinks;
@@ -61,8 +40,5 @@ function openInvite(evt, InviteType) {
   evt.currentTarget.classList.add("active");
 }
 
-document.getElementById("defaultGlobalOpen").click();
-document.getElementById("defaultAllTimeOpen").click();
-
-
-
+document.getElementById("defaultInviteOpen").click();
+document.getElementById("defaultJoinedOpen").click();

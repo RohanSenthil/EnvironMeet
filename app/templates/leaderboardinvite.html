@@ -1,0 +1,39 @@
+{% extends "user_base.html" %}
+{% set active_page = "leaderboard" %}
+{% block title %} EnvironMeet - Leaderboard {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/leaderboardinvite.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <div class="LeaderboardButtons">
+        <a href="/leaderboard/global">
+            <button class="tablinks">Global</button>
+        </a>
+        <button class="tablinks" onclick="openTab(event, 'Invite')" id="defaultInviteOpen">Invite</button>
+    </div>
+    <div id="Invite" class="tabcontent">
+        <div class="InviteButtons">
+            <button class="invitelinks" onclick="openInvite(event, 'inviteleaderboards')" id="defaultJoinedOpen">Your Leaderboards</button>
+            <button class="invitelinks" onclick="openInvite(event, 'joininvite')">Join Leaderboards</button>
+            <button class="invitelinks" onclick="openInvite(event, 'createinvite')">Create A Leaderboard</button>
+
+        </div>
+
+        <div id="inviteleaderboards" class="invitecontent">
+            <p>poo</p>
+        </div>
+        <div id="joininvite" class="invitecontent">
+            <p>aaa</p>
+        </div>
+        <div id="createinvite" class="invitecontent">
+            <p>wee</p>
+        </div>
+    </div>
+</div>
+
+<script src="../static/scripts/leaderboardinvite.js"></script>
+
+{% endblock %}
