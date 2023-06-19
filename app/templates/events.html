@@ -40,10 +40,12 @@
             <div class="eventimage">
             <img src="{{ event.image }}"> </br>
                 </div>
+            <p class="lavel" id="datetime">Date and Time (in 24Hrs):</p>
             {{ event.date }} </br>
+            {{ event.time }}
             <p class="lavel" id="PRICE">Price:</p>{{ event.price }}
             <div class="eventorg">
-            <p class="lavel">Organiser:</p><span class="lol">{{ event.organiser }}</span></br>
+            <p class="lavel" id="org">Organiser:</p><span class="lol">{{ event.organiser }}</span></br>
                 <div class="pull">
                 <a href="events/signup" role="button" class="egioesigseions">Sign up</a>
                 </div>

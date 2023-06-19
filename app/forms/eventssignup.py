@@ -6,4 +6,4 @@ from wtforms.fields import DateField
 class SignUp(Form):
     name = StringField('Name:', validators= [InputRequired()])
     email = StringField('Email:', validators=[DataRequired(), Email()])
-    eventname = StringField('Event Name:', validators=[InputRequired()])
+    eventname = SelectField('Event Name:', validators=[InputRequired()], choices=[(1, 'Hi'), (2, 'Bye')])
