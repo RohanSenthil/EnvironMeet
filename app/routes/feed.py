@@ -59,6 +59,9 @@ def createPost():
             image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
 
             if uploaded_file.content_length > max_content_length:
+                if uploaded_file.content_length > max_content_length * 2:
+                    return jsonify({'error': 'File size too big'}, 400)
+
                 image = Image.open(uploaded_file)
                 image.thumbnail(max_content_length)
                 og_image = Image.open(image)
@@ -121,8 +124,6 @@ def deletePost(postid):
 
         db.session.delete(post)
         db.session.commit()
-
-
 
     return redirect(url_for('feed'))
 

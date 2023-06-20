@@ -25,7 +25,7 @@ def randomize_image(og_image):
     og_image_rgb = og_image.convert('RGB')
 
     max_variation = 20
-    similarity_threshold = 0.95
+    similarity_threshold = 0.975
 
     for x in range(og_image_rgb.width):
         for y in range(og_image_rgb.height):
