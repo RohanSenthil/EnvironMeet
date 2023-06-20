@@ -13,6 +13,10 @@ const updateItemsVisbility = (postid, commentsToShow) => {
     let moreBtn = document.getElementById(`moreComments-${postid}`);
     let lessBtn = document.getElementById(`lessComments-${postid}`);
 
+    if (moreBtn == null || lessBtn == null) {
+        return
+    }
+
     if (commentsToShow <= 3) {
         lessBtn.style.display = 'none';
     } else {

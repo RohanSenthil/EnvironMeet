@@ -195,7 +195,7 @@ class Id_Hash_Mappings(db.Model):
     __tablename__ = 'id_hash_mappings'
 
     id = db.Column(db.Integer,db.Sequence('mappings_id_seq'),primary_key=True)
-    object_id = db.Column(db.Integer, unique=True)
+    object_id = db.Column(db.String(256), unique=True)
     hashed_value = db.Column(db.String(256), unique=True)
 
     def __init__(self, object_id, hashed_value):

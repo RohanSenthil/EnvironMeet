@@ -19,19 +19,21 @@ def feed():
     posts = Posts.query.all()
     user = current_user
 
-    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user)
+    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash)
 
 
-@app.route('/post/view/<encoded_postid>', methods=['GET'])
-def viewPost(encoded_postid):
+@app.route('/post/view/<encoded_hashedid>', methods=['GET'])
+def viewPost(encoded_hashedid):
 
-    postid = share.decode_url(encoded_postid)
-    post = Posts.query.get(postid)
+    hashedid = share.decode_url(encoded_hashedid)
+    postid = id_mappings.hash_to_object_id(hashedid)
+    if postid is not None:
+        post = Posts.query.get(postid)
 
     user = current_user
 
     if post is not None:
-        return render_template('post.html', post=post, user=user)
+        return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash)
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
@@ -80,15 +82,19 @@ def createPost():
         db.session.add(newPost)
         db.session.commit()
 
-        hashed_id = id_mappings.hash_object_id(newPost.id)
-        id_mappings.store_hashed_value(object_id=newPost.id, hashed_value=hashed_id)
+        hashed_id = id_mappings.hash_object_id(object_id=newPost.id, act='post')
+        id_mappings.store_id_mapping(object_id=newPost.id, hashed_value=hashed_id, act='post')
 
-    return redirect(url_for('viewPost', encoded_postid=share.encode_url(str(newPost.id))))
+    return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashed_id)))
 
 
-@app.route('/post/edit/<int:postid>', methods=['POST'])
+@app.route('/post/edit/<hashedid>', methods=['POST'])
 @login_required
-def editPost(postid):
+def editPost(hashedid):
+
+    postid = id_mappings.hash_to_object_id(hashedid)
+    if postid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
     
     post = Posts.query.get(postid)
 
@@ -97,7 +103,8 @@ def editPost(postid):
         # Authorisation Check
         if post.author == current_user.id:
             form = request.form
-            post.desc = form[f'desc_{postid}']
+            print('test')
+            post.desc = form[f'desc_{hashedid}']
 
             db.session.commit()
 
@@ -106,12 +113,17 @@ def editPost(postid):
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
-    return redirect(url_for('viewPost', encoded_postid=share.encode_url(str(post.id))))
+    return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashedid)))
 
 
-@app.route('/post/delete/<int:postid>', methods=['POST'])
+@app.route('/post/delete/<hashedid>', methods=['POST'])
 @login_required
-def deletePost(postid):
+def deletePost(hashedid):
+
+    postid = id_mappings.hash_to_object_id(hashedid)
+
+    if postid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
 
     # Implement Authorisation Check
 
@@ -119,21 +131,31 @@ def deletePost(postid):
 
     if post is not None:
 
-        if post.image is not None:
-            imageFileName = post.image
+        # Authorisation Check
+        if post.author == current_user.id:
+            if post.image is not None:
+                imageFileName = post.image
 
-            if os.path.exists(imageFileName):
-                os.remove(imageFileName)
+                if os.path.exists(imageFileName):
+                    os.remove(imageFileName)
 
-        db.session.delete(post)
-        db.session.commit()
+            db.session.delete(post)
+            db.session.commit()
+
+        else:
+            return jsonify({'error': 'Unauthorized'}, 401)
 
     return redirect(url_for('feed'))
 
 
-@app.route('/post/like/<postid>', methods=['POST'])
+@app.route('/post/like/<hashedid>', methods=['POST'])
 @login_required
-def likePost(postid):
+def likePost(hashedid):
+
+    postid = id_mappings.hash_to_object_id(hashedid)
+
+    if postid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
     
     post = Posts.query.get(postid)
     like = Likes.query.filter_by(author=current_user.id, post_id=postid).first()
@@ -153,9 +175,14 @@ def likePost(postid):
     return jsonify({'likes': len(post.likes), 'liked': current_user.id in map(lambda n: n.author, post.likes)})
 
 
-@app.route('/post/comment/add/<postid>', methods=['POST'])
+@app.route('/post/comment/add/<hashedid>', methods=['POST'])
 @login_required
-def addComment(postid):
+def addComment(hashedid):
+
+    postid = id_mappings.hash_to_object_id(hashedid)
+
+    if postid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
 
     comment = request.form.get('desc')
 
@@ -168,18 +195,23 @@ def addComment(postid):
             db.session.add(newComment)
             db.session.commit()
 
+            hashed_id = id_mappings.hash_object_id(object_id=newComment.id, act='comment')
+            id_mappings.store_id_mapping(object_id=newComment.id, hashed_value=hashed_id, act='comment')
+
     post = Posts.query.get(postid)
-    post_id = post.id
+    hashed_id = id_mappings.object_id_to_hash(object_id=post.id, act='post')
 
-    hashed_id = id_mappings.hash_object_id(post_id)
-    id_mappings.store_hashed_value(object_id=post_id, hashed_value=hashed_id)
-
-    return jsonify({'success': 'facts', 'postid': post_id})
+    return jsonify({'success': 'facts', 'postid': hashed_id})
 
 
-@app.route('/post/comment/edit/<commentid>', methods=['POST'])
+@app.route('/post/comment/edit/<hashedid>', methods=['POST'])
 @login_required
-def editComment(commentid):
+def editComment(hashedid):
+
+    commentid = id_mappings.hash_to_object_id(hashedid)
+
+    if commentid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
 
     newComment = request.form.get('desc')
     comment = Comments.query.get(commentid)
@@ -193,13 +225,19 @@ def editComment(commentid):
         db.session.commit()
 
     post_id = comment.post_id
+    hashed_id = id_mappings.object_id_to_hash(object_id=post_id, act='post')
 
-    return jsonify({'success': 'facts', 'postid': post_id})
+    return jsonify({'success': 'facts', 'postid': hashed_id})
 
 
-@app.route('/post/comment/delete/<commentid>', methods=['POST'])
+@app.route('/post/comment/delete/<hashedid>', methods=['POST'])
 @login_required
-def deleteComment(commentid):
+def deleteComment(hashedid):
+
+    commentid = id_mappings.hash_to_object_id(hashedid)
+
+    if commentid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
 
     comment = Comments.query.get(commentid)
 
@@ -216,9 +254,9 @@ def deleteComment(commentid):
     return jsonify({'success': 'facts', 'postid': post_id})
 
 
-@app.route('/post/share/<postid>', methods=['POST'])
-def sharePost(postid):
+@app.route('/post/share/<hashedid>', methods=['POST'])
+def sharePost(hashedid):
 
-    native = share.generateNativeLink(postid, request.url_root)
+    native = share.generateNativeLink(hashedid, request.url_root)
     
     return jsonify({'success': 'facts', 'native': native})
