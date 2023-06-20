@@ -1,4 +1,3 @@
-import magic
 from PIL import Image
 import random
 from sklearn.metrics import mean_squared_error
@@ -6,9 +5,6 @@ import numpy as np
 import imghdr
 
 def file_is_image(stream):
-    # mime_type = magic.from_file(filepath, mime=True)
-    # return mime_type in ['image/jpeg', 'image/png']
-
     header = stream.read(512)
     stream.seek(0)
     format = imghdr.what(None, header)
