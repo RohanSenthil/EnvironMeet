@@ -189,3 +189,15 @@ class Leaderboard(db.Model):
     url = db.Column(db.String(100))
     name = db.Column(db.String(20))
 
+
+class Id_Hash_Mappings(db.Model):
+
+    __tablename__ = 'id_hash_mappings'
+
+    id = db.Column(db.Integer,db.Sequence('mappings_id_seq'),primary_key=True)
+    object_id = db.Column(db.Integer, unique=True)
+    hashed_value = db.Column(db.String(256), unique=True)
+
+    def __init__(self, object_id, hashed_value):
+        self.object_id = object_id
+        self.hashed_value = hashed_value

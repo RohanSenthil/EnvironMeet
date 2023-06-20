@@ -8,12 +8,12 @@ import os
 from flask.json import jsonify
 from app.util import share
 from app.util import validation
+from app.util import id_mappings
 import uuid
 from PIL import Image
 
 
 @app.route('/feed', methods=['GET'])
-@login_required
 def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
@@ -79,6 +79,9 @@ def createPost():
 
         db.session.add(newPost)
         db.session.commit()
+
+        hashed_id = id_mappings.hash_object_id(newPost.id)
+        id_mappings.store_hashed_value(object_id=newPost.id, hashed_value=hashed_id)
 
     return redirect(url_for('viewPost', encoded_postid=share.encode_url(str(newPost.id))))
 
@@ -168,6 +171,9 @@ def addComment(postid):
     post = Posts.query.get(postid)
     post_id = post.id
 
+    hashed_id = id_mappings.hash_object_id(post_id)
+    id_mappings.store_hashed_value(object_id=post_id, hashed_value=hashed_id)
+
     return jsonify({'success': 'facts', 'postid': post_id})
 
 
@@ -211,7 +217,6 @@ def deleteComment(commentid):
 
 
 @app.route('/post/share/<postid>', methods=['POST'])
-@login_required
 def sharePost(postid):
 
     native = share.generateNativeLink(postid, request.url_root)

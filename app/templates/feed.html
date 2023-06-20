@@ -12,6 +12,7 @@
 
 <div class="content">
 
+    {% if user.is_authenticated %}
     <div class="newPostContainer">
         <form class="newPostBox postBox" action="/post/create" method="POST" autocomplete="off" enctype="multipart/form-data">
             {{ newPostForm.csrf_token }}
@@ -43,6 +44,7 @@
             </div>
         </form>
     </div>
+    {% endif %}
 
     <div class="postsContainer">
     {% for post in posts|reverse %}
@@ -63,6 +65,7 @@
                     </div>
 
                     <!-- Some logic if post belong to account show actions menu -->
+                    {% if user.is_authenticated %}
                     {% if user.id == post.author %}
                     <div class="actions-dropdown">
                         <button class="actions-menu">
@@ -127,6 +130,7 @@
                             </span>
                         </div>
                     </div>
+                    {% endif %}
                     {% endif %}
                 </div>
                 <div class="desc">
@@ -208,6 +212,7 @@
 
                     <!-- Comment Input -->
                     <div id="form-reload-{{ post.id }}">
+                    {% if user.is_authenticated %}
                     <form class="postBox commentBox" onsubmit="return addComment({{ post.id }})" method="POST" autocomplete="off" id="commentForm-{{ post.id }}">
                         <div class="left">
                             <img src="/static/images/placeholders/wc.PNG" alt="Avatar" class="avatar">
@@ -219,6 +224,7 @@
                             </svg>
                         </button>
                     </form>
+                    {% endif %}
 
                     <!-- Comments -->
                     <div class="commentsWrap" id="commentSection-{{ post.id }}">
@@ -252,6 +258,7 @@
                         </div> -->
 
                         <!-- Some logic if comment belong to account show actions menu -->
+                        {% if user.is_authenticated %}
                         {% if user.id == comment.author %}
                         <div class="actions-dropdown">
                             <button class="actions-menu">
@@ -304,6 +311,7 @@
                                 </span>
                             </div>
                         </div>
+                        {% endif %}
                         {% endif %}
 
                     </div>
