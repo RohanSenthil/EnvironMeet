@@ -64,20 +64,20 @@ def deletemember(id):
     return redirect(url_for('members'))
 
 
-@app.route('/registerm', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def registermember():
     registerform = createm(request.form)
-    if registerform.validate() and request.method == "POST":
+    if request.method == "POST" and registerform.validate():
         # Process the form data
         emaild = str(registerform.email.data).lower()
         passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=registerform.name.data, email=registerform.email.data, password=registerform.password.data, gender=registerform.gender.data, contact=registerform.contact.data)
+        member = Members(name=registerform.name.data, email=emaild, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data)
         db.session.add(member)
         db.session.commit()
         db.session.close()
         return 'Registration successful'
 
-    return render_template('registerm.html', form=registerform)
+    return render_template('register.html', form=registerform)
 
 
 

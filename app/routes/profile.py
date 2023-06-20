@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
-from database.models import Members, Organisations, db
+from database.models import Members, Organisations, db, Users
 from app.forms.accountsform import createm, updatem, login, forget, reset
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt
@@ -62,9 +62,9 @@ def forgetpw():
     forget_form = forget(request.form)
     if request.method == "POST" and forget_form.validate():
         forgetemail = str(forget_form.email.data).lower()
-        member = Members.query.filter_by(email=forgetemail).first()
-        if member:
-            sendemail(member)
+        user = Users.query.filter_by(email=forgetemail).first()
+        if user:
+            sendemail(user)
             flash("Email has been sent! Please check your inbox and junk folder for the reset link.", "success")
         else:
             flash("No account with that email exists. Please try again.", "warning")
@@ -76,8 +76,8 @@ def sendemail(user):
     msg = Message()
     msg.subject = "Password Reset"
     msg.recipients = [user.email]
-    msg.sender = 'admin@odlanahor.store'
-    msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Odlanaccount. 
+    msg.sender = 'environmeet@gmail.com'
+    msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Environmeet Account. 
     \nYou can reset the password by clicking the link: 
     {url_for('reset_token', token=token, _external=True)}
     \nIf you did not request this password reset, please let us know immediately.

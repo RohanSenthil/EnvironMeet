@@ -38,11 +38,6 @@ class login(Form):
 
 class forget(Form):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    def validate_email(self, email):
-        unique = Members.query.filter_by(email=(email.data).lower()).first()
-        unique2 = Organisations.query.filter_by(email=(email.data).lower()).first()
-        if unique or unique2:
-            raise ValidationError("Email already in database! Please enter a new email.")
         
 class reset(Form):
     password = PasswordField('New Password:', [
