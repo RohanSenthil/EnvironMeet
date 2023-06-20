@@ -142,6 +142,8 @@ def deletePost(hashedid):
             db.session.delete(post)
             db.session.commit()
 
+            id_mappings.delete_id_mapping(hashedid)
+
         else:
             return jsonify({'error': 'Unauthorized'}, 401)
 
@@ -248,6 +250,8 @@ def deleteComment(hashedid):
     else:
         db.session.delete(comment)
         db.session.commit()
+
+        id_mappings.delete_id_mapping(hashedid)
 
     post_id = comment.post_id
 

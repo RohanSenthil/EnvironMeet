@@ -23,7 +23,9 @@ def store_id_mapping(object_id, hashed_value, act):
 
 def delete_id_mapping(hashed_value):
     mapping = Id_Hash_Mappings.query.filter_by(hashed_value=hashed_value).first()
-
+    if mapping is not None:
+        db.session.delete(mapping)
+        db.session.commit()
 
 def hash_to_object_id(hashed_value):
     mapping = Id_Hash_Mappings.query.filter_by(hashed_value=hashed_value).first()
