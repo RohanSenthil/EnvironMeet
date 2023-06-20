@@ -5,6 +5,8 @@ from database.tools import generate_uri_from_file
 import os
 from flask_login import LoginManager, UserMixin, login_user, logout_user
 from flask_mail import Mail
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import bcrypt
 
 app = Flask(__name__)
@@ -34,6 +36,15 @@ loginmanager.login_view = 'login_'
 loginmanager.login_message = 'Please log in to access this page.'
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
+# Rate Limiting
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=['6 per minute'],
+    storage_uri='memory://' # For testing only change to db 
+)
+
 
 mail = Mail(app)
 

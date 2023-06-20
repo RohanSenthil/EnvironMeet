@@ -7,7 +7,9 @@ from werkzeug.utils import secure_filename
 import os
 from flask.json import jsonify
 from app.util import share
+from app.util import validation
 import uuid
+from PIL import Image
 
 
 @app.route('/feed', methods=['GET'])
@@ -44,18 +46,33 @@ def createPost():
         newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
 
         # Handling file upload
-        uploaded_file = newPostForm.image.data
+        uploaded_file = newPostForm.image.data 
+        max_content_length = 5 * 1024 * 1024
 
         if uploaded_file is not None:
+
+            if not validation.file_is_image(uploaded_file.stream):
+                return jsonify({'error': 'File type not allowed'}, 400)
+
             filename = uploaded_file.filename
             secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
             image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
-            uploaded_file.save(image_path)
+
+            if uploaded_file.content_length > max_content_length:
+                image = Image.open(uploaded_file)
+                image.thumbnail(max_content_length)
+                og_image = Image.open(image)
+            else:
+                og_image = Image.open(uploaded_file)
+
             newPost.image = image_path
+
+            randomized_image = validation.randomize_image(og_image)
+
             path_list = newPost.image.split('/')[1:]
             new_path = '/'.join(path_list)
-            
             newPost.image = new_path
+            randomized_image.save('app/' + new_path)
 
         db.session.add(newPost)
         db.session.commit()
@@ -99,8 +116,8 @@ def deletePost(postid):
         if post.image is not None:
             imageFileName = post.image
 
-            if os.path.exists('app/' + imageFileName):
-                os.remove('app/' + imageFileName)
+            if os.path.exists(imageFileName):
+                os.remove(imageFileName)
 
         db.session.delete(post)
         db.session.commit()
