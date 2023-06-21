@@ -1,0 +1,22 @@
+*:focus {
+    outline: none;
+}
+
+.content {
+    width: 55%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+@media (max-width: 760px) {
+    .content {
+        width: 75%;
+    }
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}

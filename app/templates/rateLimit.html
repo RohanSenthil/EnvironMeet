@@ -1,0 +1,17 @@
+{% extends "user_base.html" %}
+{% block title %} EnvironMeet - Error 429 {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/styles/error.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <div class="text">
+        <h4>You have reached the maximum requests of</h4>
+        <h5>{{ requestLimit.limit }}</h5>
+        <h6>Please try again later</h6>
+    </div>
+</div>
+
+{% endblock %}

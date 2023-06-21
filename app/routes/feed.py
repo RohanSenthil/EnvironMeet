@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db
+from app import app, db, limiter
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes, Comments
 from app.forms.feedForms import PostForm 
@@ -40,6 +40,7 @@ def viewPost(encoded_hashedid):
 
 
 @app.route('/post/create', methods=['POST'])
+@limiter.limit('5/hour')
 @login_required
 def createPost():
     newPostForm = PostForm()
@@ -89,6 +90,7 @@ def createPost():
 
 
 @app.route('/post/edit/<hashedid>', methods=['POST'])
+@limiter.limit('10/hour')
 @login_required
 def editPost(hashedid):
 
@@ -117,6 +119,7 @@ def editPost(hashedid):
 
 
 @app.route('/post/delete/<hashedid>', methods=['POST'])
+@limiter.limit('10/hour')
 @login_required
 def deletePost(hashedid):
 
@@ -178,6 +181,7 @@ def likePost(hashedid):
 
 
 @app.route('/post/comment/add/<hashedid>', methods=['POST'])
+@limiter.limit('10/minute')
 @login_required
 def addComment(hashedid):
 
@@ -207,6 +211,7 @@ def addComment(hashedid):
 
 
 @app.route('/post/comment/edit/<hashedid>', methods=['POST'])
+@limiter.limit('10/minute')
 @login_required
 def editComment(hashedid):
 
@@ -233,6 +238,7 @@ def editComment(hashedid):
 
 
 @app.route('/post/comment/delete/<hashedid>', methods=['POST'])
+@limiter.limit('30/minute')
 @login_required
 def deleteComment(hashedid):
 

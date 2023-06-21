@@ -143,6 +143,7 @@ a {
 .main-content {
     width: 80%;
     transition: 1s ease;
+    float: right;
 }
 
 .nav-container-small .logo {
