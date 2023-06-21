@@ -4,15 +4,14 @@ from database.models import Events, SignUps, db
 from app.forms.eventsform import FormEvents
 from app.forms.eventssignup import SignUp
 from datetime import datetime
+from sqlalchemy import create_engine, text
 
 @app.route('/events')
 def events():
-    # dbevents.create_all()
     events = Events.query.all()
 
     return render_template('events.html', events=events)
 
-#NAVIN CODE
 @app.route('/events/add', methods=["GET","POST"])
 def add_events():
 
@@ -29,6 +28,9 @@ def add_events():
 @app.route('/events/signup', methods=["GET","POST"])
 def signup_events():
     signup = SignUp(request.form)
+
+    eventss = Events.query.all()
+
     if request.method == "POST" and signup.validate():
         signup = SignUps(name=signup.name.data, email=signup.email.data, eventname=signup.eventname.data)
         db.session.add(signup)
@@ -36,4 +38,4 @@ def signup_events():
         db.session.close()
         return redirect(url_for('events'))
 
-    return render_template('eventssignup.html', signup=signup)
+    return render_template('eventssignup.html', signup=signup, eventss=eventss)

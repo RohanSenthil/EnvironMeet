@@ -5,6 +5,7 @@
     width: 55%;
     margin: 0 auto;
     padding: 2rem;
+    margin-left:100px;
 }
 .wgaming{
     color: #fff !important;
@@ -28,6 +29,7 @@
     width: 50%;
     margin: 0 auto;
     padding: 2rem;
+    margin-right:50px;
 }
 
 .SearchEventBox {
@@ -65,7 +67,7 @@
     vertical-align: middle;
 }
 .EventsContainer1 {
-    width: 200%;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem;
     display: flex;
@@ -85,6 +87,7 @@
 	border: 1px solid black;
 	margin: 1rem;
 	text-align:center;
+	margin-left:-10px
 }
 img{
     width: 224px;
@@ -114,10 +117,9 @@ img{
 }
 .EventsBox1 {
     border:1px solid #ccc;
-    width: 1000px;
     border-radius: 12px;
     border: 2px solid;
-    margin-right:45px;
+    margin-right:5px;
     align-content:center;
 }
 .EventsBox1 img {
@@ -153,11 +155,13 @@ label {
     margin-bottom: 3rem;
     display: flex;
     justify-content: center;
+    width: 800px;
 }
 .contentcreate{
     width: 55%;
     margin: 0 auto;
     padding: 2rem;
+    margin-left:150px;
 }
 .wwe{
     display:inline-block;
