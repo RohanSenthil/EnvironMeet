@@ -1,9 +1,8 @@
 from flask import Flask
 from flask_migrate import Migrate
-from database.models import db
 from database.tools import generate_uri_from_file
 import os
-from flask_login import LoginManager, UserMixin, login_user, logout_user
+from flask_login import LoginManager
 from flask_mail import Mail
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -24,6 +23,7 @@ app.config['UPLOAD_PATH'] = os.environ.get('UPLOAD_PATH')
 # For Testing
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+from database.models import db
 db.init_app(app)
 with app.app_context():
     db.create_all()
@@ -48,8 +48,15 @@ limiter = Limiter(
     on_breach=exceed_rate_responder
 )
 
-
+# Mail Config
 mail = Mail(app)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = "environmeet@gmail.com"
+app.config['MAIL_PASSWORD'] = f"rohanaldomcDONALDO4927"
+app.config['MAIL_DEFAULT_SENDER'] = "environmeet@gmail.com"
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 
 from app import routes
 from app.util import filters

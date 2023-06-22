@@ -34,16 +34,15 @@ def login_():
 
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
-        member = Members.query.filter_by(email=loginemail).first()
-        #organisation = Organisations.query.filter_by(email=loginemail).first()
-        if not member: #and not organisation
+        user = Users.query.filter_by(email=loginemail).first()
+        if not user:
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
-        elif member:
-            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), member.password.encode('utf-8')):
+        elif user:
+            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
-                login_user(member)
+                login_user(user)
                 flash("Login Successful!", "success")
                 print(current_user)
                 return redirect(url_for('profile'))
@@ -88,14 +87,14 @@ def sendemail(user):
 
 @app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_token(token):
-    user = Members.verify_reset_token(token)
+    user = Users.verify_reset_token(token)
     if not user:
         flash('That is an invalid token.', "danger")
         return redirect(url_for('login_'))
     resetform = reset(request.form)
     if request.method == "POST" and resetform.validate():
-        hashed_password = generate_password_hash(resetform.password.data)
-        user.password = hashed_password
+        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
+        user.password = passwordd
         db.session.commit()
         db.session.close()
         flash('Your password has been updated! You are now able to log in.','success')

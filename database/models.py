@@ -3,10 +3,10 @@ from flask import Flask, render_template
 from sqlalchemy.orm import backref
 from flask_login import UserMixin
 from sqlalchemy import Enum
-import app
-import jwt
-import datetime
+from app import app
+from datetime import datetime, timedelta
 from sqlalchemy.ext.declarative import declarative_base
+from itsdangerous import URLSafeTimedSerializer as Serializer, SignatureExpired
 
 Base = declarative_base()
 
@@ -78,6 +78,29 @@ class Users(db.Model, UserMixin):
         'polymorphic_identity': 'user',
         'polymorphic_on': discriminator
     }
+
+    def get_reset_token(self, expires_sec=300):
+        serial = Serializer(app.config['SECRET_KEY'])
+        expires_in = datetime.utcnow() + timedelta(seconds=expires_sec)
+        token = serial.dumps({'user_id': self.id})
+        return token, expires_in
+    
+    @staticmethod
+    def verify_reset_token(token):
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = serial.loads(token)
+            user_id = data['user_id']
+            expires_in = data.get('expires_in')  # Optional: If you've updated the get_reset_token method to return expires_in
+            if expires_in and datetime.utcnow() > expires_in:
+                # Token has expired
+                return None
+            return Users.query.get(user_id)
+        except SignatureExpired:
+            # Token has expired
+            return None
+    
+    '''
     def get_reset_token(self, expires_sec=1800):
         reset_token = jwt.encode(
             payload=
@@ -97,7 +120,7 @@ class Users(db.Model, UserMixin):
         except:
             return None
         return Users.query.filter_by(id=userid).first()
-
+    '''
 class Members(Users):
 
     __tablename__ = 'members'
