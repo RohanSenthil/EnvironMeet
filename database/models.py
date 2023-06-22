@@ -225,3 +225,15 @@ class Id_Hash_Mappings(db.Model):
     def __init__(self, object_id, hashed_value):
         self.object_id = object_id
         self.hashed_value = hashed_value
+
+
+# class RateLimit(db.Model):
+
+#     __tablename__ = 'rate_limit'
+
+#     id = db.Column(db.Integer,db.Sequence('rate_limit_id_seq'),primary_key=True)
+#     endpoint = db.Column(db.String(255), nullable=False)
+#     ip = db.Column(db.String(45), nullable=False)
+#     limit = db.Column(db.String(100), nullable=False)
+#     period = db.Column(db.String(10), nullable=False)
+#     last_hit = db.Column(db.DateTime, nullable=False)

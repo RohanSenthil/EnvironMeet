@@ -4,9 +4,6 @@ from database.tools import generate_uri_from_file
 import os
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from app.util.error_handling import exceed_rate_responder
 import bcrypt
 from flask_security import Security, SQLAlchemyUserDatastore
 
@@ -16,6 +13,10 @@ app = Flask(__name__)
 db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+# app.config['SQLALCHEMY_BINDS'] = {
+#     'environmeet_db': app.config['SQLALCHEMY_DATABASE_URI'],
+#     'environmeet_logs': '',
+# }
 
 # Other Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -25,6 +26,8 @@ app.config['UPLOAD_PATH'] = os.environ.get('UPLOAD_PATH')
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 from database.models import db
+from database.models import db
+
 db.init_app(app)
 with app.app_context():
     db.create_all()
@@ -39,17 +42,6 @@ loginmanager.login_message = 'Please log in to access this page.'
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
-# Rate Limiting
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=['1 per second'],
-    # storage_uri=generate_uri_from_file('database/db_config.yml'), # does not work
-    storage_uri='memory://', # For testing only change to db 
-    on_breach=exceed_rate_responder
-)
-
-# Mail Config
 mail = Mail(app)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
