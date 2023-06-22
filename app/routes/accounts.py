@@ -71,11 +71,11 @@ def registermember():
         # Process the form data
         emaild = str(registerform.email.data).lower()
         passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=registerform.name.data, email=emaild, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data)
+        member = Members(name=registerform.name.data, email=emaild, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
         db.session.close()
-        return 'Registration successful'
+        return redirect(url_for('login_'))
 
     return render_template('register.html', form=registerform)
 
