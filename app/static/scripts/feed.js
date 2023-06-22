@@ -9,7 +9,9 @@ const charCounters = document.getElementsByClassName('charCounters');
 const editPostBtns = document.getElementsByClassName('editPostBtn');
 const newPostBtn = document.getElementById('newPostBtn');
 
-newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
+if (newPostInput) {
+    newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
+}
 
 const charLimit = (limitField, limitNum, counter) => {
     if (limitField.value.length > limitNum) {
@@ -59,22 +61,24 @@ const previewImage = (src, target) => {
     
 }
 
-newPostInput.addEventListener('input', (e) => {
-    e.target.style.height = "auto";
-    e.target.style.height = `${e.target.scrollHeight}px`;
+if (newPostInput) {
+    newPostInput.addEventListener('input', (e) => {
+        e.target.style.height = "auto";
+        e.target.style.height = `${e.target.scrollHeight}px`;
 
-    if (newPostInput.value.length > 0) {
-        newPostInput.classList.remove('error-border');
-    }
+        if (newPostInput.value.length > 0) {
+            newPostInput.classList.remove('error-border');
+        }
 
-    maxChars = 500;
+        maxChars = 500;
 
-    if (Number(charCounter.textContent) >= 0) {
-        charCounter.textContent = maxChars - newPostInput.value.length;
-    }
+        if (Number(charCounter.textContent) >= 0) {
+            charCounter.textContent = maxChars - newPostInput.value.length;
+        }
 
-    charLimit(e.target, maxChars, charCounter);
-})
+        charLimit(e.target, maxChars, charCounter);
+    })
+}
 
 for (let i = 0; i < commentInputs.length; i++) {
     commentInputs[i].addEventListener('input', (e) => {
