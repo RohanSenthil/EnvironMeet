@@ -89,7 +89,22 @@ def registermember():
 
 
 
-
+@app.route("/confirm/<token>")
+def confirm_email(token):
+    if current_user.is_confirmed:
+        flash("Account already confirmed.", "success")
+        return redirect(url_for("core.home"))
+    email = confirm_token(token)
+    user = User.query.filter_by(email=current_user.email).first_or_404()
+    if user.email == email:
+        user.is_confirmed = True
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+        flash("You have confirmed your account. Thanks!", "success")
+    else:
+        flash("The confirmation link is invalid or has expired.", "danger")
+    return redirect(url_for("core.home"))
 
 
 

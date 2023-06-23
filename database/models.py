@@ -72,6 +72,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, default='mail@example.com')
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
+    is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
 
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {

@@ -8,6 +8,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from app.util.error_handling import exceed_rate_responder
 import bcrypt
+from flask_security import Security, SQLAlchemyUserDatastore
 
 app = Flask(__name__)
 

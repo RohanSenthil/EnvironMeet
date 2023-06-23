@@ -20,7 +20,7 @@ def profile():
 
 @loginmanager.user_loader
 def load_user(email):
-    return Members.query.get(email)
+    return Users.query.get(email)
 # @loginmanager.user_loader
 # def load_user(user_id):
 #     try:
