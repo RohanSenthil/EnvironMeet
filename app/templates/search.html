@@ -1,0 +1,47 @@
+{% extends "user_base.html" %}
+{% set active_page = "search" %}
+{% block title %} EnvironMeet - Search {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/accounts.css">
+<script src="{{url_for('static', filename='scripts/search.js')}}"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+{% endblock %}
+{% block content %}
+<div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class='flashes'>
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} " id='alert'>
+    <span>{{ message }}</span>
+    <button type="button" style='float:right;'class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <h1>Looking for something?</h1>
+
+    <input type="text" id="myInput" onkeyup="search2()" placeholder="Type here to search..." title="Type in a name" style="border-radius: 10px; padding:5px">
+    
+    <div class="card-deck">
+    {% for user in users %}
+    
+        <div class="card">
+          <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <a href="/{{ user.name}}"><h5 class="card-title">{{ user.name }}</h5></a>
+            <p class="card-text">bio info?</p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">Joined (account create date?)</small>
+          </div>
+        </div>
+    
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

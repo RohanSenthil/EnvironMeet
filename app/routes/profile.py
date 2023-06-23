@@ -101,3 +101,8 @@ def reset_token(token):
         return redirect(url_for('login_'))
 
     return render_template('reset.html', form=resetform)
+
+@app.route('/search')
+def search():
+    users = Users.query.all()
+    return render_template('search.html', users=users)

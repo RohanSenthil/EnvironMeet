@@ -88,7 +88,7 @@ def registermember():
 
 
 
-
+'''
 @app.route("/confirm/<token>")
 def confirm_email(token):
     if current_user.is_confirmed:
@@ -105,7 +105,7 @@ def confirm_email(token):
     else:
         flash("The confirmation link is invalid or has expired.", "danger")
     return redirect(url_for("core.home"))
-
+'''
 
 
 
