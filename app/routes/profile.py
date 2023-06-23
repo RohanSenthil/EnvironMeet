@@ -11,12 +11,12 @@ import bcrypt
 
 
 @app.route('/profile', methods=['GET', 'POST'])
-@login_required
 def profile():
     if not current_user.is_authenticated:
-        loginmanager.login_message = "Please login to access this page"
-        loginmanager.login_message_category = "danger"
-    return render_template('/accounts/profile/memprofile.html', current_user = current_user)
+        loggedout = True
+    else:
+        loggedout = False
+    return render_template('/profile.html', current_user = current_user, loggedout=loggedout)
 
 @loginmanager.user_loader
 def load_user(email):
