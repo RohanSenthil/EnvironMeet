@@ -1,0 +1,23 @@
+{% extends "user_base.html" %}
+{% set active_page = "profile" %}
+{% block title %} EnvironMeet - My Profile {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/accounts.css">
+{% endblock %}
+{% block content %}
+<div class="content">
+    {% if loggedout == False %}
+    <h1>Dashboard</h1>
+    <h2>Welcome {{ current_user.name }}!</h2>
+    <div class="">
+        <a href="/logout">Logout</a>
+    </div>
+    {% endif %}
+    {% if loggedout == True %}
+    <a href="/register">Create a new account?</a>
+    <br>
+    <a href="/login">Already have an account?</a>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -2,11 +2,12 @@ from wtforms import Form, StringField, SelectField, TextAreaField, validators, I
 from wtforms.validators import ValidationError, InputRequired,DataRequired, EqualTo, Email, Regexp
 from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
-from database.models import Members, Organisations
+from database.models import Members, Organisations, Users
 from flask_wtf import RecaptchaField
 
 class createm(Form):
     name = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
@@ -18,15 +19,25 @@ class createm(Form):
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
 
     def validate_email(self, email):
-        unique = Members.query.filter_by(email=(email.data).lower()).first()
-        unique2 = Organisations.query.filter_by(email=(email.data).lower()).first()
-        if unique or unique2:
+        unique = Users.query.filter_by(email=(email.data).lower()).first()
+        if unique:
             raise ValidationError("Email already in database! Please enter a new email.")
+        
+    def validate_username(self, username):
+        unique = Users.query.filter_by(username=(username.data).lower()).first()
+        if unique:
+            raise ValidationError("Username already in database! Please enter a unique username.")
         
 class updatem(Form):
     name = StringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
+    username = StringField('Username', validators=[DataRequired()])
+
+    def validate_username(self, username):
+        unique = Users.query.filter_by(username=(username.data).lower()).first()
+        if unique:
+            raise ValidationError("Username already in database! Please enter a unique username.")
 
 class login(Form):
     recaptcha = RecaptchaField()

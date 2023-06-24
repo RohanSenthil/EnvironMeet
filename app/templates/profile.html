@@ -1,23 +1,13 @@
 {% extends "user_base.html" %}
-{% set active_page = "profile" %}
-{% block title %} EnvironMeet - Profile {% endblock %}
+{% set active_page = "search" %}
+{% block title %} EnvironMeet - {{ username }} {% endblock %}
 {% block head %}
-<link rel="stylesheet" href="../../static/styles/accounts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 {% endblock %}
 {% block content %}
 <div class="content">
-    {% if loggedout == False %}
-    <h1>Dashboard</h1>
-    <h2>Welcome {{ current_user.name }}!</h2>
-    <div class="">
-        <a href="/logout">Logout</a>
-    </div>
-    {% endif %}
-    {% if loggedout == True %}
-    <a href="/register">Create a new account?</a>
-    <br>
-    <a href="/login">Already have an account?</a>
-    {% endif %}
-</div>
+    <h1>{{ username }}</h1>
+    <button id="friend" class="btn btn-primary" onclick="location.href='#'">Add Friend</button>
 
-{% endblock %}
+</div>
+{% endblock%}

@@ -21,9 +21,10 @@ def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
         # Process the form data
-        emaild = str(createform.email.data).lower()
+        emaill = str(createform.email.data).lower()
+        usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaild, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
+        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
         db.session.close()
@@ -36,10 +37,12 @@ def updatemember(id):
     oldmem = Members.query.get(id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
+        username = request.form['username']
         gender = request.form['gender']
         contact = request.form['contact']
         
         oldmem.name = name
+        oldmem.username = username
         oldmem.gender = gender
         oldmem.contact = contact
 
@@ -49,6 +52,7 @@ def updatemember(id):
         return redirect(url_for('members'))
     else:
         updateform.name.data = oldmem.name
+        updateform.username.data = oldmem.username
         updateform.gender.data = oldmem.gender
         updateform.contact.data = oldmem.contact
 
@@ -69,9 +73,10 @@ def registermember():
     registerform = createm(request.form)
     if request.method == "POST" and registerform.validate():
         # Process the form data
-        emaild = str(registerform.email.data).lower()
+        emaill = str(registerform.email.data).lower()
+        usernamee = str(registerform.username.data).lower()
         passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=registerform.name.data, email=emaild, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0)
+        member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
         db.session.close()

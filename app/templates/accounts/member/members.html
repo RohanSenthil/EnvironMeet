@@ -20,6 +20,7 @@
     <table class="table table-striped" id="myTable">
       <thead>
         <tr>
+          <th>Username</th>
           <th>Email</th>
           <th>Name</th>
           <th>Gender</th>
@@ -34,6 +35,7 @@
         </tr> -->
         {% for member in members %}
         <tr>
+          <td>{{ member.username }}</td>
           <td>{{ member.email }}</td>
           <td>{{ member.name }}</td>
           <td>{{ member.gender }}</td>

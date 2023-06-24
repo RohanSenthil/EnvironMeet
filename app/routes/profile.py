@@ -11,12 +11,12 @@ import bcrypt
 
 
 @app.route('/profile', methods=['GET', 'POST'])
-def profile():
+def userprofile():
     if not current_user.is_authenticated:
         loggedout = True
     else:
         loggedout = False
-    return render_template('/profile.html', current_user = current_user, loggedout=loggedout)
+    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout)
 
 @loginmanager.user_loader
 def load_user(email):
@@ -45,7 +45,7 @@ def login_():
                 login_user(user)
                 flash("Login Successful!", "success")
                 print(current_user)
-                return redirect(url_for('profile'))
+                return redirect(url_for('userprofile'))
         
         flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)
@@ -106,3 +106,7 @@ def reset_token(token):
 def search():
     users = Users.query.all()
     return render_template('search.html', users=users)
+
+@app.route('/user/<username>')
+def othersprofile(username):
+    return render_template('profile.html', username=username)
