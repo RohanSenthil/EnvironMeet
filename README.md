@@ -2,10 +2,16 @@
 Application Security Project on Environment Sustainability
 
 ## Setup
-In your virtual environment type 
+In your virtual environment type     
 `pip install -r requirements.txt`                
 `set FLASK_APP=run.py`                              
 `set FLASK_ENV=development`                        
+
+### Docker Setup                       
+Download Docker Desktop                    
+In your command line (windows) type                   
+`wsl -d docker-desktop`                  
+`sysctl -w vm.max_map_count=262144`             
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
@@ -14,9 +20,11 @@ In the MySQL command line, execute the following commands:
 `GRANT ALL PRIVILEGES ON environmeet_db.* TO 'test_user'@'localhost';
 FLUSH PRIVILEGES;`
 
-Create your own .env file with the contents
-`DB_PASSWORD='fake_password'`
+Create your own .env file with the appropriate contents
 
 ## Run
-Finally to run you application, in your virtual environment type:
+To run, in your project terminal type:                 
+`docker-compose up --build`                   
+                        
+Finally, in your virtual environment type:                                     
 `flask run`
