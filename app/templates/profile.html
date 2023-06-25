@@ -1,13 +1,20 @@
 {% extends "user_base.html" %}
 {% set active_page = "search" %}
-{% block title %} EnvironMeet - {{ username }} {% endblock %}
+{% block title %} EnvironMeet - {{ user.username }} {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 {% endblock %}
 {% block content %}
 <div class="content">
-    <h1>{{ username }}</h1>
-    <button id="friend" class="btn btn-primary" onclick="location.href='#'">Add Friend</button>
-
+    <h1>{{ user.username }}</h1>
+    {% if not current_user.is_following(user) %}
+    <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('follow', username=user.username) }}'">Follow</button>
+    {% else %}
+    <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('unfollow', username=user.username) }}'">Follow</button>
+    {% endif %}
+    <br><br>
+    <h2>Followers</h2>
+    <table>
+    </table>
 </div>
 {% endblock%}

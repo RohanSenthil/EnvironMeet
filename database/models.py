@@ -65,6 +65,11 @@ class Profiles(db.Model):
     id = db.Column(db.Integer,db.Sequence('profiles_id_seq'),primary_key=True)
     # posts = db.relationship('Posts', backref='profiles', lazy=True)
 
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('users.id'))
+)
+
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -74,7 +79,29 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    followed = db.relationship('Users', 
+                               secondary=followers, 
+                               primaryjoin=(followers.c.follower_id == id), 
+                               secondaryjoin=(followers.c.followed_id == id), 
+                               backref=db.backref('followers', lazy='dynamic'), 
+                               lazy='dynamic')
+    
+    def follow(self, user):
+        if not self.is_following(user):
+            self.followed.append(user)
+            return self
 
+    def unfollow(self, user):
+        if self.is_following(user):
+            self.followed.remove(user)
+            return self
+
+    def is_following(self, user):
+        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+
+    def followed_posts(self):
+        return Posts.query.join(followers, (followers.c.followed_id == Posts.author)).filter(followers.c.follower_id == self.id).order_by(Posts.timestamp.desc())
+    
     discriminator = db.Column(db.String(50))
     __mapper_args__ = {
         'polymorphic_identity': 'user',
@@ -141,8 +168,8 @@ class Members(Users):
 
     #db.Column(db.,db.Sequence('member_events_seq'))
 
-    # def __repr__(self):
-    #     return f"<Member(id={self.id}, name='{self.name}', email='{self.email}')>"
+    def __repr__(self):
+        return f"<Member(id={self.id}, name='{self.name}', email='{self.email}')>"
 
 class Organisations(Users):
     __tablename__ = 'organisations'
@@ -159,8 +186,8 @@ class Organisations(Users):
         'polymorphic_identity': 'organisation',
     }
 
-    # def __repr__(self):
-    #     return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
+    def __repr__(self):
+        return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
 
 class Events(db.Model):
 

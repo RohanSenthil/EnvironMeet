@@ -109,4 +109,36 @@ def search():
 
 @app.route('/user/<username>')
 def othersprofile(username):
-    return render_template('profile.html', username=username)
+    user = Users.query.filter_by(username=username).first()
+    return render_template('profile.html', user=user, current_user=current_user)
+
+
+@app.route('/follow/<username>')
+def follow(username):
+    user = Users.query.filter_by(username=username).first()
+    if user is None:
+        flash('User %s not found.' % username)
+        return redirect(url_for('feed'))
+    u = current_user.user.follow(user)
+    if u is None:
+        flash('Cannot follow ' + username + '.')
+        return redirect(url_for('user/<username>', username=username))
+    db.session.add(u)
+    db.session.commit()
+    flash('You are now following ' + username + '!')
+    return redirect(url_for('user/<username>', username=username))
+
+@app.route('/unfollow/<username>')
+def unfollow(username):
+    user = Users.query.filter_by(username=username).first()
+    if user is None:
+        flash('User %s not found.' % username)
+        return redirect(url_for('feed'))
+    u = current_user.user.unfollow(user)
+    if u is None:
+        flash('Cannot unfollow ' + username + '.')
+        return redirect(url_for('user/<username>', username=username))
+    db.session.add(u)
+    db.session.commit()
+    flash('You have stopped following ' + username + '.')
+    return redirect(url_for('user/<username>', username=username))
