@@ -1,5 +1,6 @@
 {% extends "user_base.html" %}
 {% set active_page = "leaderboard" %}
+{% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Leaderboard {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="../../static/styles/leaderboardinvite.css">
@@ -29,7 +30,18 @@
             <p>aaa</p>
         </div>
         <div id="createinvite" class="invitecontent">
-            <p>wee</p>
+<!--            <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">-->
+<!--              <div class="form-group p-1">-->
+<!--                {{ render_field(form.name, class="form-control") }}-->
+<!--              </div>-->
+<!--              <div class="form-group p-1">-->
+<!--                {{ render_field(form.desc, class="form-control") }}-->
+<!--              </div>-->
+<!--              <div class="form-group p-1">-->
+<!--                {{ render_field(form.username, class="form-control") }}-->
+<!--              </div>-->
+<!--              <input type="submit" value="Submit" class="btn btn-primary p-1"/>-->
+<!--            </form>-->
         </div>
     </div>
 </div>

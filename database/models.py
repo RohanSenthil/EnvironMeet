@@ -238,10 +238,10 @@ class SignUps(db.Model):
 class Leaderboard(db.Model):
     __tablename__ = 'leaderboard'
 
-    id = db.Column(db.Integer, db.Sequence('member_id_seq'), primary_key = True, unique=True)
-    owner = db.Column(db.Integer, db.ForeignKey('users.id'))
-    url = db.Column(db.String(100))
+    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
     name = db.Column(db.String(20))
+    desc = db.Column(db.String(20))
+    username = db.Column(db.String(20))
 
 
 class Id_Hash_Mappings(db.Model):
