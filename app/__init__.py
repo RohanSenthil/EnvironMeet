@@ -6,6 +6,8 @@ from flask_login import LoginManager
 from flask_mail import Mail
 import bcrypt
 from flask_security import Security, SQLAlchemyUserDatastore
+from opensearchpy import OpenSearch
+
 
 app = Flask(__name__)
 
@@ -13,10 +15,17 @@ app = Flask(__name__)
 db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-# app.config['SQLALCHEMY_BINDS'] = {
-#     'environmeet_db': app.config['SQLALCHEMY_DATABASE_URI'],
-#     'environmeet_logs': '',
-# }
+
+# Log Config
+log_client = OpenSearch(
+    hosts=[{'host': 'localhost', 'port': 9200}],
+    http_compress=True,
+    http_auth = (os.environ.get('OPENSEARCH_USERNAME'), os.environ.get('OPENSEARCH_PASSWORD')), # For testing change creds for prod
+    use_ssl = True,
+    verify_certs = False,
+    ssl_assert_hostname = False,
+    ssl_show_warn = False
+)
 
 # Other Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -53,3 +62,4 @@ app.config['MAIL_USE_SSL'] = False
 
 from app import routes
 from app.util import filters
+from app.util import logging
