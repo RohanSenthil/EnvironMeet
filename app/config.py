@@ -1,4 +1,3 @@
-'''
 from jwcrypto.jwk import JWK
 from jwcrypto.common import base64url_encode
 
@@ -18,4 +17,3 @@ class Config:
     MAIL_DEFAULT_SENDER = "environmeet@gmail.com"
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-'''

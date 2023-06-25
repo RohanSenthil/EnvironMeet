@@ -75,7 +75,7 @@ def sendemail(user):
     msg = Message()
     msg.subject = "Password Reset"
     msg.recipients = [user.email]
-    msg.sender = 'environmeet@gmail.com'
+    msg.sender = 'environmeet@outlook.com'
     msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Environmeet Account. 
     \nYou can reset the password by clicking the link: 
     {url_for('reset_token', token=token, _external=True)}

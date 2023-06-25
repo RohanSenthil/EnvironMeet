@@ -4,9 +4,11 @@ from sqlalchemy.orm import backref
 from flask_login import UserMixin
 from sqlalchemy import Enum
 from app import app
-from datetime import datetime, timedelta
+import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from itsdangerous import URLSafeTimedSerializer as Serializer, SignatureExpired
+import jwt
+import app
 
 Base = declarative_base()
 
@@ -107,7 +109,7 @@ class Users(db.Model, UserMixin):
         'polymorphic_identity': 'user',
         'polymorphic_on': discriminator
     }
-
+    '''
     def get_reset_token(self, expires_sec=300):
         serial = Serializer(app.config['SECRET_KEY'])
         expires_in = datetime.utcnow() + timedelta(seconds=expires_sec)
@@ -130,7 +132,7 @@ class Users(db.Model, UserMixin):
             return None
     
     '''
-    def get_reset_token(self, expires_sec=1800):
+    def get_reset_token(self, expires_sec=300):
         reset_token = jwt.encode(
             payload=
             {
@@ -149,7 +151,7 @@ class Users(db.Model, UserMixin):
         except:
             return None
         return Users.query.filter_by(id=userid).first()
-    '''
+
 class Members(Users):
 
     __tablename__ = 'members'
