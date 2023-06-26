@@ -8,8 +8,10 @@ In your virtual environment type
 `set FLASK_ENV=development`                        
 
 ### Docker Setup                       
-Download Docker Desktop                    
-In your command line (windows) type                   
+Download Docker Desktop, Restart                               
+Open Docker Desktop
+Open your command line (windows) as administrator and type                      
+`wsl --update --web-download`                                            
 `wsl -d docker-desktop`                  
 `sysctl -w vm.max_map_count=262144`             
 
