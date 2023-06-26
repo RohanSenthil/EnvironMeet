@@ -233,6 +233,18 @@ class SignUps(db.Model):
         self.email = email
         self.eventname = eventname
 
+class Attendance(db.Model):
+
+    __tablename__ = 'attendance'
+
+    id = db.Column(db.Integer, db.Sequence('attendance_id_seq'), unique=True, primary_key = True)
+    event = db.Column(db.Integer, db.ForeignKey('events3.id'), nullable=False)
+    member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, event, member):
+        self.event = event
+        self.member = member
+
 
 
 class Leaderboard(db.Model):
