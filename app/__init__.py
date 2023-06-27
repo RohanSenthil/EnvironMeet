@@ -61,6 +61,10 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 
+#Profile pic
+UPLOAD_FOLDER = 'app/static/images/profiles/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 from app import routes
 from app.util import filters
 from app.util import logging

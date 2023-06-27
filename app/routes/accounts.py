@@ -8,6 +8,9 @@ from database.models import Members, Organisations, db, Users
 from app.forms.accountsform import createm, updatem, login, createo, updateo
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
 
 #MEMBERS
 @app.route('/members')
@@ -20,11 +23,20 @@ def members():
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
+        if request.files.get('profile_pic').filename != '':
+            profile_pic = request.files.get('profile_pic')
+            print(profile_pic)
+            pic_filename = secure_filename(request.files.get('profile_pic').filename)
+            print("can file")
+            pic_name = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+        else:
+            pic_name = None
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0)
+        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name)
         db.session.add(member)
         db.session.commit()
         db.session.close()
@@ -40,11 +52,17 @@ def updatemember(id):
         username = request.form['username']
         gender = request.form['gender']
         contact = request.form['contact']
-        
+        profile_pic = request.files['profile_pic']
+    
+        pic_filename = secure_filename(profile_pic.filename)
+        pic_name = str(uuid.uuid1()) + "_" + pic_filename
+        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+
         oldmem.name = name
         oldmem.username = username
         oldmem.gender = gender
         oldmem.contact = contact
+        oldmem.profile_pic = profile_pic
 
         db.session.commit()
         db.session.close()
@@ -55,6 +73,7 @@ def updatemember(id):
         updateform.username.data = oldmem.username
         updateform.gender.data = oldmem.gender
         updateform.contact.data = oldmem.contact
+        updateform.profile_pic.data = oldmem.profile_pic
 
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 

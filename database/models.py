@@ -81,6 +81,7 @@ class Users(db.Model, UserMixin):
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    profile_pic = db.Column(db.String(1000), nullable=True)
     followed = db.relationship('Users', 
                                secondary=followers, 
                                primaryjoin=(followers.c.follower_id == id), 
@@ -162,7 +163,6 @@ class Members(Users):
     contact = db.Column(db.Integer)
     points = db.Column(db.Integer)
     yearlypoints = db.Column(db.Integer)
-    profilepic = db.Column(db.String(140))
 
     __mapper_args__ = {
         'polymorphic_identity': 'member',
@@ -181,7 +181,6 @@ class Organisations(Users):
     address = db.Column(db.String(100))
     contact = db.Column(db.String(100))
     description = db.Column(db.Text)
-    mainpic = db.Column(db.String(140))
     # events
 
     __mapper_args__ = {
