@@ -23,7 +23,7 @@
     {% if not current_user.is_following(user) %}
     <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('follow', username=user.username) }}'">Follow</button>
     {% else %}
-    <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('unfollow', username=user.username) }}'">Follow</button>
+    <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('unfollow', username=user.username) }}'">Unfollow</button>
     {% endif %}
     <br><br>
     <h2>Followers</h2>

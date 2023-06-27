@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
-from database.models import Members, Organisations, db, Users
+from database.models import Members, Organisations, db, Users, followers
 from app.forms.accountsform import createm, updatem, login, forget, reset
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt
@@ -16,7 +16,11 @@ def userprofile():
         loggedout = True
     else:
         loggedout = False
-    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout)
+    following = 0
+    for i in Users.query.all():
+        if current_user.is_following(i):
+            following += 1
+    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, following=following)
 
 @loginmanager.user_loader
 def load_user(email):
@@ -115,15 +119,15 @@ def follow(username):
     user = Users.query.filter_by(username=username).first()
     if user is None:
         flash('User %s not found.' % username)
-        return redirect(url_for('feed'))
-    u = current_user.user.follow(user)
+        return redirect(url_for('search'))
+    u = current_user.follow(user)
     if u is None:
         flash('Cannot follow ' + username + '.')
-        return redirect(url_for('user/<username>', username=username))
+        return redirect(url_for('othersprofile', username=username))
     db.session.add(u)
     db.session.commit()
-    flash('You are now following ' + username + '!')
-    return redirect(url_for('user/<username>', username=username))
+    flash('You are now following ' + username + '!',"success")
+    return redirect(url_for('othersprofile', username=username))
 
 @app.route('/unfollow/<username>')
 def unfollow(username):
@@ -131,11 +135,11 @@ def unfollow(username):
     if user is None:
         flash('User %s not found.' % username)
         return redirect(url_for('feed'))
-    u = current_user.user.unfollow(user)
+    u = current_user.unfollow(user)
     if u is None:
         flash('Cannot unfollow ' + username + '.')
-        return redirect(url_for('user/<username>', username=username))
+        return redirect(url_for('othersprofile', username=username))
     db.session.add(u)
     db.session.commit()
-    flash('You have stopped following ' + username + '.')
-    return redirect(url_for('user/<username>', username=username))
+    flash('You have stopped following ' + username + '.',"info")
+    return redirect(url_for('othersprofile', username=username))
