@@ -157,6 +157,7 @@ label {
     display: flex;
     justify-content: center;
     width: 800px;
+    margin-left:100px;
 }
 .contentcreate{
     width: 55%;
