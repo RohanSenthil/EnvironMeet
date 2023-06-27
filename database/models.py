@@ -217,12 +217,13 @@ class Events(db.Model):
 
 class SignUps(db.Model):
 
-    __tablename__ = 'signups'
+    __tablename__ = 'signups2'
 
     id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100), primary_key=True, unique=True)
-    eventname = db.Column(db.String(100))
+    eventname = db.Column(db.Enum('events3.name'))
+    # eventname = db.Column(db.String(300))
     # price = db.Column(db.Price)
     # image
     # associated event
@@ -237,7 +238,7 @@ class Attendance(db.Model):
     __tablename__ = 'attendance'
 
     id = db.Column(db.Integer, db.Sequence('attendance_id_seq'), unique=True, primary_key = True)
-    event = db.Column(db.Integer, db.ForeignKey('events3.id'), nullable=False)
+    event = db.Column(db.String(100), db.ForeignKey('events3.name'), nullable=False)
     member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, event, member):
