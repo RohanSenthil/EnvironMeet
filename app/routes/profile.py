@@ -44,7 +44,6 @@ def login_():
                 #provide_new_login_token(member.email, "member")
                 login_user(user)
                 flash("Login Successful!", "success")
-                print(current_user)
                 return redirect(url_for('userprofile'))
         
         flash("Invalid email or password", "danger")
@@ -77,11 +76,9 @@ def sendemail(user):
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
     msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Environmeet Account. 
-    \nYou can reset the password by clicking the link: 
-    {url_for('reset_token', token=token, _external=True)}
+    \nYou can reset the password by clicking the link: \n{url_for('reset_token', token=token, _external=True)}
     \nIf you did not request this password reset, please let us know immediately.
-    \nBest regards,
-    The Environmeet Team
+    \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
 
