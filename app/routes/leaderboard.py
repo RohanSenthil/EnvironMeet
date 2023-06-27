@@ -29,13 +29,20 @@ def leaderboardglobal():
 @app.route('/leaderboard/invite', methods=["GET","POST"])
 @login_required
 def leaderboardinvite():
-    inviteleaderboard = Leaderboard.query.all()
+
+    inviteleaderboards = Leaderboard.query.all()
     user = current_user
+    createinv = InviteForm(request.form)
+    if request.method == "POST" and createinv.validate():
+        print('lol')
+        invleaderboard = Leaderboard(name=createinv.name.data, desc=createinv.desc.data, username=(Members.query.filter_by(user)).data)
+        db.session.add(invleaderboard)
+        db.session.commit()
+        db.session.close()
 
+        return redirect(url_for('leaderboardinvite'))
 
-    form = InviteForm(request.form)
-
-    return render_template('leaderboardinvite.html', user=user, form=form)
+    return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=inviteleaderboards)
 
 @app.route('/leaderboard/invite/create', methods=["GET","POST"])
 @login_required
