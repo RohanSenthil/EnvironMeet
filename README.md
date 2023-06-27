@@ -13,7 +13,8 @@ Open Docker Desktop
 Open your command line (windows) as administrator and type                      
 `wsl --update --web-download`                                            
 `wsl -d docker-desktop`                  
-`sysctl -w vm.max_map_count=262144`             
+`sysctl -w vm.max_map_count=262144`                       
+`echo "vm.max_map_count=262144" >> /etc/sysctl.conf`                            
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
