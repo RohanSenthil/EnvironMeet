@@ -14,7 +14,6 @@ def leaderboardglobal():
     print(pp)
     print(time.asctime(pp))
     members = Members.query.order_by(desc(Members.points)).all()
-    print('aaa')
     yearlymembers = Members.query.order_by(desc(Members.yearlypoints)).all()
     if pp.tm_year == 2023 and pp.tm_hour == 9 and pp.tm_yday == 160 and pp.tm_min == 48 and pp.tm_sec < 10:
         for member in members:
@@ -30,19 +29,19 @@ def leaderboardglobal():
 @login_required
 def leaderboardinvite():
 
-    inviteleaderboards = Leaderboard.query.all()
+    leaderboards = Leaderboard.query.all()
     user = current_user
     createinv = InviteForm(request.form)
     if request.method == "POST" and createinv.validate():
         print('lol')
-        invleaderboard = Leaderboard(name=createinv.name.data, desc=createinv.desc.data, username=(Members.query.filter_by(user)).data)
+        invleaderboard = Leaderboard(name=createinv.name.data, desc=createinv.desc.data, username=(Members.query.filter_by(user.username)).data)
         db.session.add(invleaderboard)
         db.session.commit()
         db.session.close()
 
         return redirect(url_for('leaderboardinvite'))
 
-    return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=inviteleaderboards)
+    return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards)
 
 @app.route('/leaderboard/invite/create', methods=["GET","POST"])
 @login_required
