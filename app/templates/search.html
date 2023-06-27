@@ -14,6 +14,7 @@
     
     <div class="card-deck">
     {% for user in users %}
+      {% if user != current_user %}
         <div class="card">
           <img src="..." class="card-img-top" alt="...">
           <div class="card-body">
@@ -24,6 +25,7 @@
             <small class="text-muted">Joined (account create date?)</small>
           </div>
         </div>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

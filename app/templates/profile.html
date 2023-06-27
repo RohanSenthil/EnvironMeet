@@ -26,7 +26,9 @@
     <button id="friend" class="btn btn-primary" onclick="location.href='{{ url_for('unfollow', username=user.username) }}'">Unfollow</button>
     {% endif %}
     <br><br>
-    <h2>Followers</h2>
+    <h2>Posts: {{ posts }}</h2>
+    <h2>Followers: {{ followers }}</h2>
+    <h2>Following: {{ following }}</h2>
     <table>
     </table>
 </div>

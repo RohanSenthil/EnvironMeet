@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
-from database.models import Members, Organisations, db, Users, followers
+from database.models import Members, Organisations, db, Users, followers, Posts
 from app.forms.accountsform import createm, updatem, login, forget, reset
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt
@@ -16,11 +16,18 @@ def userprofile():
         loggedout = True
     else:
         loggedout = False
+    posts = 0
+    for i in Posts.query.filter_by(author=current_user.id):
+        posts += 1
+    followers = 0
+    for i in Users.query.all():
+        if i.is_following(current_user):
+            followers += 1
     following = 0
     for i in Users.query.all():
         if current_user.is_following(i):
             following += 1
-    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, following=following)
+    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following)
 
 @loginmanager.user_loader
 def load_user(email):
@@ -111,7 +118,18 @@ def search():
 @app.route('/user/<username>')
 def othersprofile(username):
     user = Users.query.filter_by(username=username).first()
-    return render_template('profile.html', user=user, current_user=current_user)
+    posts = 0
+    for i in Posts.query.filter_by(author=user.id):
+        posts += 1
+    followers = 0
+    for i in Users.query.all():
+        if i.is_following(user):
+            followers += 1
+    following = 0
+    for i in Users.query.all():
+        if user.is_following(i):
+            following += 1
+    return render_template('profile.html', user=user, current_user=current_user, posts=posts, followers=followers, following=following)
 
 
 @app.route('/follow/<username>')
