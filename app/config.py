@@ -12,8 +12,8 @@ class Config:
 
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
-    MAIL_USERNAME = "environmeet@gmail.com"
+    MAIL_USERNAME = "environmeet@outlook.com"
     MAIL_PASSWORD = f"rohanaldomcDONALDO4927"
-    MAIL_DEFAULT_SENDER = "environmeet@gmail.com"
+    MAIL_DEFAULT_SENDER = "environmeet@outlook.com"
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False

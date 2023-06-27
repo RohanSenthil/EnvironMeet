@@ -51,14 +51,15 @@ loginmanager.login_message = 'Please log in to access this page.'
 app.config['RECAPTCHA_PUBLIC_KEY'] = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 app.config['RECAPTCHA_PRIVATE_KEY'] = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
-mail = Mail(app)
-app.config['MAIL_SERVER'] = 'smtp.office365.com'
+
+app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME') 
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = "environmeet@outlook.com"
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
+mail = Mail(app)
 
 from app import routes
 from app.util import filters
