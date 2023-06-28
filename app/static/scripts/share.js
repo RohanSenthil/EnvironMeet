@@ -7,7 +7,7 @@ const sharePost = (postid) => {
             const default_text = encodeURIComponent('Check out this post on EnvironMeet:\n');
 
             const nativeLinkElem = document.getElementById(`nativeLink_${ postid }`);
-            nativeLinkElem.value = url;
+            nativeLinkElem.textContent = url;
 
             const teleLinkElem = document.getElementById(`teleLink_${ postid }`);
             const waLinkElem = document.getElementById(`waLink_${ postid }`);

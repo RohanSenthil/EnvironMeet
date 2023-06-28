@@ -19,7 +19,7 @@ class Posts(db.Model):
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer,db.Sequence('posts_id_seq'),primary_key=True)
-    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text(), nullable=False)
     image = db.Column(db.String(140))
@@ -39,7 +39,7 @@ class Comments(db.Model):
     id = db.Column(db.Integer, db.Sequence('comments_id_seq'), primary_key=True)
     text = db.Column(db.Text(), nullable=False)
     time = db.Column(db.DateTime(timezone=True), default=db.func.now())
-    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
 
     def __init__(self, author, text, post_id):
@@ -53,7 +53,7 @@ class Likes(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('likes_id_seq'), primary_key=True)
     time = db.Column(db.DateTime(timezone=True), default=db.func.now())
-    author = db.Column(db.Integer, db.ForeignKey('members.user_id', ondelete='CASCADE'), nullable=False)
+    author = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), nullable=False)
 
     def __init__(self, author, post_id):
@@ -249,10 +249,21 @@ class Attendance(db.Model):
 class Leaderboard(db.Model):
     __tablename__ = 'leaderboard'
 
-    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
+    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True)
     name = db.Column(db.String(20))
     desc = db.Column(db.String(20))
     username = db.Column(db.String(20))
+
+
+class LeaderboardContent(db.Model):
+    __tablename__ = 'leaderboardcontent'
+
+    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
+    leaderboardid = db.Column
+    leaderboardname = db.Column(db.String, db.ForeignKey('leaderboard.name'), nullable=False)
+    member = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    points = db.Column(db.Integer, db.ForeignKey('members.points', nullable=False))
+
 
 
 class Id_Hash_Mappings(db.Model):

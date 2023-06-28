@@ -20,7 +20,7 @@ def feed():
     posts = Posts.query.all()
     user = current_user
 
-    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash)
+    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 
 @app.route('/post/view/<encoded_hashedid>', methods=['GET'])
