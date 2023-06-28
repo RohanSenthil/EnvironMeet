@@ -4,6 +4,7 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app.forms.leaderboardform import InviteForm
+from app.util import id_mappings
 import time
 
 @app.route('/leaderboard/global')
@@ -56,5 +57,5 @@ def leaderboardinvite():
 #         db.session.close()
 #
 #         return redirect(url_for('leaderboardinvite'))
-# 
+#
 #     return render_template('createinvleaderboard.html', form=form, user=user)

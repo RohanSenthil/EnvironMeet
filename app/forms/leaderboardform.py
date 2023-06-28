@@ -3,6 +3,6 @@ from wtforms import Form, StringField, SelectField, TextAreaField, validators, I
 from wtforms.validators import ValidationError, InputRequired,DataRequired, Email, Length
 
 class InviteForm(Form):
-    name = StringField('Name: ', validators=[InputRequired()])
+    name = StringField('Leaderboard Name: ', validators=[InputRequired()])
     desc = StringField('Description: ', validators=[InputRequired()])
     # username = StringField('Username: ', validators=[InputRequired()])

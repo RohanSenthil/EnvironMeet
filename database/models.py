@@ -250,10 +250,21 @@ class Attendance(db.Model):
 class Leaderboard(db.Model):
     __tablename__ = 'leaderboard'
 
-    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
+    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True)
     name = db.Column(db.String(20))
     desc = db.Column(db.String(20))
     username = db.Column(db.String(20))
+
+
+class LeaderboardContent(db.Model):
+    __tablename__ = 'leaderboardcontent'
+
+    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
+    leaderboardid = db.Column
+    leaderboardname = db.Column(db.String, db.ForeignKey('leaderboard.name'), nullable=False)
+    member = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    points = db.Column(db.Integer, db.ForeignKey('members.points', nullable=False))
+
 
 
 class Id_Hash_Mappings(db.Model):

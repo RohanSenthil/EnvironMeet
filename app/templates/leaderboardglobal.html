@@ -29,25 +29,25 @@
                     {% if loop.index == 1 %}
                     <tr class="leaderboardfirst">
                         <td>{{ loop.index }}</td>
-                        <td class="membername">{{ member.name }}</td>
+                        <td class="membername">{{ member.username }}</td>
                         <td>{{ member.points }} Points</td>
                     </tr>
                     {% elif loop.index == 2 %}
                     <tr class="leaderboardsecond">
                         <td>{{ loop.index }}</td>
-                        <td class="membername">{{ member.name }}</td>
+                        <td class="membername">{{ member.username }}</td>
                         <td>{{ member.points }} Points</td>
                     </tr>
                     {% elif loop.index == 3 %}
                     <tr class="leaderboardthird">
                         <td>{{ loop.index }}</td>
-                        <td class="membername">{{ member.name }}</td>
+                        <td class="membername">{{ member.username }}</td>
                         <td>{{ member.points }} Points</td>
                     </tr>
                     {% else %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td class="membername">{{ member.name }}</td>
+                        <td class="membername">{{ member.username }}</td>
                         <td>{{ member.points }} Points</td>
                     </tr>
                     {% endif %}
