@@ -37,8 +37,8 @@
     border-radius: 12px;
     display: flex;
     flex-direction: row;
-    width: 235%;
-    margin-left: -400px;
+    width: 290%;
+    margin-left: -440px;
     margin-bottom: 20px;
 }
 
@@ -91,11 +91,14 @@
     width: 224px;
     height: 148px;
 }
-.pull{
-    margin-top: 10px;
-}
 .push{
     margin-bottom: -40px;
+    flex-grow: 1;
+}
+.bingchilling{
+    display: flex;
+    margin-bottom:10px;
+    margin-top:-30px;
 }
 .title{
     margin-top: -11px;
@@ -254,4 +257,8 @@ label {
 .imga{
     width:5%;
     height:5%;
+}
+.Guolai img{
+    width: 222px;
+    height: 148px;
 }

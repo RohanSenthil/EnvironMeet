@@ -42,3 +42,13 @@ function openInvite(evt, InviteType) {
 
 document.getElementById("defaultInviteOpen").click();
 document.getElementById("defaultJoinedOpen").click();
+
+
+
+function on() {
+  document.getElementsByClassName("overlay").style.display = "block";
+}
+
+function off() {
+  document.getElementsByClassName("overlay").style.display = "none";
+}
