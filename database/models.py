@@ -228,10 +228,10 @@ class SignUps(db.Model):
     # image
     # associated event
 
-    def __init__(self, name, email, eventname):
+    def __init__(self, name, email, eventid):
         self.name = name
         self.email = email
-        self.eventname = eventname
+        self.event_id = eventid
 
 class Attendance(db.Model):
 

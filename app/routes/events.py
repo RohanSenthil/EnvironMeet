@@ -30,9 +30,11 @@ def signup_events():
     signup = SignUp(request.form)
 
     eventss = Events.query.all()
+    events_list=[(i.id, i.name) for i in eventss]
+    signup.eventid.choices = events_list
 
     if request.method == "POST" and signup.validate():
-        signup = SignUps(name=signup.name.data, email=signup.email.data, eventname=signup.eventname.data)
+        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=signup.eventid.data)
         db.session.add(signup)
         db.session.commit()
         db.session.close()
