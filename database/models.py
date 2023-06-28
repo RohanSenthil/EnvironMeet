@@ -223,7 +223,7 @@ class SignUps(db.Model):
     id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100), primary_key=True, unique=True)
-    eventname = db.Column(db.Enum('events3.name'))
+    eventname = db.Column(db.String(200))
     # eventname = db.Column(db.String(300))
     # price = db.Column(db.Price)
     # image
