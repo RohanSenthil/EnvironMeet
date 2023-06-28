@@ -219,10 +219,10 @@ class SignUps(db.Model):
 
     __tablename__ = 'signups2'
 
-    id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True)
+    id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True,primary_key=True)
     name = db.Column(db.String(100))
-    email = db.Column(db.String(100), primary_key=True, unique=True)
-    eventname = db.Column(db.Enum('events3.name'))
+    email = db.Column(db.String(100), unique=True)
+    event_id = db.Column(db.Integer, db.ForeignKey('events3.id'))
     # eventname = db.Column(db.String(300))
     # price = db.Column(db.Price)
     # image

@@ -40,7 +40,7 @@ def profileupdate():
     else:
         loggedout = False
     updateform = updatem(request.form)
-    olduser = Users.query.get(current_user.id)
+    olduser = Users.query.filter_by(id=current_user.id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
         username = request.form['username']
@@ -69,7 +69,7 @@ def profileupdate():
         updateform.contact.data = olduser.contact
         updateform.profile_pic.data = olduser.profile_pic
 
-        return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout)
+        return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user)
 
 @loginmanager.user_loader
 def load_user(email):
