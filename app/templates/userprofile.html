@@ -21,9 +21,22 @@
     {% if loggedout == False %}
     <h1>Dashboard</h1>
     <h2>Welcome {{ current_user.name }}!</h2>
+    {% if current_user.profile_pic %}
+    <div class="profile_pic">
+        <img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" alt="">
+    </div>
+    {% else %}
+    <div class="profile_pic">
+        <img src="{{ url_for('static', filename='images/profiles/default_profile_pic.png')}}" alt="">
+    </div>
+    {% endif %}
     <h3>Posts: {{ posts }}</h3>
     <h3>Followers: {{ followers }}</h3>
     <h3>Following: {{ following }}</h3>
+    <h3>Profile Pic: {{ profile_pic }}</h3>
+    <div class="">
+        <a href="/update">Update</a>
+    </div>
     <div class="">
         <a href="/logout">Logout</a>
     </div>

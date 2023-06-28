@@ -5,4 +5,4 @@ from wtforms.validators import ValidationError, InputRequired,DataRequired, Emai
 class InviteForm(Form):
     name = StringField('Name: ', validators=[InputRequired()])
     desc = StringField('Description: ', validators=[InputRequired()])
-    username = StringField('Username: ', validators=[InputRequired()])
+    # username = StringField('Username: ', validators=[InputRequired()])

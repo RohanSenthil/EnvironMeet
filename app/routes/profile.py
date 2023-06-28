@@ -8,6 +8,9 @@ from database.models import Members, Organisations, db, Users, followers, Posts
 from app.forms.accountsform import createm, updatem, login, forget, reset
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -27,7 +30,46 @@ def userprofile():
     for i in Users.query.all():
         if current_user.is_following(i):
             following += 1
-    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following)
+    profile_pic = current_user.profile_pic
+    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following, profile_pic=profile_pic)
+
+@app.route('/update', methods=['GET','POST'])
+def profileupdate():
+    if not current_user.is_authenticated:
+        loggedout = True
+    else:
+        loggedout = False
+    updateform = updatem(request.form)
+    olduser = Users.query.filter_by(id=current_user.id)
+    if request.method == "POST" and updateform.validate():
+        name = request.form['name']
+        username = request.form['username']
+        gender = request.form['gender']
+        contact = request.form['contact']
+        profile_pic = request.files['profile_pic']
+    
+        pic_filename = secure_filename(profile_pic.filename)
+        pic_name = str(uuid.uuid1()) + "_" + pic_filename
+        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+
+        olduser.name = name
+        olduser.username = username
+        olduser.gender = gender
+        olduser.contact = contact
+        olduser.profile_pic = profile_pic
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(url_for('userprofile'))
+    else:
+        updateform.name.data = olduser.name
+        updateform.username.data = olduser.username
+        updateform.gender.data = olduser.gender
+        updateform.contact.data = olduser.contact
+        updateform.profile_pic.data = olduser.profile_pic
+
+        return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user)
 
 @loginmanager.user_loader
 def load_user(email):
