@@ -52,8 +52,10 @@
             {{ event.name }}
                 </div>
             <div class="eventimage">
-            <img src="{{ event.image }}"> </br>
-                </div>
+                {% if event.image is not none %}
+                <img src="/{{ event.image }}">
+                {% endif %}
+            </div>
             <p class="lavel" id="datetime">Date and Time (in 24Hrs):</p>
             {{ event.date }} </br>
             {{ event.time }}

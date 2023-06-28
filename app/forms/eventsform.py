@@ -2,7 +2,6 @@ from wtforms import Form, StringField, SelectField, TextAreaField, validators, I
 from wtforms.validators import ValidationError, InputRequired,DataRequired
 from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
-# from database.models import Products
 
 
 # def unique(form, field):
@@ -35,8 +34,7 @@ class FormEvents(Form):
     time = TimeField('Time: ',  validators= [InputRequired()])
     price = StringField('Price (Opt): ', validators=[InputRequired()])
     points = IntegerField('Number of Points (100-500): ', validators=[InputRequired()])
-    # image = FileField('', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
-    image = StringField('Image link:', validators=[InputRequired()])
+    image = FileField('', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
     # type = SelectField('Type:',validators=[exists],choices=[('', 'Select'), ('H', 'Home Office'), ('D', 'Dining'), ('B', 'Bedding'),('L', 'Living')], default='')
     # price = FloatField('Price:',[positive])
     # quantity= IntegerField('Quantity:',[positive])

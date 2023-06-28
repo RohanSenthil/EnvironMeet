@@ -192,7 +192,7 @@ class Organisations(Users):
 
 class Events(db.Model):
 
-    __tablename__ = 'events3'
+    __tablename__ = 'events'
 
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.String(100))
@@ -206,14 +206,13 @@ class Events(db.Model):
     # image
     # associated event
 
-    def __init__(self, organiser, name, date, time, price, points, image):
+    def __init__(self, organiser, name, date, time, price, points):
         self.organiser = organiser
         self.name = name
         self.date = date
         self.time = time
         self.price = price
         self.points = points
-        self.image = image
 
 class SignUps(db.Model):
 
