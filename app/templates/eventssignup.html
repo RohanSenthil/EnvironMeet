@@ -18,14 +18,9 @@
             <div class="form-group col" id="remainings2">
                 {{ render_field(signup.email, class="form-control") }}
             </div>
-            <label>Choose an event:</label>
-            <select>
-            {% for i in eventss %}
-                <option>
-                    {{ i.name }}
-                </option>
-            {% endfor %}
-            </select>
+            <div class="form-group col" id="remainings3">
+                {{ render_field(signup.eventid, class="form-control") }}
+            </div>
             <div id="syvnieg" class="form-group col">
                 <button class="btn btn-primary" type="submit">Submit</button>
             </div>
