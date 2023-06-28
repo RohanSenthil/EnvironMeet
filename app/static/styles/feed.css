@@ -135,6 +135,16 @@
     padding: .5rem;
 }
 
+.back-btn {
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.back-btn svg {
+    width: 24px;
+    margin-bottom: 3px;
+}
+
 /* Posts Box */
 
 .heading {
@@ -233,15 +243,17 @@
 }
 
 .mid .shareModal .share-link .share-link-link {
-    min-width: max-content;
+    display: inline;
     flex: 1 1 auto;
     background-color: var(--env-green);
     border: 1px solid #fff;
     border-radius: .5rem;
-    padding: .5rem 0rem;
+    padding: .5rem .25rem;
     font-size: 14px;
     color: #fff;
     text-align: center;
+    overflow-x: scroll;
+    width: 85%;
 }
 
 .mid .clipboardBtn {

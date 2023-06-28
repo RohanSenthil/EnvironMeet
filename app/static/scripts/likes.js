@@ -12,5 +12,5 @@ const likePost = (postid) => {
             btn.classList.remove('like-active');
         }
     })
-    .catch((e) => alert(e, 'ERROR: Post cannot be liked'));
+    .catch((e) => alert('ERROR: Post cannot be liked'));
 }

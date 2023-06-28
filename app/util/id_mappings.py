@@ -1,9 +1,16 @@
 import hashlib
 import uuid
-from database.models import Id_Hash_Mappings
+from database.models import Id_Hash_Mappings, Users
 from app import db
 
 
+# Normal Mappings
+def get_user_from_id(user_id):
+    user = Users.query.get(user_id)
+    return user
+
+
+# Security
 def gen_salt():
     return uuid.uuid4().hex
 
