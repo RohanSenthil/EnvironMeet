@@ -192,7 +192,7 @@ class Organisations(Users):
 
 class Events(db.Model):
 
-    __tablename__ = 'events'
+    __tablename__ = 'events2'
 
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.String(100))
@@ -216,12 +216,12 @@ class Events(db.Model):
 
 class SignUps(db.Model):
 
-    __tablename__ = 'signups2'
+    __tablename__ = 'signups3'
 
     id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True,primary_key=True)
     name = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events3.id'))
+    eventid = db.Column(db.Integer, db.ForeignKey('events2.id'))
     # eventname = db.Column(db.String(300))
     # price = db.Column(db.Price)
     # image
@@ -230,14 +230,14 @@ class SignUps(db.Model):
     def __init__(self, name, email, eventid):
         self.name = name
         self.email = email
-        self.event_id = eventid
+        self.eventid = eventid
 
 class Attendance(db.Model):
 
     __tablename__ = 'attendance'
 
     id = db.Column(db.Integer, db.Sequence('attendance_id_seq'), unique=True, primary_key = True)
-    event = db.Column(db.Integer, db.ForeignKey('events3.id'), nullable=False)
+    event = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
     member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def __init__(self, event, member):
@@ -255,14 +255,14 @@ class Leaderboard(db.Model):
     username = db.Column(db.String(20))
 
 
-class LeaderboardContent(db.Model):
-    __tablename__ = 'leaderboardcontent'
-
-    id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
-    leaderboardid = db.Column
-    leaderboardname = db.Column(db.String, db.ForeignKey('leaderboard.name'), nullable=False)
-    member = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
-    points = db.Column(db.Integer, db.ForeignKey('members.points', nullable=False))
+# class LeaderboardContent(db.Model):
+#     __tablename__ = 'leaderboardcontent'
+#
+#     id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
+#     leaderboardid = db.Column
+#     leaderboardname = db.Column(db.String, db.ForeignKey('leaderboard.name'), nullable=False)
+#     member = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+#     points = db.Column(db.Integer, db.ForeignKey('members.points', nullable=False))
 
 
 
