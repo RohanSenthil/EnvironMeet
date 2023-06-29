@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template
-from app.routes import feed, events, accounts, leaderboard, profile, helpers
+from app.routes import feed, events, accounts, leaderboard, profile, helpers, attendance
 
 # Routes
 @app.route('/')

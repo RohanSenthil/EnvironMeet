@@ -11,9 +11,10 @@
 <div class="content">
    <h1 class="hiaa">Your attendance</h1>
     <table>
-        <th>List of events to attend</th>
+        <tr><th>List of events to attend</th></tr>
         {% for record in records %}
-        <tr>{ record.event_name }</tr>
+        <tr><td>{{ record.event.name }}</td></tr>
+        <tr><td>{{ record.id }}</td></tr>
         {% endfor %}
     </table>
 </div>
