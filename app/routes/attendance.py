@@ -1,10 +1,9 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Attendance, Members, Users
+from database.models import Attendance
 
 @app.route('/attendance')
-def attendance():
-    user = Members.query.get(id=Users.id).first()
-    attendance = Attendance.query.all()
+def display_attendance():
+    attendance_records = Attendance.query.all()
 
-    return render_template('attendance.html', attendance=attendance, user=user)
+    return render_template('attendance.html', records=attendance_records)

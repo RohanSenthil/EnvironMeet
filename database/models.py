@@ -234,15 +234,14 @@ class SignUps(db.Model):
 
 class Attendance(db.Model):
 
-    __tablename__ = 'attendance'
+    __tablename__ = 'attendance2'
 
     id = db.Column(db.Integer, db.Sequence('attendance_id_seq'), unique=True, primary_key = True)
     event = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
-    member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, event, member):
+    def __init__(self, event):
         self.event = event
-        self.member = member
 
 
 

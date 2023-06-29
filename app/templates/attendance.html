@@ -1,6 +1,6 @@
 {% extends "user_base.html" %}
-{% set active_page = "events" %}
-{% block title %} EnvironMeet - Events Page {% endblock %}
+{% set active_page = "attendance" %}
+{% block title %} EnvironMeet - Attendance Page {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="../../static/styles/events.css">
 {% endblock %}
@@ -11,11 +11,11 @@
 <div class="content">
    <h1 class="hiaa">Your attendance</h1>
     <table>
-        {% for i in attendance %}
-        <tr>{% i.event %}</tr>
+        <th>List of events to attend</th>
+        {% for record in records %}
+        <tr>{ record.event_name }</tr>
+        {% endfor %}
     </table>
 </div>
-
-<script src="/static/scripts/events.js"></script>
 
 {% endblock %}
