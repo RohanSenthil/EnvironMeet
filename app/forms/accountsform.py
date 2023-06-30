@@ -35,10 +35,10 @@ class updatem(Form):
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     username = StringField('Username', validators=[DataRequired()])
     profile_pic = FileField('Profile Picture:')
-    def validate_username(self, username):
-        unique = Users.query.filter_by(username=(username.data).lower()).first()
-        if unique:
-            raise ValidationError("Username already in database! Please enter a unique username.")
+    # def validate_username(self, username):
+    #     unique = Users.query.filter_by(username=(username.data).lower()).first()
+    #     if unique:
+    #         raise ValidationError("Username already in database! Please enter a unique username.")
 
 class login(Form):
     recaptcha = RecaptchaField()

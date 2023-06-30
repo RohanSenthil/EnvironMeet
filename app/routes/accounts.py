@@ -55,16 +55,19 @@ def updatemember(id):
         contact = request.form['contact']
         profile_pic = request.files['profile_pic']
     
-        pic_filename = secure_filename(profile_pic.filename)
-        pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
-        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
-        pic_name =  "static/uploads/" + pic_name1
+        if profile_pic.filename == None or profile_pic.filename == '':
+            updateform.profile_pic.data = oldmem.profile_pic
+        else:
+            pic_filename = secure_filename(profile_pic.filename)
+            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+            pic_name =  "static/uploads/" + pic_name1
+            oldmem.profile_pic = pic_name
 
         oldmem.name = name
         oldmem.username = username
         oldmem.gender = gender
         oldmem.contact = contact
-        oldmem.profile_pic = pic_name
 
         db.session.commit()
         db.session.close()
@@ -75,7 +78,6 @@ def updatemember(id):
         updateform.username.data = oldmem.username
         updateform.gender.data = oldmem.gender
         updateform.contact.data = oldmem.contact
-        updateform.profile_pic.data = oldmem.profile_pic
 
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 

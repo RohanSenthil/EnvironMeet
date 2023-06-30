@@ -4,6 +4,7 @@
 {% block head %}
 <script src="{{url_for('static', filename='scripts/search.js')}}"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/search.css')}}">
 {% endblock %}
 {% block content %}
 <div class="content">
@@ -15,16 +16,17 @@
     <div class="card-deck">
     {% for user in users %}
       {% if user != current_user %}
-        <div class="card">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card" href="/user/{{ user.username }}">
+          <a class="" href="/user/{{ user.username }}"></a>
+          <img src="{{ user.profile_pic }}" class="card-img-top">
           <div class="card-body">
-            <a href="/user/{{ user.username }}"><h5 class="card-title">@{{ user.username }}</h5></a>
+            <h5 class="card-title">@{{ user.username }}</h5>
             <p class="card-text">{{ user.name }}</p>
-          </div>
+          </div></div>
           <div class="card-footer">
             <small class="text-muted">Joined (account create date?)</small>
           </div>
-        </div>
+        
       {% endif %}
     </div>
     {% endfor %}
