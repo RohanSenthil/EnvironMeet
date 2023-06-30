@@ -287,8 +287,25 @@ class Id_Hash_Mappings(db.Model):
         self.object_id = object_id
         self.hashed_value = hashed_value
 
-
-
+# @app.route('/transfer', methods=['GET', 'POST'])
+# def transfer_column():
+#     # Step 2: Query the source table to retrieve the column data
+#     source_data = SignUps.query.all()
+#
+#     # Step 3-6: Iterate over the source data, create destination instances, and transfer the column
+#     for source_entry in source_data:
+#         if source_entry == 'eventid':
+#             column_value = source_entry.column_to_transfer
+#
+#             destination_entry = Attendance(transferred_column=column_value)
+#
+#             # Step 5: Add the new instances to the session
+#             db.session.add(destination_entry)
+#
+#     # Step 6: Commit the session
+#     db.session.commit()
+#
+#     return 'Column transferred successfully!'
 
 # class RateLimit(db.Model):
 
