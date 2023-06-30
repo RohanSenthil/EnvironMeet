@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-from database.models import Id_Hash_Mappings, Users
+from database.models import Id_Hash_Mappings, Users, Events
 from app import db
 
 
@@ -8,6 +8,11 @@ from app import db
 def get_user_from_id(user_id):
     user = Users.query.get(user_id)
     return user
+
+
+def get_event_from_id(event_id):
+    events = Events.query.get(event_id)
+    return events
 
 
 # Security

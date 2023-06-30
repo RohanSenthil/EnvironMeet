@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Events, SignUps, db
+from database.models import Events, SignUps, db, Attendance
 from app.forms.eventsform import FormEvents
 from app.forms.eventssignup import SignUp
 from app.util import validation
@@ -77,6 +77,33 @@ def signup_events():
         db.session.add(signup)
         db.session.commit()
         db.session.close()
+        #
+        # signup_id = signup.id
+        #
+        # attendance = Attendance(signup_id=signup_id, event=signup.eventid.data)
+        # db.session.add(attendance)
+        # db.session.commit()
+        # db.session.close()
         return redirect(url_for('events'))
 
     return render_template('eventssignup.html', signup=signup, eventss=eventss)
+
+@app.route('/transfer', methods=['GET', 'POST'])
+def transfer_column():
+    # Step 2: Query the source table to retrieve the column data
+    source_data = SignUps.query.all()
+
+    # Step 3-6: Iterate over the source data, create destination instances, and transfer the column
+    for source_entry in source_data:
+        if source_entry == 'eventid':
+            column_value = source_entry.column_to_transfer
+
+            destination_entry = Attendance(transferred_column=column_value)
+
+            # Step 5: Add the new instances to the session
+            db.session.add(destination_entry)
+
+    # Step 6: Commit the session
+    db.session.commit()
+
+    return 'Column transferred successfully!'
