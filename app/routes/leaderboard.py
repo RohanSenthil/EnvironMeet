@@ -1,5 +1,5 @@
 from app import app
-from database.models import Members, db,Leaderboard, Users
+from database.models import Members, db,Leaderboard, Users, LeaderboardContent
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from sqlalchemy import desc
@@ -32,11 +32,15 @@ def leaderboardinvite():
 
     leaderboards = Leaderboard.query.all()
     user = current_user
+
     createinv = InviteForm(request.form)
     if request.method == "POST" and createinv.validate():
         print('lol')
         invleaderboard = Leaderboard(name=createinv.name.data, desc=createinv.desc.data, username=user.username)
         db.session.add(invleaderboard)
+        db.session.commit()
+        leaderboardcontent = LeaderboardContent(leaderboardid=invleaderboard.id, leaderboardname=createinv.name.data, owner=user.username, memberid=user.id, memberpoints=user.points)
+        db.session.add(leaderboardcontent)
         db.session.commit()
         db.session.close()
 
