@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Events, SignUps, db
+from database.models import Events, SignUps, db, Attendance
 from app.forms.eventsform import FormEvents
 from app.forms.eventssignup import SignUp
 from app.util import validation
@@ -67,6 +67,7 @@ def add_events():
 @app.route('/events/signup', methods=["GET","POST"])
 def signup_events():
     signup = SignUp(request.form)
+    attend = Attendance(request.form)
 
     eventss = Events.query.all()
     events_list=[(i.id, i.name) for i in eventss]
@@ -77,6 +78,13 @@ def signup_events():
         db.session.add(signup)
         db.session.commit()
         db.session.close()
+        #
+        # signup_id = signup.id
+        #
+        # attendance = Attendance(signup_id=signup_id, event=signup.eventid.data)
+        # db.session.add(attendance)
+        # db.session.commit()
+        # db.session.close()
         return redirect(url_for('events'))
 
     return render_template('eventssignup.html', signup=signup, eventss=eventss)
