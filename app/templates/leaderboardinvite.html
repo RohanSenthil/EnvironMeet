@@ -31,55 +31,11 @@
             <input type="text" placeholder="Search..">
             <br>
             {% for leaderboard in leaderboards %}
-                <div class="modal fade" id="editModal_{{ object_id_to_hash(object_id=leaderboard.id, act='leaderboard') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="closeModalBtn" data-bs-dismiss="modal">
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="desc">
-                                    <textarea name="desc_{{ object_id_to_hash(object_id=leaderboard.id, act='leaderboard')}}" class="textInput newPostInput editPostInput" id="newPostInput" placeholder="What have you been up to?" required minlength="1" maxlength="500">{{ post.desc }}</textarea>
-                                    <table class="invleaderboard">
-                                        <tbody>
-                                            {% for member in members %}
-                                            {% if loop.index == 1 %}
-                                            <tr class="leaderboardfirst">
-                                                <td>{{ loop.index }}</td>
-                                                <td class="membername">{{ member.username }}</td>
-                                                <td>{{ member.points }} Points</td>
-                                            </tr>
-                                            {% elif loop.index == 2 %}
-                                            <tr class="leaderboardsecond">
-                                                <td>{{ loop.index }}</td>
-                                                <td class="membername">{{ member.username }}</td>
-                                                <td>{{ member.points }} Points</td>
-                                            </tr>
-                                            {% elif loop.index == 3 %}
-                                            <tr class="leaderboardthird">
-                                                <td>{{ loop.index }}</td>
-                                                <td class="membername">{{ member.username }}</td>
-                                                <td>{{ member.points }} Points</td>
-                                            </tr>
-                                            {% else %}
-                                            <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td class="membername">{{ member.username }}</td>
-                                                <td>{{ member.points }} Points</td>
-                                            </tr>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <span class="editAction">
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ object_id_to_hash(object_id=leaderboard.id, act='post')}}" value="{{ object_id_to_hash(object_id=leaderboard.id, act='post') }}">{{ leaderboard.name }}</button>
-            </span>
+                <ul>
+                    <li>
+                        {{ leaderboard.name}}       <button>Join</button>
+                    </li>
+                </ul>
 
             {% endfor %}
 
