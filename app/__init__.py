@@ -62,7 +62,7 @@ app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 
 #Profile pic
-UPLOAD_FOLDER = 'app/static/images/profiles/'
+UPLOAD_FOLDER = 'app/static/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 from app import routes

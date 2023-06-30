@@ -34,7 +34,7 @@ def viewPost(encoded_hashedid):
     user = current_user
 
     if post is not None:
-        return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash)
+        return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
