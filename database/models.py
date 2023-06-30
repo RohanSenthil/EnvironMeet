@@ -249,21 +249,31 @@ class Leaderboard(db.Model):
     __tablename__ = 'leaderboard'
 
     id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True)
-    name = db.Column(db.String(20))
-    desc = db.Column(db.String(20))
-    username = db.Column(db.String(20))
+    name = db.Column(db.String(200))
+    desc = db.Column(db.String(200))
+    username = db.Column(db.String(200))
 
+    def __init__(self, name, desc, username):
+        self.name = name
+        self.desc = desc
+        self.username = username
 
-# class LeaderboardContent(db.Model):
-#     __tablename__ = 'leaderboardcontent'
-#
-#     id = db.Column(db.Integer, db.Sequence('leaderboard_id_seq'), primary_key = True, unique=True)
-#     leaderboardid = db.Column
-#     leaderboardname = db.Column(db.String, db.ForeignKey('leaderboard.name'), nullable=False)
-#     member = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
-#     points = db.Column(db.Integer, db.ForeignKey('members.points', nullable=False))
+class LeaderboardContent(db.Model):
+    __tablename__ = 'leaderboardcontent'
 
+    id = db.Column(db.Integer, db.Sequence('leaderboardcontent_id_seq'), primary_key=True)
+    leaderboardid = db.Column(db.Integer, db.ForeignKey('leaderboard.id'), nullable=False)
+    leaderboardname = db.Column(db.String(200), nullable=False)
+    owner = db.Column(db.String(200))
+    memberid = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    memberpoints = db.Column(db.Integer, nullable=False)
 
+    def __init__(self, leaderboardid, leaderboardname, owner, memberid, memberpoints):
+        self.leaderboardid = leaderboardid
+        self.leaderboardname = leaderboardname
+        self.owner = owner
+        self.memberid = memberid
+        self.memberpoints = memberpoints
 
 class Id_Hash_Mappings(db.Model):
 
