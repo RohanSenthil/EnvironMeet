@@ -40,7 +40,7 @@ def profileupdate():
     else:
         loggedout = False
     updateform = updatem(request.form)
-    olduser = Users.query.filter_by(id=current_user.id)
+    olduser = Users.query.get(current_user.id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
         username = request.form['username']
@@ -49,14 +49,15 @@ def profileupdate():
         profile_pic = request.files['profile_pic']
     
         pic_filename = secure_filename(profile_pic.filename)
-        pic_name = str(uuid.uuid1()) + "_" + pic_filename
-        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+        pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+        pic_name =  "static/uploads/" + pic_name1
 
         olduser.name = name
         olduser.username = username
         olduser.gender = gender
         olduser.contact = contact
-        olduser.profile_pic = profile_pic
+        olduser.profile_pic = pic_name
 
         db.session.commit()
         db.session.close()

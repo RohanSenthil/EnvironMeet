@@ -159,7 +159,7 @@ class Members(Users):
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    gender = db.Column(db.Enum('Male','Female'))
+    gender = db.Column(db.Enum('Male','Female','Others'))
     contact = db.Column(db.Integer)
     points = db.Column(db.Integer)
     yearlypoints = db.Column(db.Integer)

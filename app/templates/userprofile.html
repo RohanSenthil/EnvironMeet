@@ -23,7 +23,7 @@
     <h2>Welcome {{ current_user.name }}!</h2>
     {% if current_user.profile_pic %}
     <div class="profile_pic">
-        <img src="{{ url_for('static', filename='images/profiles/' + current_user.profile_pic)}}" alt="">
+        <img src="{{ current_user.profile_pic }}" alt="">
     </div>
     {% else %}
     <div class="profile_pic">

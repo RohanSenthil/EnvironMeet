@@ -28,10 +28,11 @@ def createmember():
             print(profile_pic)
             pic_filename = secure_filename(request.files.get('profile_pic').filename)
             print("can file")
-            pic_name = str(uuid.uuid1()) + "_" + pic_filename
-            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+            pic_name =  "static/uploads/" + pic_name1
         else:
-            pic_name = None
+            pic_name = 'static\images\profiles\default_profile_pic.png'
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
@@ -55,14 +56,15 @@ def updatemember(id):
         profile_pic = request.files['profile_pic']
     
         pic_filename = secure_filename(profile_pic.filename)
-        pic_name = str(uuid.uuid1()) + "_" + pic_filename
-        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
+        pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+        profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+        pic_name =  "static/uploads/" + pic_name1
 
         oldmem.name = name
         oldmem.username = username
         oldmem.gender = gender
         oldmem.contact = contact
-        oldmem.profile_pic = profile_pic
+        oldmem.profile_pic = pic_name
 
         db.session.commit()
         db.session.close()
