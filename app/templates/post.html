@@ -23,7 +23,7 @@
                 <div class="top">
                     <div class="heading">
                         <div class="left">
-                            <img class="avatar" src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar">
+                            <img class="avatar" src="/{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar">
                             <div class="info">
                                 <span class="infoTop">
                                     <span class="posterName"> {{ get_user_from_id(post.author).username }}</span> is at <a href="#">East Coast Park Beach Cleanup</a>
@@ -183,7 +183,7 @@
                         {% if user.is_authenticated %}
                         <div class="postBox commentBox" id="commentForm-{{ object_id_to_hash(object_id=post.id, act='post') }}">
                             <div class="left">
-                                <img src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar" class="avatar">
+                                <img src="/{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar" class="avatar">
                                 <textarea name="desc" class="textInput commentInput" id="commentInput-{{ object_id_to_hash(object_id=post.id, act='post') }}" placeholder="Write a comment..." rows="1"></textarea>
                             </div>
                             <button type="button" id="commentButton-{{ object_id_to_hash(object_id=post.id, act='post') }}" onclick=`${addComment({{ object_id_to_hash(object_id=post.id, act='post') | tojson }})}`>
@@ -200,7 +200,7 @@
                         {% for comment in post.comments %}
                         <div class="comments" id="commentText-{{ object_id_to_hash(object_id=comment.id, act='comment') }}">
                             <div class="left">
-                                <img class="avatar" src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar">
+                                <img class="avatar" src="/{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar">
                                 <div class="info">
                                     
                                     <span class="infoTop">
