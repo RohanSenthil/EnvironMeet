@@ -14,6 +14,29 @@
     }
 }
 
+.tabs-btns {
+    margin: 1rem;
+    margin-bottom: 2rem;
+}
+
+.tab-btn {
+    margin-right: 1.5rem;
+    padding: 0.5rem;
+}
+
+.tab-btn:hover {
+    font-weight: 700;
+}
+
+.tabs-btns .active {
+    font-weight: 700;
+    border-bottom: 2px solid #000;
+}
+
+.tabs-btns .active::after {
+    tra
+}
+
 .postBox {
     border: #D6D2D2 1px solid;
     padding: 1rem;
@@ -173,6 +196,7 @@
 
 .posterName {
     font-weight: 700;
+    color: #000 !important;
 }
 
 .timestamp {

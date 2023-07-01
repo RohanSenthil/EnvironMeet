@@ -23,10 +23,10 @@
                 <div class="top">
                     <div class="heading">
                         <div class="left">
-                            <img class="avatar" src="/{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar">
+                            <a href="/user/{{ get_user_from_id(post.author).username }}"><img class="avatar" src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar"></a>
                             <div class="info">
                                 <span class="infoTop">
-                                    <span class="posterName"> {{ get_user_from_id(post.author).username }}</span> is at <a href="#">East Coast Park Beach Cleanup</a>
+                                    <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> is at <a href="#">East Coast Park Beach Cleanup</a>
                                 </span>
                                 <span class="timestamp">
                                     {{ post.timestamp|formatTimestamp }}

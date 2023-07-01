@@ -7,9 +7,8 @@ from app.forms.feedForms import PostForm
 from werkzeug.utils import secure_filename
 import os
 from flask.json import jsonify
-from app.util import share
-from app.util import validation
-from app.util import id_mappings
+from app.util import share, validation, id_mappings
+from app.util.helpers import get_following
 import uuid
 from PIL import Image
 
@@ -19,8 +18,9 @@ def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
     user = current_user
+    following = get_following(user)
 
-    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
+    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, following=following)
 
 
 @app.route('/post/view/<encoded_hashedid>', methods=['GET'])

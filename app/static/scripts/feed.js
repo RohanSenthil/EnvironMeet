@@ -8,6 +8,8 @@ const editPostInputs = document.getElementsByClassName('editPostInput');
 const charCounters = document.getElementsByClassName('charCounters');
 const editPostBtns = document.getElementsByClassName('editPostBtn');
 const newPostBtn = document.getElementById('newPostBtn');
+const tabBtns = document.getElementsByClassName('tab-btn');
+const tabGroups = document.getElementsByClassName('tab-group');
 
 if (newPostInput) {
     newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
@@ -142,5 +144,19 @@ if (newPostBtn) {
         } else {
             newPostInput.classList.remove('error-border');
         }
+    })
+}
+
+for (let i = 0; i < tabBtns.length; i++) {
+    tabBtns[i].addEventListener('click', (e) => {
+        for (let i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].classList.remove('active');
+            tabGroups[i].style.display = 'none';
+        }
+        e.target.classList.add('active');
+        
+        let tabName = (e.target.id).split('-')[0] + '-' + (e.target.id).split('-')[1]
+        document.getElementById(tabName).style.display = 'block';
+
     })
 }
