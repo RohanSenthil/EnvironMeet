@@ -15,23 +15,37 @@ import os
 
 @app.route('/profile', methods=['GET', 'POST'])
 def userprofile():
+    posts = 0
+    followers = 0
+    following = 0
+    profile_pic = None
+    member = False
+    organisation = False
     if not current_user.is_authenticated:
         loggedout = True
+        
     else:
         loggedout = False
-    posts = 0
-    for i in Posts.query.filter_by(author=current_user.id):
-        posts += 1
-    followers = 0
-    for i in Users.query.all():
-        if i.is_following(current_user):
-            followers += 1
-    following = 0
-    for i in Users.query.all():
-        if current_user.is_following(i):
-            following += 1
-    profile_pic = current_user.profile_pic
-    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following, profile_pic=profile_pic)
+
+        if isinstance(current_user, Members):
+            # User is a member
+            # Perform the necessary actions for a member
+            member = True
+        elif isinstance(current_user, Organisations):
+            # User is not a member
+            # Perform actions for non-members
+            organisation = True
+
+        for i in Posts.query.filter_by(author=current_user.id):
+            posts += 1
+        for i in Users.query.all():
+            if i.is_following(current_user):
+                followers += 1
+        for i in Users.query.all():
+            if current_user.is_following(i):
+                following += 1
+        profile_pic = current_user.profile_pic
+    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation)
 
 @app.route('/update', methods=['GET','POST'])
 def profileupdate():
