@@ -66,6 +66,7 @@ class reset(Form):
 
 class createo(Form):
     name = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
@@ -73,20 +74,30 @@ class createo(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Confirm Password', validators=[DataRequired()])
-    desc = TextAreaField('Description (optional)', validators=[validators.optional()])
+    address = StringField('Address')
+    description = TextAreaField('Description:')
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
-    address = TextAreaField('Address (optional)', validators=[validators.optional()])
-    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
+    profile_pic = FileField('Display Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
 
     def validate_email(self, email):
-        unique = Members.query.filter_by(email=(email.data).lower()).first()
-        unique2 = Organisations.query.filter_by(email=(email.data).lower()).first()
-        if unique or unique2:
+        unique = Users.query.filter_by(email=(email.data).lower()).first()
+        if unique:
             raise ValidationError("Email already in database! Please enter a new email.")
+        
+    def validate_username(self, username):
+        unique = Users.query.filter_by(username=(username.data).lower()).first()
+        if unique:
+            raise ValidationError("Username already in database! Please enter a unique username.")
 
 class updateo(Form):
     name = StringField('Name', validators=[DataRequired()])
-    desc = TextAreaField('Description (optional)', validators=[validators.optional()])
+    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
-    address = TextAreaField('Address (optional)', validators=[validators.optional()])
+    username = StringField('Username', validators=[DataRequired()])
+    address = StringField('Address')
+    description = TextAreaField('Description:')
     profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
+    # def validate_username(self, username):
+    #     unique = Users.query.filter_by(username=(username.data).lower()).first()
+    #     if unique:
+    #         raise ValidationError("Username already in database! Please enter a unique username.")

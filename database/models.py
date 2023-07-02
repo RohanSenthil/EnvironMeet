@@ -80,6 +80,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, default='mail@example.com')
     password = db.Column(db.String(10000))
     name = db.Column(db.String(100))
+    contact = db.Column(db.Integer)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     profile_pic = db.Column(db.String(1000), nullable=True)
     followed = db.relationship('Users', 
@@ -160,7 +161,6 @@ class Members(Users):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     gender = db.Column(db.Enum('Male','Female','Others'))
-    contact = db.Column(db.Integer)
     points = db.Column(db.Integer)
     yearlypoints = db.Column(db.Integer)
 
@@ -179,7 +179,6 @@ class Organisations(Users):
     id = db.Column(db.Integer, primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     address = db.Column(db.String(100))
-    contact = db.Column(db.String(100))
     description = db.Column(db.Text)
     # events
 

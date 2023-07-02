@@ -23,6 +23,7 @@ def members():
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
+        print(request.files.get('profile_pic'))
         if request.files.get('profile_pic').filename != '':
             profile_pic = request.files.get('profile_pic')
             print(profile_pic)
@@ -163,10 +164,22 @@ def organisations():
 def createorganisations():
     createform = createo(request.form)
     if request.method == "POST" and createform.validate():
+        print(request.files.get('profile_pic'))
+        if request.files.get('profile_pic').filename != '':
+            profile_pic = request.files.get('profile_pic')
+            print(profile_pic)
+            pic_filename = secure_filename(request.files.get('profile_pic').filename)
+            print("can file")
+            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+            pic_name =  "static/uploads/" + pic_name1
+        else:
+            pic_name = 'static\images\profiles\default_profile_pic.png'
         # Process the form data
-        emaild = str(createform.email.data).lower()
+        emaill = str(createform.email.data).lower()
+        usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        organisation = Members(name=createform.name.data, email=emaild, password=passwordd, contact=createform.contact.data, description=createform.desc.data, address=createform.address.data)
+        organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name)
         db.session.add(organisation)
         db.session.commit()
         db.session.close()
@@ -175,7 +188,7 @@ def createorganisations():
 
 @app.route('/orgnanisations/update/<id>', methods=['GET','POST'])
 def updateorganisation(id):
-    updateform = updatem(request.form)
+    updateform = updateo(request.form)
     oldorg = Organisations.query.get(id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']

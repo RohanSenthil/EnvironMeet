@@ -3,6 +3,7 @@
 {% block title %}EnvironMeet - Organisations{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="../../../static/styles/accounts.css">
+<script src="{{url_for('static', filename='scripts/accsearch.js')}}"></script>
 {% endblock %}
 {% block content %}
 <div class="content">
@@ -19,11 +20,12 @@
     <table class="table table-striped" id="myTable">
       <thead>
         <tr>
+          <th>Username</th>
           <th>Email</th>
           <th>Name</th>
-          <th>Gender</th>
           <th>Contact</th>
-          <th></th>
+          <th>Address</th>
+          <th>Description</th>
         </tr>
       </thead>
       <tbody>
@@ -32,11 +34,12 @@
         </tr> -->
         {% for organisation in organisations %}
         <tr>
+          <td>{{ organisation.username }}</td>
           <td>{{ organisation.email }}</td>
           <td>{{ organisation.name }}</td>
-          <td>{{ organisation.gender }}</td>
           <td>{{ organisation.contact }}</td>
-          <td>{{ organisation.points }}</td>
+          <td>{{ organisation.address}}</td>
+          <td>{{ organisation.description }}</td>
           <td>
             <a href="{{ url_for('updateorganisation', id=organisation.id) }}">
               <svg id="update" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
