@@ -17,7 +17,7 @@ class createm(Form):
     confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
-    profile_pic = FileField('Profile Picture:')
+    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
 
     def validate_email(self, email):
         unique = Users.query.filter_by(email=(email.data).lower()).first()
@@ -34,7 +34,7 @@ class updatem(Form):
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     username = StringField('Username', validators=[DataRequired()])
-    profile_pic = FileField('Profile Picture:')
+    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
     # def validate_username(self, username):
     #     unique = Users.query.filter_by(username=(username.data).lower()).first()
     #     if unique:
@@ -76,7 +76,7 @@ class createo(Form):
     desc = TextAreaField('Description (optional)', validators=[validators.optional()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     address = TextAreaField('Address (optional)', validators=[validators.optional()])
-    profile_pic = FileField('Profile Picture:')
+    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
 
     def validate_email(self, email):
         unique = Members.query.filter_by(email=(email.data).lower()).first()
@@ -89,4 +89,4 @@ class updateo(Form):
     desc = TextAreaField('Description (optional)', validators=[validators.optional()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     address = TextAreaField('Address (optional)', validators=[validators.optional()])
-    profile_pic = FileField('Profile Picture:') #validators=[validators.optional(), FileAllowed=(['jpeg','jpg','png'], message="File uploaded is not in accepted format.")])
+    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
