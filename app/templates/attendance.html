@@ -13,7 +13,7 @@
     <table>
         <tr><th>List of events to attend</th></tr>
         {% for record in records %}
-        <tr><td>{{ get_event_from_id(record.event).name }}</td></tr>
+        <tr><td>{{ get_event_from_id(record.eventid).name }}</td></tr>
         {% endfor %}
     </table>
 </div>
