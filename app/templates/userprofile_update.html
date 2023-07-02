@@ -20,42 +20,84 @@
     {% endif %}
     {% endwith %}
     {% if loggedout == False %}
-    <h1>Update Details</h1>
-    <h2>{{ current_user.name }}!</h2>
-    
-        <a href="/profile">
-          <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
-          <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
-          </svg>
-        </a>
-          <h1>
-          EnvironMeet - Update Member
-          </h1>
-        <div class="cont">
-          <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
-              <div class="form-group p-1">
-                <label for="disabledinput">Email:</label>
-                <input class="form-control" type="text" id="disabledinput" placeholder="{{ olduser.email }}" readonly style="background-color: #f0ecec">
-              </div>
-              <div class="form-group p-1">
-                {{ render_field(form.name, class="form-control") }}
-              </div>
-              <div class="form-group p-1">
-                {{ render_field(form.username, class="form-control") }}
-              </div>
-              <div class="form-group p-1">
-                {{ render_field(form.gender, class="form-check", style="list-style-type:none") }}
-              </div>
-              <div class="form-group p-1">
-                {{ render_field(form.contact, class="form-control") }}
-              </div>
-              <div class="form-group p-1">
-                <label for="profile_pic">Profile Picture</label>
-                <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
-              </div>
-              <input type="submit" id="submitBtn" class="btn btn-primary p-1"/>
-            </form>
-        </div>
+      {% if member %}
+        <h1>Update Details</h1>
+        <h2>{{ current_user.name }}</h2>
+        
+            <a href="/profile">
+              <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+              <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+              </svg>
+            </a>
+              <h1>
+              EnvironMeet - Update
+              </h1>
+            <div class="cont">
+              <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
+                  <div class="form-group p-1">
+                    <label for="disabledinput">Email:</label>
+                    <input class="form-control" type="text" id="disabledinput" placeholder="{{ olduser.email }}" readonly style="background-color: #f0ecec">
+                  </div>
+                  <div class="form-group p-1">
+                    {{ render_field(form.name, class="form-control") }}
+                  </div>
+                  <div class="form-group p-1">
+                    {{ render_field(form.username, class="form-control") }}
+                  </div>
+                  <div class="form-group p-1">
+                    {{ render_field(form.gender, class="form-check", style="list-style-type:none") }}
+                  </div>
+                  <div class="form-group p-1">
+                    {{ render_field(form.contact, class="form-control") }}
+                  </div>
+                  <div class="form-group p-1">
+                    <label for="profile_pic">Profile Picture</label>
+                    <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
+                  </div>
+                  <input type="submit" id="submitBtn" class="btn btn-primary p-1"/>
+                </form>
+            </div>
+          {% elif organisation %}
+            <h1>Update Details</h1>
+            <h2>{{ current_user.name }}</h2>
+            
+                <a href="/profile">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+                  <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+                  </svg>
+                </a>
+                  <h1>
+                  EnvironMeet - Update
+                  </h1>
+                <div class="cont">
+                  <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
+                      <div class="form-group p-1">
+                        <label for="disabledinput">Email:</label>
+                        <input class="form-control" type="text" id="disabledinput" placeholder="{{ olduser.email }}" readonly style="background-color: #f0ecec">
+                      </div>
+                      <div class="form-group p-1">
+                        {{ render_field(form.name, class="form-control") }}
+                      </div>
+                      <div class="form-group p-1">
+                        {{ render_field(form.username, class="form-control") }}
+                      </div>
+                      <div class="form-group p-1">
+                        {{ render_field(form.contact, class="form-control") }}
+                      </div>
+                      <div class="form-group p-1">
+                        {{ render_field(form.address, class="form-control") }}
+                      </div>
+                      <div class="form-group p-1">
+                        {{ render_field(form.description, class="form-control") }}
+                      </div>
+                      <div class="form-group p-1">
+                        <label for="profile_pic">Profile Picture</label>
+                        <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
+                      </div>
+                      <input type="submit" id="submitBtn" class="btn btn-primary p-1"/>
+                    </form>
+                </div>
+              {% endif %}
 
     {% endif %}
 </div>

@@ -5,7 +5,7 @@ from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
 from database.models import Members, Organisations, db, Users, followers, Posts
-from app.forms.accountsform import createm, updatem, login, forget, reset
+from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt
 from werkzeug.utils import secure_filename
@@ -53,39 +53,80 @@ def profileupdate():
         loggedout = True
     else:
         loggedout = False
-    updateform = updatem(request.form)
-    olduser = Users.query.get(current_user.id)
-    if request.method == "POST" and updateform.validate():
-        name = request.form['name']
-        username = request.form['username']
-        gender = request.form['gender']
-        contact = request.form['contact']
-        profile_pic = request.files['profile_pic']
-        if profile_pic.filename == None or profile_pic.filename == '':
-            updateform.profile_pic.data = olduser.profile_pic
-        else:
-            pic_filename = secure_filename(profile_pic.filename)
-            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
-            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
-            pic_name =  "static/uploads/" + pic_name1
-            olduser.profile_pic = pic_name
-        olduser.name = name
-        olduser.username = username
-        olduser.gender = gender
-        olduser.contact = contact
-        
+        member = False
+        organisation = False
+        olduser = Users.query.get(current_user.id)
+        if isinstance(current_user, Members):
+            member = True
+            updateform = updatem(request.form)
+            if request.method == "POST" and updateform.validate():
+                name = request.form['name']
+                username = request.form['username']
+                gender = request.form['gender']
+                contact = request.form['contact']
+                profile_pic = request.files['profile_pic']
+                if profile_pic.filename == None or profile_pic.filename == '':
+                    updateform.profile_pic.data = olduser.profile_pic
+                else:
+                    pic_filename = secure_filename(profile_pic.filename)
+                    pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+                    profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+                    pic_name =  "static/uploads/" + pic_name1
+                    olduser.profile_pic = pic_name
+                olduser.name = name
+                olduser.username = username
+                olduser.gender = gender
+                olduser.contact = contact
 
-        db.session.commit()
-        db.session.close()
+                db.session.commit()
+                db.session.close()
 
-        return redirect(url_for('userprofile'))
-    else:
-        updateform.name.data = olduser.name
-        updateform.username.data = olduser.username
-        updateform.gender.data = olduser.gender
-        updateform.contact.data = olduser.contact
+                return redirect(url_for('userprofile'))
+            else:
+                updateform.name.data = olduser.name
+                updateform.username.data = olduser.username
+                updateform.gender.data = olduser.gender
+                updateform.contact.data = olduser.contact
 
-        return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user)
+            return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user, member=member)
+        elif isinstance(current_user, Organisations):
+            organisation = True
+            updateform = updateo(request.form)
+            if request.method == "POST" and updateform.validate():
+                name = request.form['name']
+                username = request.form['username']
+                address = request.form['address']
+                description = request.form['description']
+                contact = request.form['contact']
+                profile_pic = request.files['profile_pic']
+            
+                if profile_pic.filename == None or profile_pic.filename == '':
+                    updateform.profile_pic.data = olduser.profile_pic
+                else:
+                    pic_filename = secure_filename(profile_pic.filename)
+                    pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+                    profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+                    pic_name =  "static/uploads/" + pic_name1
+                    olduser.profile_pic = pic_name
+
+                olduser.name = name
+                olduser.username = username
+                olduser.description = description
+                olduser.address = address
+                olduser.contact = contact
+
+                db.session.commit()
+                db.session.close()
+
+                return redirect(url_for('userprofile'))
+            else:
+                updateform.name.data = olduser.name
+                updateform.username.data = olduser.username
+                updateform.description.data = olduser.description
+                updateform.address.data = olduser.address
+                updateform.contact.data = olduser.contact
+
+            return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user, organisation=organisation)
 
 @loginmanager.user_loader
 def load_user(email):

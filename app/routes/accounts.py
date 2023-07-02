@@ -33,7 +33,7 @@ def createmember():
             profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
             pic_name =  "static/uploads/" + pic_name1
         else:
-            pic_name = 'static\images\profiles\default_profile_pic.png'
+            pic_name = 'static\images\default_profile_pic.png'
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
@@ -174,7 +174,7 @@ def createorganisations():
             profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
             pic_name =  "static/uploads/" + pic_name1
         else:
-            pic_name = 'static\images\profiles\default_profile_pic.png'
+            pic_name = 'static\images\default_profile_pic.png'
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
@@ -192,14 +192,26 @@ def updateorganisation(id):
     oldorg = Organisations.query.get(id)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
-        contact = request.form['contact']
+        username = request.form['username']
         address = request.form['address']
-        description = request.form['desc']
+        description = request.form['description']
+        contact = request.form['contact']
+        profile_pic = request.files['profile_pic']
+    
+        if profile_pic.filename == None or profile_pic.filename == '':
+            updateform.profile_pic.data = oldorg.profile_pic
+        else:
+            pic_filename = secure_filename(profile_pic.filename)
+            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+            pic_name =  "static/uploads/" + pic_name1
+            oldorg.profile_pic = pic_name
 
         oldorg.name = name
-        oldorg.contact = contact
+        oldorg.username = username
         oldorg.description = description
         oldorg.address = address
+        oldorg.contact = contact
 
         db.session.commit()
         db.session.close()
@@ -207,11 +219,12 @@ def updateorganisation(id):
         return redirect(url_for('organisations'))
     else:
         updateform.name.data = oldorg.name
-        updateform.contact.data = oldorg.contact
-        updateform.desc.data = oldorg.description
+        updateform.username.data = oldorg.username
+        updateform.description.data = oldorg.description
         updateform.address.data = oldorg.address
+        updateform.contact.data = oldorg.contact
 
-        return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
+    return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
 
 @app.route('/organisations/delete/<id>')
 # @privileged_route("admin")
