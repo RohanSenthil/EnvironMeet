@@ -11,10 +11,8 @@ In your virtual environment type
 Download Docker Desktop, Restart                               
 Open Docker Desktop
 Open your command line (windows) as administrator and type                      
-`wsl --update --web-download`                                            
-`wsl -d docker-desktop`                  
-`sysctl -w vm.max_map_count=262144`                       
-`echo "vm.max_map_count=262144" >> /etc/sysctl.conf`                            
+`wsl --update --web-download`                            
+`echo 262144 >> /proc/sys/vm/max_map_count`                                
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
@@ -26,7 +24,11 @@ FLUSH PRIVILEGES;`
 Create your own .env file with the appropriate contents
 
 ## Run
-To run, in your project terminal type:                 
+Open your command line (windows) as administrator and type:                                            
+`wsl -d docker-desktop`                  
+`sysctl -w vm.max_map_count=262144` (no persistent way found yet)                           
+
+To run, in your project terminal type:                               
 `docker-compose up --build`                   
                         
 Finally, in your virtual environment type:                                     
