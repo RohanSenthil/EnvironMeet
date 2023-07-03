@@ -1,0 +1,44 @@
+{% extends "user_base.html" %}
+{% set active_page = "attendance" %}
+{% block title %} EnvironMeet - Check Attendance Page (Orgs) {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/events.css">
+{% endblock %}
+
+{% block content %}
+
+
+<div class="content">
+   <h1 class="hiaa">Your event's attendance</h1>
+    <div class="Guolai2">
+        {% set displayed_events = [] %}
+        {% for record in records %}
+            {% if record.eventid not in displayed_events %}
+                {% set _ = displayed_events.append(record.eventid) %}
+                <div class="EventsContainer2">
+                    <div class="eventsCard2">
+                        <h5>Event: </br>{{ get_event_from_id(record.eventid).name }}</h5>
+                        <h6>Date:</br>{{ get_event_from_id(record.eventid).date }}</h6>
+                        <h6>Time (24Hr Format):</br>{{ get_event_from_id(record.eventid).time }}</h6>
+                        <p class="attendees">List of attendees:</p>
+                        {% set sorted_names = [] %}
+                        {% set _ = sorted_names.append(record.name) %}
+                        {% for other_record in records %}
+                            {% if other_record.eventid == record.eventid and other_record.name != record.name %}
+                                {% set _ = sorted_names.append(other_record.name) %}
+                            {% endif %}
+                        {% endfor %}
+                        {% for name in sorted_names|sort %}
+                        <div class="signupss">
+                        <p class="names">{{ name }}</br></p>
+                        </div>
+                        {% endfor %}
+                    <h6 class="num">Number of attendees: {{ sorted_names|length }}</h6>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

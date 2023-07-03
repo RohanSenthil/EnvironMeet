@@ -73,6 +73,14 @@
     justify-content: space-between;
     flex-wrap: wrap;
 }
+.EventsContainer1 {
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    align-content:center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
 .EventsBox1 p{
     font-size: 80%;
     margin-top: 1px;
@@ -86,6 +94,21 @@
 	margin: 1rem;
 	text-align:center;
 	margin-left:-10px
+}
+.eventsCard2 {
+	width: 224px;
+	height: 500px;
+	background: #ffffff;
+	border: 1px solid black;
+	margin: 1rem;
+	text-align:center;
+	margin-left:10px;
+	position: relative;
+}
+.num {
+    position: absolute;
+    bottom: 0;
+    margin-left:20px;
 }
 .content img{
     width: 224px;
@@ -161,6 +184,37 @@ label {
     justify-content: center;
     width: 800px;
     margin-left:100px;
+}
+h5{
+    font-weight:bold;
+}
+h6{
+    font-weight:bold;
+    margin-top:20px;
+}
+.num{
+    margin-top:80px;
+}
+.names{
+    margin-bottom:5px;
+}
+.signupss{
+    margin-top:-5px;
+}
+.attendees{
+    margin-top:30px;
+    font-weight:bold;
+}
+.Guolai2 {
+    border: #D6D2D2 1px solid;
+    padding: 1rem;
+    background-color: #ECE4CB;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    width: 750px;
+    margin-left:-150px;
 }
 .contentcreate{
     width: 55%;
