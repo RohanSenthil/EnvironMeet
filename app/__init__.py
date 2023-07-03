@@ -67,4 +67,4 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 from app import routes
 from app.util import filters
-from app.util import logging
+from app.logging import logging
