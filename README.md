@@ -11,7 +11,8 @@ In your virtual environment type
 Download Docker Desktop, Restart                               
 Open Docker Desktop
 Open your command line (windows) as administrator and type                      
-`wsl --update --web-download`                                                                                        
+`wsl --update --web-download`                            
+`echo 262144 >> /proc/sys/vm/max_map_count`                                
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
