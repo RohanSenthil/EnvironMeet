@@ -18,7 +18,11 @@ def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
     user = current_user
-    following = get_following(user)
+
+    if user.is_authenticated:
+        following = get_following(user)
+    else:
+        following = []
 
     return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, following=following)
 
@@ -30,12 +34,15 @@ def viewPost(encoded_hashedid):
     postid = id_mappings.hash_to_object_id(hashedid)
     if postid is not None:
         post = Posts.query.get(postid)
+    else:
+        post = None
 
     user = current_user
 
     if post is not None:
         return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
     else:
+        app.logger.error('Attempt to view non-existant post')
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
 

@@ -151,12 +151,16 @@ for (let i = 0; i < tabBtns.length; i++) {
     tabBtns[i].addEventListener('click', (e) => {
         for (let i = 0; i < tabBtns.length; i++) {
             tabBtns[i].classList.remove('active');
+        }
+        for (let i = 0; i < tabGroups.length; i++) {
             tabGroups[i].style.display = 'none';
         }
         e.target.classList.add('active');
         
         let tabName = (e.target.id).split('-')[0] + '-' + (e.target.id).split('-')[1]
-        document.getElementById(tabName).style.display = 'block';
+        if (document.getElementById(tabName)) {
+            document.getElementById(tabName).style.display = 'block';
+        }
 
     })
 }
