@@ -20,18 +20,18 @@
     {% endif %}
     {% endwith %}
     {% if loggedout == False %}
+    <h1>Update Details</h1>
+    <h2>{{ current_user.name }}</h2>
+    
+        <a href="/settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+          <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+          </svg>
+        </a>
+          <h1>
+          EnvironMeet - Update
+          </h1>
       {% if member %}
-        <h1>Update Details</h1>
-        <h2>{{ current_user.name }}</h2>
-        
-            <a href="/profile">
-              <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
-              <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
-              </svg>
-            </a>
-              <h1>
-              EnvironMeet - Update
-              </h1>
             <div class="cont">
               <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
                   <div class="form-group p-1">
@@ -58,17 +58,6 @@
                 </form>
             </div>
           {% elif organisation %}
-            <h1>Update Details</h1>
-            <h2>{{ current_user.name }}</h2>
-            
-                <a href="/profile">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
-                  <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
-                  </svg>
-                </a>
-                  <h1>
-                  EnvironMeet - Update
-                  </h1>
                 <div class="cont">
                   <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
                       <div class="form-group p-1">

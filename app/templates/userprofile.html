@@ -3,6 +3,7 @@
 {% block title %} EnvironMeet - My Profile {% endblock %}
 {% block head %}
 <link rel="stylesheet" href="../../static/styles/accounts.css">
+<link rel="stylesheet" href="../../static/styles/profile.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 {% endblock %}
 {% block content %}
@@ -21,8 +22,9 @@
     {% endwith %}
     {% if loggedout == False %}
         {% if member == True %}
+        <div class="main">
             <h1>Dashboard</h1>
-            <h2>Welcome {{ current_user.name }}!</h2>
+            <h2>{{ current_user.name }}</h2>
             {% if current_user.profile_pic %}
                 <div class="profile_pic">
                     <img src="{{ current_user.profile_pic }}" alt="">
@@ -39,17 +41,13 @@
 					<li><span class="profile-stat-count">{{ following }}</span> following</li>
                 </ul>
 			</div>
+        </div>
             <h3>Profile Pic: {{ profile_pic }}</h3>
-            <div class="">
-                <a href="/update">Update</a>
-            </div>
-            <div class="">
-                <a href="/logout">Logout</a>
-            </div>
 
         {% elif organisation == True %}
+        <div class="main">
             <h1>Organisation Dashboard</h1>
-            <h2>Welcome {{ current_user.name }}!</h2>
+            <h2>{{ current_user.name }}</h2>
             {% if current_user.profile_pic %}
                 <div class="banner_pic">
                     <img src="{{ current_user.profile_pic }}" alt="" class="img-fluid">
@@ -66,12 +64,20 @@
 					<li><span class="profile-stat-count">{{ following }}</span> following</li>
                 </ul>
 			</div>
-            <h3>Profile Pic: {{ profile_pic }}</h3>
-            <div class="">
-                <a href="/update">Update</a>
+        </div>
+            <div class="posts">
+                <h3>Posts</h3>
+                <!-- Display posts in format @rohan? -->
             </div>
-            <div class="">
-                <a href="/logout">Logout</a>
+            <div class="about">
+                <h3>About</h3>
+                <span>{{ current_user.description }}</span>
+            </div>
+            <div class="contact">
+                <h3>Contact us</h3>
+                <span>{{ current_user.contact }}</span>
+                <h3>Find us</h3>
+                <span>{{ current_user.address }}</span>
             </div>
         {% endif %}
     {% endif %}

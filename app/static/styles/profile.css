@@ -1,0 +1,24 @@
+.main{
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 2%;
+}
+.posts{
+    height: 100%;
+    width: 40%;
+    float: left;
+    background-color: white;
+    margin-left: 2%;
+    padding: 20px;
+    border-radius: 20px;
+}
+.about, .contact{
+    height: 50%;
+    width: 50%;
+    float: right;
+    background-color: white;
+    margin: 0 2% 2% 0;
+    padding: 20px;
+    border-radius: 20px;
+}

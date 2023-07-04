@@ -260,3 +260,7 @@ def unfollow(username):
     db.session.commit()
     flash('You have stopped following ' + username + '.',"info")
     return redirect(url_for('othersprofile', username=username))
+
+@app.route("/settings")
+def settings():
+    return render_template('settings.html')

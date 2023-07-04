@@ -1,0 +1,12 @@
+{% extends "user_base.html" %}
+{% set active_page = "settings" %}
+{% block title %} EnvironMeet - Settings {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/accounts.css">
+{% endblock %}
+{% block content %}
+<div class="">
+    <button class="btn btn-primary btn-block" onclick="location.href='/update'">Update</button>
+</div>
+
+{% endblock %}
