@@ -1,4 +1,5 @@
-{% extends "login_base.html" %}
+{% extends "user_base.html" %}
+{% set active_page = "profile" %}
 {% from '_formhelpers.html' import render_field %}
 {% block title %}EnvironMeet - Login{% endblock %}
 {% block head %}
@@ -21,12 +22,12 @@
   {% endwith %}
 <form method="POST" action="">
   
-    <div class="d-flex align-items-center mb-3 pb-1">
+    <!-- <div class="d-flex align-items-center mb-3 pb-1">
         <div class="logo">
             <img src="../static/images/environman.png" alt="">
         </div>
       <span class="h1 fw-bold mb-0">EnvironMeet</span>
-    </div>
+    </div> -->
     <h6 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Back to <a href="/feed">feed</a></h5>
     <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Sign In</h5>
     
@@ -47,8 +48,7 @@
     </div>
 
     <a class="small text-muted" href="/forget">Forgot password?</a>
-    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/register"
-        style="color: #393f81;">Register here</a></p>
+    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/register" style="color: #393f81;">Register here</a></p>
   </form>
 </div>
   {% endblock %}
