@@ -91,7 +91,6 @@ class createo(Form):
 
 class updateo(Form):
     name = StringField('Name', validators=[DataRequired()])
-    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     username = StringField('Username', validators=[DataRequired()])
     address = StringField('Address')
