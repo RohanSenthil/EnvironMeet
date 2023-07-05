@@ -33,10 +33,6 @@
     border-bottom: 2px solid #000;
 }
 
-.tabs-btns .active::after {
-    tra
-}
-
 .postBox {
     border: #D6D2D2 1px solid;
     padding: 1rem;
@@ -123,6 +119,31 @@
     bottom: 0;
     left: 0;
     cursor: pointer;
+}
+
+#addEventBtn {
+    width: 24px;
+    height: 24px;
+}
+
+#addEventInput {
+    border: 1px solid #D6D2D2;
+    width: 90%;
+}
+
+#eventsArrowInput:after {
+    content: url(https://i.stack.imgur.com/i9WFO.png);
+    margin-left: -20px; 
+    padding: .1em;
+    pointer-events:none;
+}
+
+#attended_events {
+    width: 90%;
+}
+
+#attended_events option {
+    width: 90%;
 }
 
 #previewImage {

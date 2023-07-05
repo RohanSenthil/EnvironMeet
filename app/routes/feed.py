@@ -94,7 +94,9 @@ def createPost():
         hashed_id = id_mappings.hash_object_id(object_id=newPost.id, act='post')
         id_mappings.store_id_mapping(object_id=newPost.id, hashed_value=hashed_id, act='post')
 
-    return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashed_id)))
+        return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashed_id)))
+    
+    return redirect(url_for('feed'))
 
 
 @app.route('/post/edit/<hashedid>', methods=['POST'])
