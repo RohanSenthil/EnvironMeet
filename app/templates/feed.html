@@ -53,7 +53,7 @@
     {% endif %}
 
     <div class="tabs">
-        {% if not user.is_authenticated %}
+        {% if user.is_authenticated %}
         <div class="tab-group" id="following-tab">
             <div class="postsContainer">
                 {% for post in posts|reverse %}
