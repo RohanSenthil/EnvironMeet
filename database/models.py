@@ -239,6 +239,8 @@ class Attendance(db.Model):
     event = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
     member = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    events = db.relationship('Events', backref='/attendance')
+
     def __init__(self, event, member):
         self.event = event
         self.member = member

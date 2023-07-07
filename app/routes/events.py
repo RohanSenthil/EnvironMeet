@@ -107,3 +107,9 @@ def transfer_column():
     db.session.commit()
 
     return 'Column transferred successfully!'
+
+@app.template_filter('isinstance')
+def jinja2_isinstance(obj, classinfo):
+    return isinstance(obj, classinfo)
+
+app.jinja_env.filters['isinstance'] = jinja2_isinstance

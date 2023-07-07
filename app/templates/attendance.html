@@ -9,21 +9,13 @@
 
 
 <div class="content">
-    <h1 class="hiaa">Your attendance</h1>
+   <h1 class="hiaa">Your attendance</h1>
     <table>
-        <tr>
-            <th>List of events to attend</th>
-            {% if currentuser.member %}
-                <!-- Additional column for members -->
-                <th>Events attended by you</th>
-            {% endif %}
-        </tr>
-        {% for record in records %}
-        <tr>
-            <td>{{ get_event_from_id(record.eventid).name }}</td>
-        </tr>
-        {% endfor %}
+        <tr><th>List of events to attend</th></tr>
     </table>
+    {% for record in records %}
+        <p>Event ID: {{ record.events.id }}, Event Name: {{ record.events.name }}</p>
+    {% endfor %}
 </div>
 
 {% endblock %}
