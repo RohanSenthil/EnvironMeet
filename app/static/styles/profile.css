@@ -22,3 +22,11 @@
     padding: 20px;
     border-radius: 20px;
 }
+
+.profile {
+    text-align: center;
+}
+
+.backbutton {
+    text-align: left;
+}

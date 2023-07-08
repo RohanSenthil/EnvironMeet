@@ -243,7 +243,7 @@ def follow(username):
         return redirect(url_for('othersprofile', username=username))
     db.session.add(u)
     db.session.commit()
-    flash('You are now following ' + username + '!',"success")
+    flash('You are now following ' + username + '!',"info")
     return redirect(url_for('othersprofile', username=username))
 
 @app.route('/unfollow/<username>')
