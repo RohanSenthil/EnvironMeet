@@ -177,6 +177,10 @@ def deletePost(hashedid):
 
             id_mappings.delete_id_mapping(hashedid)
 
+            for comment in post.comments:
+                commentHashedid = id_mappings.object_id_to_hash(comment.id)
+                id_mappings.delete_id_mapping(commentHashedid)
+
         else:
             return jsonify({'error': 'Unauthorized'}, 401)
 
