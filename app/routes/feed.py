@@ -2,7 +2,7 @@ from flask_login import login_required, current_user
 from app import app, db
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Posts, Likes, Comments
+from database.models import Posts, Likes, Comments, Attendance
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os
@@ -55,6 +55,12 @@ def viewPost(encoded_hashedid):
 @login_required
 def createPost():
     newPostForm = PostForm()
+
+    # event_choices = newPostForm.event.choices
+    # attendedEvents = Attendance.query.filter_by(userid=current_user.id)
+    # events_list=[(i.eventid, id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
+    # newPostForm.event.choices = evnet_choices + events_list
+
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
         newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
@@ -86,26 +92,26 @@ def createPost():
     
             randomized_image = validation.randomize_image(og_image)
 
-            # image_format = og_image.format
-            # image_buffer = io.BytesIO()
-            # randomized_image.save(image_buffer, format=image_format)
-            # image_bytes = image_buffer.getvalue()
-
             path_list = newPost.image.split('/')[1:]
             new_path = '/'.join(path_list)
             newPost.image = new_path
             randomized_image.save('app/' + new_path)
-            # if os.path.exists(image_path):
-            #         os.remove(image_path)
+
+            # with open('app/' + new_path, 'rb') as file:
+            #     image_data = file.read()
 
             # response = requests.post(
             #     'https://api.imgbb.com/1/upload',
             #     params={'key': os.environ.get('IMGBB_API_KEY')},
-            #     files={'image': base64.b64encode(image_bytes)}
+            #     files={'image': (secureFilename, image_data)}
             # )
 
-            # print(response)
-            # image_url = response.json()['data']['url']
+            # if os.path.exists('app/' + new_path):
+            #         os.remove('app/' + new_path)
+
+            # print(response.json())
+            # image_url = response.json()['data']['display_url']
+            # delete_url = response.json()['data']['delete_url']
             # newPost.image = image_url
 
         db.session.add(newPost)
@@ -158,8 +164,6 @@ def deletePost(hashedid):
     if postid is None:
         return jsonify({'error': 'id does not exist'}, 404)
 
-    # Implement Authorisation Check
-
     post = Posts.query.get(postid)
 
     if post is not None:
@@ -172,14 +176,20 @@ def deletePost(hashedid):
                 if os.path.exists(imageFileName):
                     os.remove(imageFileName)
 
+            for comment in post.comments:
+                commentHashedid = id_mappings.object_id_to_hash(comment.id)
+                id_mappings.delete_id_mapping(commentHashedid)
+
             db.session.delete(post)
             db.session.commit()
 
             id_mappings.delete_id_mapping(hashedid)
 
-            for comment in post.comments:
-                commentHashedid = id_mappings.object_id_to_hash(comment.id)
-                id_mappings.delete_id_mapping(commentHashedid)
+            # response = requests.delete(
+            #     delete_url,
+            #     params={'key': os.environ.get('IMGBB_API_KEY')},
+            # )
+            # print(response.json())
 
         else:
             return jsonify({'error': 'Unauthorized'}, 401)

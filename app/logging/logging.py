@@ -40,8 +40,8 @@ class OpenSearchLogHandler(logging.Handler):
 
 with app.app_context():
 
-    connected = log_client.ping()
-    # connected = False
+    # connected = log_client.ping()
+    connected = False
 
     if connected:
 
