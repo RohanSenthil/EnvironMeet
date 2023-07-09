@@ -28,7 +28,7 @@ from wtforms.fields import DateField
 #     elif field.data < 0 or field.data > 100:
 #         raise ValidationError("Discount must be between 0 and 100")
 class FormEvents(Form):
-    organiser = StringField('Organization: ', validators=[InputRequired()])
+    organiser = StringField('Organization: ', render_kw={'readonly': True}, validators=[InputRequired()])
     name = StringField('Name of event:', validators= [InputRequired()])
     date = DateField('Date: ',  validators= [InputRequired()])
     time = TimeField('Time: ',  validators= [InputRequired()])

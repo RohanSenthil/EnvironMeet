@@ -21,25 +21,29 @@
                     </div>
             </div>
         </div>
+        {% if user.is_authenticated %}
     <div class="bingchilling">
+            {% if user|isinstance(orgObj) %}
             <div class="push">
                 <a href="events/add" role="button" class="wgaming">Create Event</a>
             </div>
+            {% endif %}
 
-        <!-- Sign up Button (for members) -->
-            <div class="push">
-                <a href="events/signup" role="button" class="egioesigseions">Sign up</a>
-            </div>
+            {% if user|isinstance(memberObj) %}
         <!-- Check Attendance Button (for members) -->
             <div class="push">
                 <a href="/attendance" role="button" class="egioesigseions">Check Attendance</a>
             </div>
+            {% endif %}
 
         <!-- Check Events Attendance (Orgs) Button (for organizations) -->
+            {% if user|isinstance(orgObj) %}
             <div class="push">
-                <a href="/attendance/checkorgs" role="button" class="egioesigseions">Check Events Attendance (Orgs)</a>
+                <a href="/attendance/checkorgs" role="button" class="egioesigseions">Manage Events</a>
             </div>
+            {% endif %}
     </div>
+    {% endif %}
     </div>
     <div class="Guolai">
     <div class="EventsContainer1">
@@ -59,7 +63,12 @@
             <p class="lavel" id="PRICE">Price:</p>{{ event.price }}
             <div class="eventorg">
             <p class="lavel" id="org">Organiser:</p><span class="lol">{{ event.organiser }}</span></br>
-                </div>
+            </div>
+            <!-- Sign up Button (for members) -->
+            <div class="push">
+                <!-- Utilise my hash id functions on ur own pls thx -->
+                <a href="{{ url_for('signup_events', hashedEventid=object_id_to_hash(event.id, act='event')) }}" role="button" class="egioesigseions">Sign up</a>
+            </div>
         </div>
         {% endfor %}
     </div>

@@ -1,9 +1,9 @@
-from app import app
+from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Events, SignUps, db, Attendance
+from database.models import Events, SignUps, Attendance, Members, Organisations
 from app.forms.eventsform import FormEvents
 from app.forms.eventssignup import SignUp
-from app.util import validation
+from app.util import validation, id_mappings
 from PIL import Image
 import os
 from flask.json import jsonify
@@ -11,25 +11,37 @@ from werkzeug.utils import secure_filename
 import uuid
 from datetime import datetime
 from sqlalchemy import create_engine, text
+from flask_login import login_required, current_user
 
 @app.route('/events')
 def events():
     events = Events.query.all()
+    user = current_user
 
-    return render_template('events.html', events=events)
+    return render_template('events.html', events=events, user=user, orgObj=Organisations, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash)
 
 @app.route('/events/add', methods=["GET","POST"])
+@login_required
 def add_events():
 
+    if not isinstance(current_user, Organisations):
+        return jsonify({'error': 'Unauthorized'}, 401)
+
     form = FormEvents(request.form)
+    form.organiser.data = current_user.name
+
     if request.method == "POST" and form.validate():
-        event = Events(organiser=form.organiser.data, name=form.name.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
+
+        if form.organiser.data != current_user.name:
+            return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
+
+        event = Events(organiser=current_user.id, name=form.name.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
 
         uploaded_file = request.files['image']
         #Upload images to uploads folder
         max_content_length = 5 * 1024 * 1024
 
-        if uploaded_file is not None:
+        if uploaded_file.filename != '':
 
             if not validation.file_is_image(uploaded_file.stream):
                 return jsonify({'error': 'File type not allowed'}, 400)
@@ -59,21 +71,44 @@ def add_events():
 
         db.session.add(event)
         db.session.commit()
-        db.session.close()
+
+        hashed_id = id_mappings.hash_object_id(object_id=event.id, act='event')
+        id_mappings.store_id_mapping(object_id=event.id, hashed_value=hashed_id, act='event')
+
         return redirect(url_for('events'))
 
     return render_template('addevents.html', form=form)
 
-@app.route('/events/signup', methods=["GET","POST"])
-def signup_events():
-    signup = SignUp(request.form)
+@app.route('/events/signup/<hashedEventid>', methods=["GET","POST"])
+@login_required
+def signup_events(hashedEventid):
 
-    eventss = Events.query.all()
-    events_list=[(i.id, i.name) for i in eventss]
-    signup.eventid.choices = events_list
+    if not isinstance(current_user, Members):
+        return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
+    
+    eventid = id_mappings.hash_to_object_id(hashedEventid)
+    if eventid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
+    
+    print(eventid)
+    event = Events.query.get(eventid)
+    user = current_user
+
+    signup = SignUp(request.form)
+    signup.name.data = user.name
+    signup.email.data = user.email
+    signup.eventid.data = event.name
+
+    # eventss = Events.query.all()
+    # events_list=[(i.id, i.name) for i in eventss]
+    # signup.eventid.choices = events_list
 
     if request.method == "POST" and signup.validate():
-        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=signup.eventid.data)
+
+        if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
+            return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
+
+        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=eventid)
         db.session.add(signup)
         db.session.commit()
         db.session.close()
@@ -86,7 +121,7 @@ def signup_events():
         # db.session.close()
         return redirect(url_for('events'))
 
-    return render_template('eventssignup.html', signup=signup, eventss=eventss)
+    return render_template('eventssignup.html', signup=signup, event=event, user=user)
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer_column():
@@ -107,9 +142,3 @@ def transfer_column():
     db.session.commit()
 
     return 'Column transferred successfully!'
-
-@app.template_filter('isinstance')
-def jinja2_isinstance(obj, classinfo):
-    return isinstance(obj, classinfo)
-
-app.jinja_env.filters['isinstance'] = jinja2_isinstance
