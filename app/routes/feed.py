@@ -11,6 +11,9 @@ from app.util import share, validation, id_mappings
 from app.util.helpers import get_following
 import uuid
 from PIL import Image
+import requests
+import base64
+import io
 
 
 @app.route('/feed', methods=['GET'])
@@ -80,13 +83,30 @@ def createPost():
                 og_image = Image.open(uploaded_file)
 
             newPost.image = image_path
-
+    
             randomized_image = validation.randomize_image(og_image)
+
+            # image_format = og_image.format
+            # image_buffer = io.BytesIO()
+            # randomized_image.save(image_buffer, format=image_format)
+            # image_bytes = image_buffer.getvalue()
 
             path_list = newPost.image.split('/')[1:]
             new_path = '/'.join(path_list)
             newPost.image = new_path
             randomized_image.save('app/' + new_path)
+            # if os.path.exists(image_path):
+            #         os.remove(image_path)
+
+            # response = requests.post(
+            #     'https://api.imgbb.com/1/upload',
+            #     params={'key': os.environ.get('IMGBB_API_KEY')},
+            #     files={'image': base64.b64encode(image_bytes)}
+            # )
+
+            # print(response)
+            # image_url = response.json()['data']['url']
+            # newPost.image = image_url
 
         db.session.add(newPost)
         db.session.commit()
