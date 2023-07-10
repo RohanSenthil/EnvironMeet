@@ -42,7 +42,7 @@
           <td>{{ member.contact }}</td>
           <td>{{ member.points }}</td>
           <td>
-            <a href="{{ url_for('updatemember', id=member.id) }}">
+            <a href="{{ url_for('updatemember', id=member.id) }}"> <!-- , hashedid=object_id_to_hash(object_id=member.id, act='member')-->
               <svg id="update" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
                 <g id="ic_border_color_24px" transform="translate(0 0.003)">
                   <path id="Path_81" data-name="Path 81" d="M17.75,7,14,3.25l-10,10V17H7.75Zm2.96-2.96a1,1,0,0,0,0-1.41L18.37.29a1,1,0,0,0-1.41,0L15,2.25,18.75,6Z"/>
@@ -78,7 +78,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger"><a href="{{ url_for('deletemember', id=member.id) }}" id="deletebtn" style="color: white !important;">Delete</a></button>
+        <button type="button" class="btn btn-danger"><a href="{{ url_for('deletemember', id=member.id) }}" id="deletebtn" style="color: white !important;">Delete</a></button> <!-- , hashedid=object_id_to_hash(object_id=member.id, act='member') -->
       </div>
     </div>
   </div>

@@ -11,12 +11,13 @@ import bcrypt
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
+from app.util import share, validation, id_mappings
 
 #MEMBERS
-@app.route('/members')
+@app.route('/members', methods=['GET'])
 def members():
-    members = Members.query.all()
-    return render_template('/accounts/member/members.html', members=members)
+    members = Members.query.all() 
+    return render_template('/accounts/member/members.html', members=members)#, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id
 
 
 @app.route('/members/create', methods=['GET','POST'])
@@ -41,12 +42,14 @@ def createmember():
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name)
         db.session.add(member)
         db.session.commit()
-        db.session.close()
-        return redirect(url_for('members'))
+        # hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
+        # id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        return redirect(url_for('members'))#, hashed_id=hashed_id
     return render_template('/accounts/member/createm.html', form=createform)
 
 @app.route('/members/update/<id>', methods=['GET','POST'])
 def updatemember(id):
+    # memid = id_mappings.hash_to_object_id(hashedid)
     updateform = updatem(request.form)
     oldmem = Members.query.get(id)
     if request.method == "POST" and updateform.validate():
@@ -73,7 +76,7 @@ def updatemember(id):
         db.session.commit()
         db.session.close()
 
-        return redirect(url_for('members'))
+        return redirect(url_for('members'))#, hashedid=hashedid
     else:
         updateform.name.data = oldmem.name
         updateform.username.data = oldmem.username
@@ -85,10 +88,12 @@ def updatemember(id):
 @app.route('/members/delete/<id>')
 # @privileged_route("admin")
 def deletemember(id):
+    # memid = id_mappings.hash_to_object_id(hashedid)
     member = Members.query.filter_by(id=id).first()
     if member:
         db.session.delete(member)
         db.session.commit()
+        # id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('members'))
 
 
