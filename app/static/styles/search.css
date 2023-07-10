@@ -23,3 +23,7 @@
     left: 0;
     z-index: 1;
 }
+
+.card-img-top {
+    border-radius: 50%;
+}

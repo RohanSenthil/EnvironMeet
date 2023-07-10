@@ -30,3 +30,11 @@
 .backbutton {
     text-align: left;
 }
+
+.profile_pic{
+    text-align: center;
+}
+
+.profile_pic img{
+    border-radius: 50%;
+}
