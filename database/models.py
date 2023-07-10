@@ -194,7 +194,7 @@ class Events(db.Model):
     __tablename__ = 'events2'
 
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
-    organiser = db.Column(db.String(100))
+    organiser = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     name = db.Column(db.String(100))
     date = db.Column(db.Text)
     time = db.Column(db.Text)
@@ -233,7 +233,7 @@ class SignUps(db.Model):
 
 class Attendance(db.Model):
 
-    __tablename__ = 'attendance3'
+    __tablename__ = 'attendance'
 
     id = db.Column(db.Integer, db.Sequence('attendance_id_seq'), unique=True, primary_key = True)
     event = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)

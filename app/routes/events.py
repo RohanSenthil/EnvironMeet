@@ -18,7 +18,7 @@ def events():
     events = Events.query.all()
     user = current_user
 
-    return render_template('events.html', events=events, user=user, orgObj=Organisations, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash)
+    return render_template('events.html', events=events, user=user, orgObj=Organisations, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 @app.route('/events/add', methods=["GET","POST"])
 @login_required
@@ -81,32 +81,32 @@ def add_events():
 
 @app.route('/events/signup/<hashedEventid>', methods=["GET","POST"])
 @login_required
-def signup_events(hashedEventid):
+def signup_events():
 
-    if not isinstance(current_user, Members):
-        return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
+    # if not isinstance(current_user, Members):
+    #     return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
+    #
+    # eventid = id_mappings.hash_to_object_id(hashedEventid)
+    # if eventid is None:
+    #     return jsonify({'error': 'id does not exist'}, 404)
     
-    eventid = id_mappings.hash_to_object_id(hashedEventid)
-    if eventid is None:
-        return jsonify({'error': 'id does not exist'}, 404)
-    
-    print(eventid)
-    event = Events.query.get(eventid)
-    user = current_user
+    # print(eventid)
+    # event = Events.query.get(eventid)
+    # user = current_user
 
     signup = SignUp(request.form)
-    signup.name.data = user.name
-    signup.email.data = user.email
-    signup.eventid.data = event.name
+    # signup.name.data = user.name
+    # signup.email.data = user.email
+    # signup.eventid.data = event.name
 
-    # eventss = Events.query.all()
-    # events_list=[(i.id, i.name) for i in eventss]
-    # signup.eventid.choices = events_list
+    eventss = Events.query.all()
+    events_list=[(i.id, i.name) for i in eventss]
+    signup.eventid.choices = events_list
 
     if request.method == "POST" and signup.validate():
 
-        if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
-            return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
+        # if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
+        #     return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
 
         signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=eventid)
         db.session.add(signup)

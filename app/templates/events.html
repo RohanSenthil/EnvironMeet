@@ -42,6 +42,15 @@
                 <a href="/attendance/checkorgs" role="button" class="egioesigseions">Manage Events</a>
             </div>
             {% endif %}
+
+            {% if user|isinstance(memberObj) %}
+                    <!-- Sign up Button (for members) -->
+            <div class="push">
+                <!-- Utilise my hash id functions on ur own pls thx -->
+                <a href="events/signup" role="button" class="egioesigseions">Sign up</a>
+            </div>
+            {% endif %}
+
     </div>
     {% endif %}
     </div>
@@ -62,12 +71,7 @@
             {{ event.time }}
             <p class="lavel" id="PRICE">Price:</p>{{ event.price }}
             <div class="eventorg">
-            <p class="lavel" id="org">Organiser:</p><span class="lol">{{ event.organiser }}</span></br>
-            </div>
-            <!-- Sign up Button (for members) -->
-            <div class="push">
-                <!-- Utilise my hash id functions on ur own pls thx -->
-                <a href="{{ url_for('signup_events', hashedEventid=object_id_to_hash(event.id, act='event')) }}" role="button" class="egioesigseions">Sign up</a>
+            <p class="lavel" id="org">Organiser:</p><span class="lol">{{ get_user_from_id(event.organiser).name }}</span></br>
             </div>
         </div>
         {% endfor %}

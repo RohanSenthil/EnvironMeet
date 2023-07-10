@@ -9,13 +9,23 @@
 
 
 <div class="content">
-   <h1 class="hiaa">Your attendance</h1>
-    <table>
-        <tr><th>List of events to attend</th></tr>
-    </table>
-    {% for record in records %}
-        <p>Event ID: {{ record.event }}, Event Name: {{ get_event_from_id(record.event).name }}</p>
-    {% endfor %}
+   <h1 class="hiaa">Your events attendance</h1>
+    <div class="Guolai2">
+        {% for record in records %}
+        <div class="EventsContainer2">
+                    <div class="eventsCard2">
+                        <h5>{{ get_event_from_id(record.event).name }}</h5>
+                        <div class="eventimage">
+                {% if get_event_from_id(record.event).image is not none %}
+                <img src="/{{ get_event_from_id(record.event).image }}">
+                {% endif %}
+            </div>
+        <h6>Date:</br>{{ get_event_from_id(record.event).date }}</h6>
+        <h6>Time (24Hr Format):</br>{{ get_event_from_id(record.event).time }}</h6>
+        </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
