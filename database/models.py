@@ -276,6 +276,48 @@ class LeaderboardContent(db.Model):
         self.memberid = memberid
         self.memberpoints = memberpoints
 
+class PostReport(db.Model):
+    __tablename__ = 'postreport'
+
+    id = db.Column(db.Integer, db.Sequence('postreport_id_seq'), primary_key=True)
+    postid = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    author = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating disorders', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    reporter = db.Column(db.Integer)
+
+    def __init__(self, postid, author, reason, reporter):
+        self.postid = postid
+        self.author = author
+        self.reason = reason
+        self.reporter = reporter
+
+class UserReport(db.Model):
+    __tablename__ = 'userreport'
+
+    id = db.Column(db.Integer, db.Sequence('userreport_id_seq'), primary_key=True)
+    userreported = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating disorders', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    reporter = db.Column(db.Integer)
+
+    def __init__(self, userreported, reason, reporter):
+        self.userreported = userreported
+        self.reason = reason
+        self.reporter = reporter
+
+class EventReport(db.Model):
+    __tablename__ = 'eventreport'
+
+    id = db.Column(db.Integer, db.Sequence('eventreport_id_seq'), primary_key=True)
+    eventreported = db.Column(db.Integer, db.ForeignKey('events2'), nullable=False)
+    reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating disorders', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    reporter = db.Column(db.Integer)
+
+    def __init__(self, eventreported, reason, reporter):
+        self.eventreported = eventreported
+        self.reason = reason
+        self.reporter = reporter
+
+
 class Id_Hash_Mappings(db.Model):
 
     __tablename__ = 'id_hash_mappings'
