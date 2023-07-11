@@ -81,44 +81,43 @@ def add_events():
 
 @app.route('/events/signup/<hashedEventid>', methods=["GET","POST"])
 @login_required
-def signup_events():
+def signup_events(hashedEventid):
 
-    # if not isinstance(current_user, Members):
-    #     return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
-    #
-    # eventid = id_mappings.hash_to_object_id(hashedEventid)
-    # if eventid is None:
-    #     return jsonify({'error': 'id does not exist'}, 404)
+    if not isinstance(current_user, Members):
+        return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
     
-    # print(eventid)
-    # event = Events.query.get(eventid)
-    # user = current_user
+    eventid = id_mappings.hash_to_object_id(hashedEventid)
+    if eventid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
+    
+    print(eventid)
+    event = Events.query.get(eventid)
+    user = current_user
 
     signup = SignUp(request.form)
-    # signup.name.data = user.name
-    # signup.email.data = user.email
-    # signup.eventid.data = event.name
+    signup.name.data = user.name
+    signup.email.data = user.email
+    signup.eventid.data = event.name
 
-    eventss = Events.query.all()
-    events_list=[(i.id, i.name) for i in eventss]
-    signup.eventid.choices = events_list
+    # eventss = Events.query.all()
+    # events_list=[(i.id, i.name) for i in eventss]
+    # signup.eventid.choices = events_list
 
     if request.method == "POST" and signup.validate():
 
-        # if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
-        #     return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
+        if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
+            return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
 
         signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=eventid)
         db.session.add(signup)
         db.session.commit()
+        
+        signup_id = signup.id
+        
+        attendance = Attendance(event=eventid, member=user.id)
+        db.session.add(attendance)
+        db.session.commit()
         db.session.close()
-        #
-        # signup_id = signup.id
-        #
-        # attendance = Attendance(signup_id=signup_id, event=signup.eventid.data)
-        # db.session.add(attendance)
-        # db.session.commit()
-        # db.session.close()
         return redirect(url_for('events'))
 
     return render_template('eventssignup.html', signup=signup, event=event, user=user)
