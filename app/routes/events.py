@@ -108,7 +108,7 @@ def signup_events(hashedEventid):
         if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
 
-        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=eventid)
+        signup = SignUps(user_id=user.id, name=signup.name.data, email=signup.email.data, eventid=eventid)
         db.session.add(signup)
         db.session.commit()
         
@@ -120,7 +120,7 @@ def signup_events(hashedEventid):
         db.session.close()
         return redirect(url_for('events'))
 
-    return render_template('eventssignup.html', signup=signup, eventss=eventss)
+    return render_template('eventssignup.html', signup=signup, event=event)
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer_column():

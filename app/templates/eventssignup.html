@@ -12,6 +12,9 @@
     <h1 class="hiaa">Sign up for Event</h1>
     <div class="stuff">
         <form method="POST">
+            <div class="form-group col" id="remainings4">
+                {{ signup.name(class="form-control", type="hidden", value=current_user.id) }}
+            </div>
             <div class="form-group col" id="remainings">
                 {{ render_field(signup.name, class="form-control") }}
             </div>

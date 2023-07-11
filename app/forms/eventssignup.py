@@ -21,7 +21,7 @@ from flask import Flask
 class SignUp(Form):
     name = StringField('Name:', validators= [InputRequired()])
     email = StringField('Email:', validators=[DataRequired(), Email()])
-    eventid = SelectField('Event Name:', validators=[InputRequired()])
+    eventid = StringField('Event Name:', validators=[InputRequired()])
 
 
 

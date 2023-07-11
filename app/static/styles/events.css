@@ -13,6 +13,18 @@
     border-radius: 2rem;
     padding: 0.5rem 1rem;
 }
+.content2 {
+  margin: 0 auto;
+  padding-top: 3%;
+  padding-right: 3%;
+}
+#tsm img{
+    max-height:10%;
+    max-width:10%;
+}
+#tsm{
+
+}
 .egioesigseions{
     color: #fff !important;
     background-color: var(--env-green);
