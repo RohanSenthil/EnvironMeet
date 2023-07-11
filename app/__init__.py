@@ -65,6 +65,9 @@ mail = Mail(app)
 UPLOAD_FOLDER = 'app/static/uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+#verification\
+app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT') 
+
 from app import routes
 from app.util import filters
 from app.logging import logging

@@ -11,7 +11,9 @@ import bcrypt
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
+from app.util import share, validation, id_mappings, verification
 
+# @check_is_confirmed
 
 @app.route('/profile', methods=['GET', 'POST'])
 def userprofile():
@@ -131,12 +133,6 @@ def profileupdate():
 @loginmanager.user_loader
 def load_user(email):
     return Users.query.get(email)
-# @loginmanager.user_loader
-# def load_user(user_id):
-#     try:
-#         return Customer.query.get(int(user_id))
-#     except:
-#         return Employee.query.get(int(user_id))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_():

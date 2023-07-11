@@ -3,7 +3,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
-from app import app, loginmanager
+from app import app, loginmanager, mail
 from database.models import Members, Organisations, db, Users
 from app.forms.accountsform import createm, updatem, login, createo, updateo
 from app.routes.helpers import provide_new_login_token, privileged_route
@@ -11,7 +11,9 @@ import bcrypt
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
-from app.util import share, validation, id_mappings
+from app.util import share, validation, id_mappings, verification
+from itsdangerous import URLSafeTimedSerializer
+from datetime import datetime
 
 #MEMBERS
 @app.route('/members', methods=['GET'])
@@ -39,11 +41,13 @@ def createmember():
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name)
+        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
+        sendverificationemail(member)
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('members'))#, hashed_id=hashed_id
     return render_template('/accounts/member/createm.html', form=createform)
 
@@ -105,32 +109,24 @@ def registermember():
         emaill = str(registerform.email.data).lower()
         usernamee = str(registerform.username.data).lower()
         passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0)
+        member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
+        sendverificationemail(member)
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('login_'))
 
     return render_template('register.html', form=registerform)
 
-
-
-
-
-
-
-
-
-
-'''
 @app.route("/confirm/<token>")
 def confirm_email(token):
     if current_user.is_confirmed:
         flash("Account already confirmed.", "success")
-        return redirect(url_for("core.home"))
+        return redirect(url_for("userprofile"))
     email = confirm_token(token)
-    user = User.query.filter_by(email=current_user.email).first_or_404()
+    user = Users.query.filter_by(email=current_user.email).first_or_404()
     if user.email == email:
         user.is_confirmed = True
         user.confirmed_on = datetime.now()
@@ -139,8 +135,41 @@ def confirm_email(token):
         flash("You have confirmed your account. Thanks!", "success")
     else:
         flash("The confirmation link is invalid or has expired.", "danger")
-    return redirect(url_for("core.home"))
-'''
+    return redirect(url_for("userprofile"))
+
+
+def generate_token(email):
+    serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+    return serializer.dumps(email, salt=app.config["SECURITY_PASSWORD_SALT"])
+
+
+def confirm_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+    try:
+        email = serializer.loads(
+            token, salt=app.config["SECURITY_PASSWORD_SALT"], max_age=expiration
+        )
+        return email
+    except Exception:
+        return False
+
+
+def sendverificationemail(user):
+    token = generate_token(user.email)
+    msg = Message()
+    msg.subject = "Verify Account"
+    msg.recipients = [user.email]
+    msg.sender = 'environmeet@outlook.com'
+    msg.body = f'''Hello, {user.name}\nVerify the email for your Environmeet account by clicking the link: \n{url_for('confirm_email', token=token, _external=True)}
+    \nIf you did not request this password reset, please let us know immediately.
+    \nBest regards,\nThe Environmeet Team
+    '''
+    mail.send(msg)
+
+
+
+
+
 
 
 

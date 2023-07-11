@@ -7,7 +7,18 @@
 {% endblock %}
 {% block content %}
 <div class="content">
-
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class='flashes'>
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} " id='alert'>
+    <span>{{ message }}</span>
+    <button type="button" style='float:right;'class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
   <a href="/admin">
     <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
     <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
