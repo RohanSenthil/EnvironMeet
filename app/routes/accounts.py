@@ -17,7 +17,7 @@ from app.util import share, validation, id_mappings
 @app.route('/members', methods=['GET'])
 def members():
     members = Members.query.all() 
-    return render_template('/accounts/member/members.html', members=members)#, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id
+    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash)#, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id
 
 
 @app.route('/members/create', methods=['GET','POST'])
@@ -42,16 +42,16 @@ def createmember():
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name)
         db.session.add(member)
         db.session.commit()
-        # hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
-        # id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
+        id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         return redirect(url_for('members'))#, hashed_id=hashed_id
     return render_template('/accounts/member/createm.html', form=createform)
 
-@app.route('/members/update/<id>', methods=['GET','POST'])
-def updatemember(id):
-    # memid = id_mappings.hash_to_object_id(hashedid)
+@app.route('/members/update/<hashedid>', methods=['GET','POST'])
+def updatemember(hashedid):
+    memid = id_mappings.hash_to_object_id(hashedid)
     updateform = updatem(request.form)
-    oldmem = Members.query.get(id)
+    oldmem = Members.query.get(memid)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
         username = request.form['username']
