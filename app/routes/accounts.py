@@ -122,6 +122,9 @@ def registermember():
 
 @app.route("/confirm/<token>")
 def confirm_email(token):
+    if not current_user.is_authenticated:
+        flash("Please login to your account first. Then, click on the verify link in your email again.", "primary")
+        return redirect(url_for("login_"))
     if current_user.is_confirmed:
         flash("Account already confirmed.", "success")
         return redirect(url_for("userprofile"))
@@ -161,7 +164,6 @@ def sendverificationemail(user):
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
     msg.body = f'''Hello, {user.name}\nVerify the email for your Environmeet account by clicking the link: \n{url_for('confirm_email', token=token, _external=True)}
-    \nIf you did not request this password reset, please let us know immediately.
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
