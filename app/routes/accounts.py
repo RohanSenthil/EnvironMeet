@@ -85,15 +85,15 @@ def updatemember(hashedid):
 
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 
-@app.route('/members/delete/<id>')
+@app.route('/members/delete/<hashedid>')
 # @privileged_route("admin")
-def deletemember(id):
-    # memid = id_mappings.hash_to_object_id(hashedid)
-    member = Members.query.filter_by(id=id).first()
+def deletemember(hashedid):
+    memid = id_mappings.hash_to_object_id(hashedid)
+    member = Members.query.filter_by(id=memid).first()
     if member:
         db.session.delete(member)
         db.session.commit()
-        # id_mappings.delete_id_mapping(hashedid)
+        id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('members'))
 
 
@@ -108,7 +108,8 @@ def registermember():
         member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0)
         db.session.add(member)
         db.session.commit()
-        db.session.close()
+        hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
+        id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         return redirect(url_for('login_'))
 
     return render_template('register.html', form=registerform)

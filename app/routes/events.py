@@ -120,7 +120,7 @@ def signup_events(hashedEventid):
         db.session.close()
         return redirect(url_for('events'))
 
-    return render_template('eventssignup.html', signup=signup, event=event, user=user)
+    return render_template('eventssignup.html', signup=signup, eventss=eventss)
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer_column():
