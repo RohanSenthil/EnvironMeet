@@ -79,36 +79,17 @@ def add_events():
 
     return render_template('addevents.html', form=form)
 
-@app.route('/events/signup/<hashedEventid>', methods=["GET","POST"])
-@login_required
+@app.route('/events/signup', methods=["GET","POST"])
 def signup_events():
-
-    # if not isinstance(current_user, Members):
-    #     return jsonify({'error': 'Unauthorized, only members can sign up'}, 401)
-    #
-    # eventid = id_mappings.hash_to_object_id(hashedEventid)
-    # if eventid is None:
-    #     return jsonify({'error': 'id does not exist'}, 404)
-    
-    # print(eventid)
-    # event = Events.query.get(eventid)
-    # user = current_user
-
     signup = SignUp(request.form)
-    # signup.name.data = user.name
-    # signup.email.data = user.email
-    # signup.eventid.data = event.name
-
+    signup.name.data = current_user.name
+    signup.email.data = current_user.email
     eventss = Events.query.all()
     events_list=[(i.id, i.name) for i in eventss]
     signup.eventid.choices = events_list
 
     if request.method == "POST" and signup.validate():
-
-        # if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
-        #     return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
-
-        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=eventid)
+        signup = SignUps(name=signup.name.data, email=signup.email.data, eventid=signup.eventid.data)
         db.session.add(signup)
         db.session.commit()
         db.session.close()
@@ -121,7 +102,7 @@ def signup_events():
         # db.session.close()
         return redirect(url_for('events'))
 
-    return render_template('eventssignup.html', signup=signup, event=event, user=user)
+    return render_template('eventssignup.html', signup=signup, eventss=eventss)
 
 @app.route('/transfer', methods=['GET', 'POST'])
 def transfer_column():
