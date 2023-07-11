@@ -24,6 +24,11 @@ def feed():
 
     if user.is_authenticated:
         following = get_following(user)
+
+        # event_choices = newPostForm.event.choices
+        # attendedEvents = Attendance.query.filter_by(userid=current_user.id)
+        # events_list=[(i.eventid, id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
+        # newPostForm.event.choices = evnet_choices + events_list
     else:
         following = []
 
@@ -55,11 +60,6 @@ def viewPost(encoded_hashedid):
 @login_required
 def createPost():
     newPostForm = PostForm()
-
-    # event_choices = newPostForm.event.choices
-    # attendedEvents = Attendance.query.filter_by(userid=current_user.id)
-    # events_list=[(i.eventid, id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
-    # newPostForm.event.choices = evnet_choices + events_list
 
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
