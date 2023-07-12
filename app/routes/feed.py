@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db
+from app import app, db, imagekit
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes, Comments, Attendance
@@ -11,6 +11,7 @@ from app.util import share, validation, id_mappings
 from app.util.helpers import get_following
 import uuid
 from PIL import Image
+from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 import requests
 import base64
 import io
@@ -97,8 +98,8 @@ def createPost():
             newPost.image = new_path
             randomized_image.save('app/' + new_path)
 
-            # with open('app/' + new_path, 'rb') as file:
-            #     image_data = file.read()
+            with open('app/' + new_path, 'rb') as file:
+                image_data = file.read()
 
             # response = requests.post(
             #     'https://api.imgbb.com/1/upload',
@@ -106,16 +107,26 @@ def createPost():
             #     files={'image': (secureFilename, image_data)}
             # )
 
-            # if os.path.exists('app/' + new_path):
-            #         os.remove('app/' + new_path)
+            upload = imagekit.upload_file(
+                file=open('app/' + new_path, 'rb'),
+                file_name=secure_filename,
+                options=UploadFileRequestOptions(
+                    folder='/Posts_Images',
+                ),
+            )
+
+            print(upload.response_metadata.raw)
+
+            if os.path.exists('app/' + new_path):
+                    os.remove('app/' + new_path)
 
             # print(response.json())
             # image_url = response.json()['data']['display_url']
             # delete_url = response.json()['data']['delete_url']
             # newPost.image = image_url
 
-        db.session.add(newPost)
-        db.session.commit()
+        # db.session.add(newPost)
+        # db.session.commit()
 
         hashed_id = id_mappings.hash_object_id(object_id=newPost.id, act='post')
         id_mappings.store_id_mapping(object_id=newPost.id, hashed_value=hashed_id, act='post')
