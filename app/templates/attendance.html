@@ -32,6 +32,8 @@
           <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
         </tr> -->
         {% for record in records %}
+                {% if user.is_authenticated %}
+                {% if record.user_id == user.id %}
         <tr>
           <td>{{ get_event_from_id(record.eventid).name }}</td>
             <td id="tsm"><img src="/{{ get_event_from_id(record.eventid).image }}"></td>
@@ -45,6 +47,8 @@
             </button>
           </td>
         </tr>
+              {% endif %}
+              {% endif %}
         {% endfor %}
       </tbody>
     </table>

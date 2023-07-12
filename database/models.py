@@ -220,7 +220,7 @@ class SignUps(db.Model):
     id = db.Column(db.Integer, db.Sequence('eventssignup_id_seq'), unique=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     name = db.Column(db.String(100))
-    email = db.Column(db.String(100), unique=True)
+    email = db.Column(db.String(100))
     eventid = db.Column(db.Integer, db.ForeignKey('events2.id' , ondelete='CASCADE'))
 
     def __init__(self, user_id, name, email, eventid):

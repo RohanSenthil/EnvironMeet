@@ -8,7 +8,10 @@ from flask_login import current_user, login_required
 def display_attendance():
     eventsignups = SignUps.query.all()
 
-    return render_template('attendance.html', get_event_from_id=id_mappings.get_event_from_id, records=eventsignups)
+    user = current_user
+
+    print(user)
+    return render_template('attendance.html', get_event_from_id=id_mappings.get_event_from_id, records=eventsignups, user=user)
 
 @app.route('/attendance/delete/<id>')
 # @privileged_route("admin")

@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Events, SignUps, Members, Organisations
+from database.models import Events, SignUps, Members, Organisations, Users
 from app.forms.eventsform import FormEvents
 from app.forms.eventssignup import SignUp
 from app.util import validation, id_mappings
