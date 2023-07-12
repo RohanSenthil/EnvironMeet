@@ -281,12 +281,14 @@ class PostReport(db.Model):
     postid = db.Column(db.Integer, db.ForeignKey('posts.id'))
     author = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, postid, author, reason, reporter):
+    def __init__(self, postid, author, reason, comment, reporter):
         self.postid = postid
         self.author = author
         self.reason = reason
+        self.comment = comment
         self.reporter = reporter
 
 class UserReport(db.Model):
@@ -295,11 +297,13 @@ class UserReport(db.Model):
     id = db.Column(db.Integer, db.Sequence('userreport_id_seq'), primary_key=True)
     userreported = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, userreported, reason, reporter):
+    def __init__(self, userreported, reason, comment,reporter):
         self.userreported = userreported
         self.reason = reason
+        self.comment = comment
         self.reporter = reporter
 
 class EventReport(db.Model):
@@ -308,11 +312,13 @@ class EventReport(db.Model):
     id = db.Column(db.Integer, db.Sequence('eventreport_id_seq'), primary_key=True)
     eventreported = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
+    comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, eventreported, reason, reporter):
+    def __init__(self, eventreported, reason, comment, reporter):
         self.eventreported = eventreported
         self.reason = reason
+        self.comment = comment
         self.reporter = reporter
 
 
