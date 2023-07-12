@@ -8,37 +8,80 @@
 {% block content %}
 
 
-<div class="content">
-   <h1 class="hiaa">Your event's attendance</h1>
-    <div class="Guolai2">
-        {% set displayed_events = [] %}
+<div class="content2">
+   <a href="/events">
+    <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+    <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+    </svg>
+  </a>
+   <h1>My Events</h1>
+<!--  <input type="text" id="myInput" onkeyup="search()" placeholder="Search for names.." title="Type in a name" style="border-radius: 10px; padding:5px">-->
+  <div>
+    <table class="table table-striped" id="myTable">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Image</th>
+          <th>Date</th>
+          <th>Time</th>
+            <th>Attendees</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr>
+          <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
+        </tr> -->
         {% for record in records %}
-            {% if record.eventid not in displayed_events %}
-                {% set _ = displayed_events.append(record.eventid) %}
-                <div class="EventsContainer2">
-                    <div class="eventsCard2">
-                        <h5>Event: </br>{{ get_event_from_id(record.eventid).name }}</h5>
-                        <h6>Date:</br>{{ get_event_from_id(record.eventid).date }}</h6>
-                        <h6>Time (24Hr Format):</br>{{ get_event_from_id(record.eventid).time }}</h6>
-                        <p class="attendees">List of attendees:</p>
-                        {% set sorted_names = [] %}
-                        {% set _ = sorted_names.append(record.name) %}
-                        {% for other_record in records %}
-                            {% if other_record.eventid == record.eventid and other_record.name != record.name %}
-                                {% set _ = sorted_names.append(other_record.name) %}
-                            {% endif %}
-                        {% endfor %}
-                        {% for name in sorted_names|sort %}
-                        <div class="signupss">
-                        <p class="names">{{ name }}</br></p>
-                        </div>
-                        {% endfor %}
-                    <h6 class="num">Number of attendees: {{ sorted_names|length }}</h6>
-                    </div>
-                </div>
-            {% endif %}
+        <tr>
+          <td>{{ record.name }}</td>
+            <td id="tsm"><img src="/{{ record.image }}"></td>
+          <td>{{ record.date }}</td>
+          <td>{{ record.time }}</td>
+            <td>
+                {% for man in names %}
+                {% if record.id == man.eventid %}
+                <select>
+                <option>
+                    {{ man.name }}
+                </option>
+            </select>
+                {% endif %}
+                {% endfor %}
+            </td>
+          <td>
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ record.id }}">
+              <svg id="delete" xmlns="http://www.w3.org/2000/svg" width="18.669" height="24.003" viewBox="0 0 18.669 24.003">
+                <path id="ic_delete_24px" d="M6.333,24.336A2.675,2.675,0,0,0,9,27H19.668a2.675,2.675,0,0,0,2.667-2.667v-16h-16Zm17.335-20H19L17.668,3H11L9.667,4.333H5V7H23.669Z" transform="translate(-5 -3)"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
         {% endfor %}
-    </div>
+      </tbody>
+    </table>
+  </div>
 </div>
+</div>
+
+<!-- Modal -->
+{% for recordz in records %}
+<div class="modal fade" id="modal-{{ recordz.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete your event?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger"><a href="{{ url_for('deleteevent', id=recordz.id) }}" id="deletebtn" style="color: white !important;">Delete</a></button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 {% endblock %}
