@@ -48,7 +48,7 @@ def createmember():
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         flash("Verification email sent to inbox.", "primary")
-        return redirect(url_for('members'))#, hashed_id=hashed_id
+        return redirect(url_for('members', hashed_id=hashed_id))#, hashed_id=hashed_id
     return render_template('/accounts/member/createm.html', form=createform)
 
 @app.route('/members/update/<hashedid>', methods=['GET','POST'])

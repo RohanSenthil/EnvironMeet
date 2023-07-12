@@ -32,7 +32,6 @@ def leaderboardinvite():
 
     leaderboards = Leaderboard.query.all()
     user = current_user
-
     createinv = InviteForm(request.form)
     if request.method == "POST" and createinv.validate():
         print('lol')
@@ -47,19 +46,3 @@ def leaderboardinvite():
         return redirect(url_for('leaderboardinvite'))
 
     return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards)
-
-# @app.route('/leaderboard/invite/create', methods=["GET","POST"])
-# @login_required
-# def leaderboardcreate():
-#     user = current_user
-#     form = InviteForm(request.form)
-#     if request.method == "POST" and form.validate():
-#         print('lol')
-#         invleaderboard = Leaderboard(name=form.name.data, desc=form.desc.data ,username=user.username)
-#         db.session.add(invleaderboard)
-#         db.session.commit()
-#         db.session.close()
-#
-#         return redirect(url_for('leaderboardinvite'))
-#
-#     return render_template('createinvleaderboard.html', form=form, user=user)
