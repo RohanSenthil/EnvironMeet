@@ -2,7 +2,7 @@ from flask_login import login_required, current_user
 from app import app, db
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
-from database.models import Posts, Likes, Comments, Attendance
+from database.models import Posts, Likes, Comments
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os

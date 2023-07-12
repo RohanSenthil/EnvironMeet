@@ -66,10 +66,12 @@
             <p class="lavel" id="org">Organiser:</p><span class="lol">{{ get_user_from_id(event.organiser).name }}</span></br>
             </div>
             <!-- Sign up Button (for members) -->
+            {% if user|isinstance(memberObj) %}
             <div class="push">
                 <!-- Utilise my hash id functions on ur own pls thx -->
                 <a href="{{ url_for('signup_events', hashedEventid=object_id_to_hash(event.id, act='event')) }}" role="button" class="egioesigseions">Sign up</a>
             </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
