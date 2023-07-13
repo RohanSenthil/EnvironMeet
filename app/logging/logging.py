@@ -35,7 +35,6 @@ class OpenSearchLogHandler(logging.Handler):
                 'security_relevant': True,
                 'message': self.format(record),
                 'http_status_code': '',
-                'http_headers': dict(request.headers),
                 'user_agent': request.headers.get('User-Agent'),
             },
         }

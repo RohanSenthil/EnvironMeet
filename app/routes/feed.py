@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db
+from app import app, db, s3
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes, Comments
@@ -39,7 +39,12 @@ def feed():
 @app.route('/post/view/<encoded_hashedid>', methods=['GET'])
 def viewPost(encoded_hashedid):
 
-    hashedid = share.decode_url(encoded_hashedid)
+    try:
+        hashedid = share.decode_url(encoded_hashedid)
+    except:
+        app.logger.error('Possible attempt to manipulate URL')
+        return jsonify({'error': 'Post doesn\'t exist'}, 400)
+    
     postid = id_mappings.hash_to_object_id(hashedid)
     if postid is not None:
         post = Posts.query.get(postid)
@@ -100,6 +105,9 @@ def createPost():
 
             # with open('app/' + new_path, 'rb') as file:
             #     image_data = file.read()
+
+            # bucket_name = 'environmeet-media'
+            # s3.Bucket(bucket_name).upload_file('app/' + new_path, secureFilename)
 
             # upload = imagekit.upload_file(
             #     file=open('app/' + new_path, 'rb'),

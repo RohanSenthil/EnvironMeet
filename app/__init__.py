@@ -8,6 +8,7 @@ import bcrypt
 from flask_security import Security, SQLAlchemyUserDatastore
 from opensearchpy import OpenSearch
 from imagekitio import ImageKit
+import boto3
 
 
 app = Flask(__name__)
@@ -69,6 +70,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # Actual Media Storage
+s3 = boto3.resource('s3')
+
 # imagekit = ImageKit(
 #     private_key=os.environ.get('imgkit_private_key'),
 #     public_key=os.environ.get('imgkit_public_key'),
