@@ -100,3 +100,6 @@ class updateo(Form):
     #     unique = Users.query.filter_by(username=(username.data).lower()).first()
     #     if unique:
     #         raise ValidationError("Username already in database! Please enter a unique username.")
+
+class getotp(Form):
+    num = StringField('Enter OTP:', validators=[DataRequired(), Regexp(r'^\d{6}$', message='Invalid OTP. Must be a 6-digit number.')])

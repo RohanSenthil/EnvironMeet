@@ -5,9 +5,9 @@ from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
 from database.models import Members, Organisations, db, Users, followers, Posts
-from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo
+from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
-import bcrypt
+import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
@@ -137,7 +137,7 @@ def load_user(email):
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
     login_form = login(request.form)
-
+    totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
@@ -148,9 +148,12 @@ def login_():
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
-                login_user(user)
-                flash("Login Successful!", "success")
-                return redirect(url_for('userprofile'))
+                # print(otp(user, totp))
+                otp(user,totp)
+                flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
+                # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
+                # id_mappings.store_id_mapping(object_id=user.id, hashed_value=hashed_id, act='member')
+                return redirect(url_for('fotp',id=user.id))
         
         flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)
@@ -187,6 +190,35 @@ def sendemail(user):
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
+
+@app.route('/otp/<id>', methods=['GET', 'POST'])
+def fotp(id):
+    # id = id_mappings.hash_to_object_id(hashedid)
+    form = getotp(request.form)
+    totp = pyotp.TOTP('base32secret3232')
+    print(form.num.data)
+    if request.method == "POST" and form.validate():
+        if totp.verify(form.num.data):
+            user = Users.query.get(id)
+            login_user(user)
+            flash("Login Successful!", "success")
+            return redirect(url_for('userprofile'))
+        else:
+            flash("Wrong OTP. Please try again", "warning")
+    return render_template('otp.html', form=form)
+
+def otp(user, totp):
+    token = totp.now()
+    msg = Message()
+    msg.subject = "Account Login"
+    msg.recipients = [user.email]
+    msg.sender = 'environmeet@outlook.com'
+    msg.body = f'''Hello, {user.name}\nHere's your OTP: \n{token}
+    \nBest regards,\nThe Environmeet Team
+    '''
+    mail.send(msg)
+    return token
+
 
 @app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_token(token):
