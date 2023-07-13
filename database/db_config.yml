@@ -1,6 +1,6 @@
 database: 'mysql'
 username: 'test_user'
 password: $DB_PASSWORD
-host: 'localhost' # set to localhost if instance down
+host: '54.210.134.172' # set to localhost if instance down
 port: 3306
 db_name: 'environmeet_db'
