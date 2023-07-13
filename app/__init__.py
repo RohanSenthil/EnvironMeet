@@ -69,11 +69,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # Actual Media Storage
-imagekit = ImageKit(
-    private_key=os.environ.get('imgkit_private_key'),
-    public_key=os.environ.get('imgkit_public_key'),
-    url_endpoint=os.environ.get('imgkit_url_endpoint'),
-)
+# imagekit = ImageKit(
+#     private_key=os.environ.get('imgkit_private_key'),
+#     public_key=os.environ.get('imgkit_public_key'),
+#     url_endpoint=os.environ.get('imgkit_url_endpoint'),
+# )
 
 
 # Verification

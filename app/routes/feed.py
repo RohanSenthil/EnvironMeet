@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db, imagekit
+from app import app, db
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes, Comments
@@ -98,32 +98,21 @@ def createPost():
             newPost.image = new_path
             randomized_image.save('app/' + new_path)
 
-            with open('app/' + new_path, 'rb') as file:
-                image_data = file.read()
+            # with open('app/' + new_path, 'rb') as file:
+            #     image_data = file.read()
 
-            # response = requests.post(
-            #     'https://api.imgbb.com/1/upload',
-            #     params={'key': os.environ.get('IMGBB_API_KEY')},
-            #     files={'image': (secureFilename, image_data)}
+            # upload = imagekit.upload_file(
+            #     file=open('app/' + new_path, 'rb'),
+            #     file_name=secure_filename,
+            #     options=UploadFileRequestOptions(
+            #         folder='/Posts_Images',
+            #     ),
             # )
 
-            upload = imagekit.upload_file(
-                file=open('app/' + new_path, 'rb'),
-                file_name=secure_filename,
-                options=UploadFileRequestOptions(
-                    folder='/Posts_Images',
-                ),
-            )
+            # print(upload.response_metadata.raw)
 
-            print(upload.response_metadata.raw)
-
-            if os.path.exists('app/' + new_path):
-                    os.remove('app/' + new_path)
-
-            # print(response.json())
-            # image_url = response.json()['data']['display_url']
-            # delete_url = response.json()['data']['delete_url']
-            # newPost.image = image_url
+            # if os.path.exists('app/' + new_path):
+            #         os.remove('app/' + new_path)
 
         # db.session.add(newPost)
         # db.session.commit()
