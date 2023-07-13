@@ -137,7 +137,7 @@ def load_user(email):
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
     login_form = login(request.form)
-    totp = pyotp.TOTP('base32secret3232')
+    # totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
@@ -149,11 +149,14 @@ def login_():
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 # print(otp(user, totp))
-                otp(user,totp)
+                # otp(user,totp)
                 flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
                 # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
                 # id_mappings.store_id_mapping(object_id=user.id, hashed_value=hashed_id, act='member')
-                return redirect(url_for('fotp',id=user.id))
+                # return redirect(url_for('fotp',id=user.id))
+                login_user(user)
+                flash("Login Successful!", "success")
+                return redirect(url_for('userprofile'))
         
         flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)
