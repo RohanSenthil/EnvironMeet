@@ -14,24 +14,29 @@ class OpenSearchLogHandler(logging.Handler):
 
     def emit(self, record):
         log_message = {
-            # 'timestamp': datetime.utcnow().isoformat(),
-            # 'event_timestamp': datetime.fromtimestamp(record.created).isoformat(),
+
             'when': {
                 'timestamp': datetime.utcnow().isoformat(),
                 'event_timestamp': datetime.fromtimestamp(record.created).isoformat(),
             },
-            # 'where': {
-            #     'application_address': request.host,
-            #     'geolocation': record.__dict__.get('geolocation'),
-            #     'page': request.url,
-            #     'code_location': record.filename,
-            # },
-            # 'who': {
-            #     'source_address': request.remote_addr,
-            # },
+            'where': {
+                'application_address': request.host,
+                'geolocation': record.__dict__.get('geolocation'),
+                'page': request.url,
+                'code_location': record.filename,
+            },
+            'who': {
+                'source_address': request.remote_addr,
+                'user_identity': '',
+            },
             'what': {
-                'level': record.levelname,
+                'event': record.levelname,
+                'severity': record.levelno,
+                'security_relevant': True,
                 'message': self.format(record),
+                'http_status_code': '',
+                'http_headers': dict(request.headers),
+                'user_agent': request.headers.get('User-Agent'),
             },
         }
 
