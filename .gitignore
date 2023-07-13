@@ -8,3 +8,4 @@ instance/*.db
 flask_session
 migrations/
 uploads/
+aws/

@@ -1,0 +1,27 @@
+{% extends "user_base.html" %}
+{% set active_page = "report" %}
+{% from '_formhelpers.html' import render_field %}
+{% block title %} EnvironMeet - Report {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="../../static/styles/reportpost.css">
+{% endblock %}
+
+{% block content %}
+<br>
+<h1>
+    EnvironMeet - Report Post
+    </h1>
+<div class="content">
+    <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
+        <div class="form-group p-1">
+            {{ render_field(form.reason, class="form-check", style="list-style-type:none") }}
+        </div>
+        <div class="form-group p-1">
+            {{ render_field(form.comment, class="form-control") }}
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary p-1"/>
+    </form>
+
+</div>
+
+{% endblock %}
