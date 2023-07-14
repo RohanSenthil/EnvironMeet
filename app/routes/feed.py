@@ -12,9 +12,6 @@ from app.util.helpers import get_following
 import uuid
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
-import requests
-import base64
-import io
 
 
 @app.route('/feed', methods=['GET'])
@@ -41,8 +38,8 @@ def viewPost(encoded_hashedid):
 
     try:
         hashedid = share.decode_url(encoded_hashedid)
-    except:
-        app.logger.error('Possible attempt to manipulate URL', extra={'http_status_code': 400})
+    except Exception as e:
+        app.logger.error(f'Possible attempt to manipulate URL, Error: {e}', extra={'security_relevant': True, 'http_status_code': 400})
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
     postid = id_mappings.hash_to_object_id(hashedid)
@@ -56,8 +53,7 @@ def viewPost(encoded_hashedid):
     if post is not None:
         return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
     else:
-        app.logger.error('Attempt to view non-existant post')
-        return jsonify({'error': 'Post doesn\'t exist'}, 400)
+        return jsonify({'error': 'Post doesn\'t exist'}, 404)
     
 
 
@@ -78,7 +74,8 @@ def createPost():
         if uploaded_file is not None:
 
             if not validation.file_is_image(uploaded_file.stream):
-                return jsonify({'error': 'File type not allowed'}, 400)
+                app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
+                return jsonify({'error': 'File type not allowed'}, 415)
 
             filename = uploaded_file.filename
             secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
@@ -122,6 +119,7 @@ def createPost():
                         os.remove('app/' + new_path)
 
             else:
+                app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
                 newPost.image = None
 
         db.session.add(newPost)
@@ -156,6 +154,7 @@ def editPost(hashedid):
             db.session.commit()
 
         else:
+            app.logger.warning('Unauthorized attempt to edit post', extra={'security_relevant': True, 'http_status_code': 401})
             return jsonify({'error': 'Unauthorized'}, 401)
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
@@ -198,6 +197,7 @@ def deletePost(hashedid):
             id_mappings.delete_id_mapping(hashedid)
 
         else:
+            app.logger.warning('Unauthorized attempt to delete post', extra={'security_relevant': True, 'http_status_code': 401})
             return jsonify({'error': 'Unauthorized'}, 401)
 
     return redirect(url_for('feed'))
@@ -276,6 +276,7 @@ def editComment(hashedid):
     if not newComment or len(newComment) <= 0:
         return jsonify({'error': 'Comment cannot be blank'}, 400)
     elif current_user.id != comment.author:
+        app.logger.warning('Unauthorized attempt to edit comment', extra={'security_relevant': True, 'http_status_code': 401})
         return jsonify({'error': 'Unauthorized'}, 401)
     else:
         comment.text = newComment
@@ -302,6 +303,7 @@ def deleteComment(hashedid):
     if not comment:
         return jsonify({'error': 'Comment does not exists'}, 400)
     elif current_user.id != comment.author:
+        app.logger.warning('Unauthorized attempt to delete comment', extra={'security_relevant': True, 'http_status_code': 401})
         return jsonify({'error': 'Unauthorized'}, 401)
     else:
         db.session.delete(comment)

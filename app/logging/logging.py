@@ -5,6 +5,10 @@ from flask import request
 from app.logging.index_mappings import audit_logs_mapping
 from flask_login import current_user
 
+# Example Usage
+# app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
+# Edit values to relevant values
+# Typically .warning used, can also use .error or .critical etc. depending on context, refer to python logger levels
 
 def get_current_user_id():
     print(current_user.is_authenticated)
@@ -35,13 +39,13 @@ class OpenSearchLogHandler(logging.Handler):
                 'code_location': record.filename,
             },
             'who': {
-                'source_address': request.remote_addr,
+                'source_address': request.environ.get('HTTP_X_FORWARDED_FOR') or request.remote_addr,
                 'user_identity': get_current_user_id(),
             },
             'what': {
                 'event': record.levelname,
                 'severity': record.levelno,
-                'security_relevant': True,
+                'security_relevant': record.security_relevant,
                 'message': self.format(record),
                 'http_status_code': record.http_status_code,
                 'user_agent': request.headers.get('User-Agent'),
@@ -84,4 +88,8 @@ with app.app_context():
         print('\nFailed to connect to OpenSearch')
 
 
+# Handle global exceptions
+@app.errorhandler(Exception)
+def handle_global_exceptions(error):
+    app.logger.exception(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
 
