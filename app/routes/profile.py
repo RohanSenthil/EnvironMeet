@@ -47,7 +47,7 @@ def userprofile():
             if current_user.is_following(i):
                 following += 1
         profile_pic = current_user.profile_pic
-    return render_template('/userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation)
+    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, posts=posts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation)
 
 @app.route('/update', methods=['GET','POST'])
 def profileupdate():
@@ -150,10 +150,10 @@ def login_():
                 # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
                 # id_mappings.store_id_mapping(object_id=user.id, hashed_value=hashed_id, act='member')
 
-                # return redirect(url_for('fotp',id=user.id))
-                login_user(user)
-                flash("Login Successful!", "success")
-                return redirect(url_for('userprofile'))
+                return redirect(url_for('fotp',id=user.id))
+                # login_user(user)
+                # flash("Login Successful!", "success")
+                # return redirect(url_for('userprofile'))
         
         flash("Invalid email or password", "danger")
     return render_template('login.html', form=login_form)
@@ -199,7 +199,7 @@ def fotp(id):
     totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and form.validate():
         stored_token = user.otp_token
-        if stored_token and token == form.num.data:
+        if stored_token and stored_token == form.num.data:
             login_user(user)
             flash("Login Successful!", "success")
             return redirect(url_for('userprofile'))
