@@ -62,7 +62,7 @@ def viewPost(encoded_hashedid):
 
 
 @app.route('/post/create', methods=['POST'])
-@limiter.limit('5/hour')
+@limiter.limit('3/minute')
 @login_required
 def createPost():
     newPostForm = PostForm()
@@ -94,35 +94,35 @@ def createPost():
             else:
                 og_image = Image.open(uploaded_file)
 
-            newPost.image = image_path
     
-            randomized_image = validation.randomize_image(og_image)
+            scan_result = validation.scan_file(uploaded_file.read())
 
-            path_list = newPost.image.split('/')[1:]
-            new_path = '/'.join(path_list)
-            newPost.image = new_path
-            randomized_image.save('app/' + new_path)
+            if scan_result == False:
 
-            with open('app/' + new_path, 'rb') as file:
-                image_data = file.read()
+                randomized_image = validation.randomize_image(og_image)
 
-            # bucket_name = 'environmeet-media'
-            # s3.Bucket(bucket_name).upload_file('app/' + new_path, secureFilename)
+                path_list = image_path.split('/')[1:]
+                new_path = '/'.join(path_list)
+                newPost.image = new_path
+                randomized_image.save('app/' + new_path)
 
-            upload = imagekit.upload_file(
-                file=open('app/' + new_path, 'rb'),
-                file_name=secureFilename,
-                options=UploadFileRequestOptions(
-                    folder='/Posts_Images',
-                ),
-            )
+                upload = imagekit.upload_file(
+                    file=open('app/' + new_path, 'rb'),
+                    file_name=secureFilename,
+                    options=UploadFileRequestOptions(
+                        folder='/Posts_Images',
+                    ),
+                )
 
-            response = upload.response_metadata.raw
-            newPost.image = response['url']
-            newPost.image_id = upload.file_id
+                response = upload.response_metadata.raw
+                newPost.image = response['url']
+                newPost.image_id = upload.file_id
 
-            if os.path.exists('app/' + new_path):
-                    os.remove('app/' + new_path)
+                if os.path.exists('app/' + new_path):
+                        os.remove('app/' + new_path)
+
+            else:
+                newPost.image = None
 
         db.session.add(newPost)
         db.session.commit()
@@ -151,7 +151,6 @@ def editPost(hashedid):
         # Authorisation Check
         if post.author == current_user.id:
             form = request.form
-            print('test')
             post.desc = form[f'desc_{hashedid}']
 
             db.session.commit()

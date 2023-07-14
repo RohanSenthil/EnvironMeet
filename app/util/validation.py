@@ -3,6 +3,44 @@ import random
 from sklearn.metrics import mean_squared_error
 import numpy as np
 import imghdr
+import requests
+import os
+
+
+def scan_file(file_data):
+
+    url = 'https://www.virustotal.com/vtapi/v2/file/scan'
+    params = {'apikey': os.environ.get('virustotal_api_key')}
+    files = {'file': file_data}
+
+    response = requests.post(url, files=files, params=params)
+    response_json = response.json()
+    
+    if 'resource' in response_json:
+        resource = response_json['resource']
+        result = isMalicious(resource)
+        print(result)
+        return result
+    else:
+        return 'Scan request failed'
+    
+
+def isMalicious(resource):
+    url = 'https://www.virustotal.com/vtapi/v2/file/report'
+    params = {'apikey': os.environ.get('virustotal_api_key'), 'resource': resource}
+
+    response = requests.get(url, params=params)
+    response_json = response.json()
+
+    if 'positives' in response_json:
+        positives = response_json['positives']
+        if positives > 0:
+            return True
+        else:
+            return False
+    else:
+        return 'Unable to retrieve scan results'
+
 
 def file_is_image(stream):
     header = stream.read(512)
