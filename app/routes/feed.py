@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db, s3
+from app import app, db, imagekit
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for, flash
 from database.models import Posts, Likes, Comments
@@ -103,27 +103,29 @@ def createPost():
             newPost.image = new_path
             randomized_image.save('app/' + new_path)
 
-            # with open('app/' + new_path, 'rb') as file:
-            #     image_data = file.read()
+            with open('app/' + new_path, 'rb') as file:
+                image_data = file.read()
 
             # bucket_name = 'environmeet-media'
             # s3.Bucket(bucket_name).upload_file('app/' + new_path, secureFilename)
 
-            # upload = imagekit.upload_file(
-            #     file=open('app/' + new_path, 'rb'),
-            #     file_name=secure_filename,
-            #     options=UploadFileRequestOptions(
-            #         folder='/Posts_Images',
-            #     ),
-            # )
+            upload = imagekit.upload_file(
+                file=open('app/' + new_path, 'rb'),
+                file_name=secureFilename,
+                options=UploadFileRequestOptions(
+                    folder='/Posts_Images',
+                ),
+            )
 
-            # print(upload.response_metadata.raw)
+            response = upload.response_metadata.raw
+            newPost.image = response['url']
+            newPost.image_id = upload.file_id
 
-            # if os.path.exists('app/' + new_path):
-            #         os.remove('app/' + new_path)
+            if os.path.exists('app/' + new_path):
+                    os.remove('app/' + new_path)
 
-        # db.session.add(newPost)
-        # db.session.commit()
+        db.session.add(newPost)
+        db.session.commit()
 
         hashed_id = id_mappings.hash_object_id(object_id=newPost.id, act='post')
         id_mappings.store_id_mapping(object_id=newPost.id, hashed_value=hashed_id, act='post')
@@ -179,10 +181,13 @@ def deletePost(hashedid):
         # Authorisation Check
         if post.author == current_user.id:
             if post.image is not None:
-                imageFileName = post.image
+                imageFileName = post.image_id
 
                 if os.path.exists(imageFileName):
                     os.remove(imageFileName)
+
+                delete = imagekit.delete_file(file_id=imageFileName)
+                print(delete.response_metadata.raw)
 
             for comment in post.comments:
                 commentHashedid = id_mappings.object_id_to_hash(comment.id)
@@ -192,12 +197,6 @@ def deletePost(hashedid):
             db.session.commit()
 
             id_mappings.delete_id_mapping(hashedid)
-
-            # response = requests.delete(
-            #     delete_url,
-            #     params={'key': os.environ.get('IMGBB_API_KEY')},
-            # )
-            # print(response.json())
 
         else:
             return jsonify({'error': 'Unauthorized'}, 401)

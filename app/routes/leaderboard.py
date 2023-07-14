@@ -33,7 +33,7 @@ def leaderboardinvite():
     leaderboards = Leaderboard.query.all()
     user = current_user
     createinv = InviteForm(request.form)
-    if request.method == "POST" and createinv.validate():
+    if request.method == "POST" and createinv.validate() :
         print('lol')
         invleaderboard = Leaderboard(name=createinv.name.data, desc=createinv.desc.data, username=user.username)
         db.session.add(invleaderboard)
@@ -43,6 +43,7 @@ def leaderboardinvite():
         db.session.commit()
         db.session.close()
 
+        hashed_id = id_mappings.hash_object_id(object_id=invleaderboard.id, act='leaderboard')
         return redirect(url_for('leaderboardinvite'))
 
     return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards)

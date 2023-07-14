@@ -11,9 +11,9 @@ import time
 @login_required
 def reportpost(hashedid):
     postid = id_mappings.hash_to_object_id(hashedid)
+    post = Posts.query.get(postid)
     user = current_user
     reportpost = Report(request.form)
-    post = Posts.query.get(postid)
     print(post.id)
     if reportpost.comment.data is None:
         if request.method == 'POST' and reportpost.validate():
@@ -31,4 +31,19 @@ def reportpost(hashedid):
             db.session.close()
 
 
-    return render_template('reportpost.html', form=reportpost, user=user)
+    return render_template('reportpost.html', form=reportpost, user=user, post=post, get_user_from_id=id_mappings.get_user_from_id)
+
+@app.route('/report/post/<hashedid>', methods=["GET","POST"])
+@login_required
+def reportevent(hashedid):
+    eventid = id_mappings.hash_to_object_id(hashedid)
+    event = Events.query.get(eventid)
+    user = current_user
+    reportevent = Report(request.form)
+    if reportpost.comment.data is None:
+        if request.method == 'POST' and reportpost.validate():
+            print('cuh')
+            postreport = PostReport(postid=event.id, author=event.author, reason=reportpost.reason.data, reporter=user.id)
+            db.session.add(postreport)
+            db.session.commit()
+            db.session.close()
