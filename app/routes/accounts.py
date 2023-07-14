@@ -19,7 +19,7 @@ from datetime import datetime
 @app.route('/members', methods=['GET'])
 def members():
     members = Members.query.all() 
-    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash)#, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id
+    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
 
 
 @app.route('/members/create', methods=['GET','POST'])

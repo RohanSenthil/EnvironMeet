@@ -89,7 +89,8 @@ class Users(db.Model, UserMixin):
                                secondaryjoin=(followers.c.followed_id == id), 
                                backref=db.backref('followers', lazy='dynamic'), 
                                lazy='dynamic')
-    
+    otp_token = db.Column(db.String(6))  # Column to store the OTP token
+    otp_token_expiration = db.Column(db.DateTime)
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
