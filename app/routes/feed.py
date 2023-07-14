@@ -42,7 +42,7 @@ def viewPost(encoded_hashedid):
     try:
         hashedid = share.decode_url(encoded_hashedid)
     except:
-        app.logger.error('Possible attempt to manipulate URL')
+        app.logger.error('Possible attempt to manipulate URL', extra={'http_status_code': 400})
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
     
     postid = id_mappings.hash_to_object_id(hashedid)

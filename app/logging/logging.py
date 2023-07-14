@@ -3,6 +3,15 @@ import logging
 from datetime import datetime
 from flask import request
 from app.logging.index_mappings import audit_logs_mapping
+from flask_login import current_user
+
+
+def get_current_user_id():
+    print(current_user.is_authenticated)
+    if current_user.is_authenticated:
+        return current_user.id 
+    else:
+        return None
 
 
 # Log Config
@@ -13,28 +22,28 @@ class OpenSearchLogHandler(logging.Handler):
 
 
     def emit(self, record):
+        print(record.__dict__)
         log_message = {
-
             'when': {
                 'timestamp': datetime.utcnow().isoformat(),
                 'event_timestamp': datetime.fromtimestamp(record.created).isoformat(),
             },
             'where': {
                 'application_address': request.host,
-                'geolocation': record.__dict__.get('geolocation'),
+                'ip_address': request.remote_addr,
                 'page': request.url,
                 'code_location': record.filename,
             },
             'who': {
                 'source_address': request.remote_addr,
-                'user_identity': '',
+                'user_identity': get_current_user_id(),
             },
             'what': {
                 'event': record.levelname,
                 'severity': record.levelno,
                 'security_relevant': True,
                 'message': self.format(record),
-                'http_status_code': '',
+                'http_status_code': record.http_status_code,
                 'user_agent': request.headers.get('User-Agent'),
             },
         }
@@ -45,7 +54,7 @@ class OpenSearchLogHandler(logging.Handler):
 with app.app_context():
 
     # connected = log_client.ping()
-    connected = False
+    connected = True
 
     if connected:
 

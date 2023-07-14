@@ -10,7 +10,7 @@ audit_logs_mapping = {
             'where': {
                 'properties': {
                     'application_address': { 'type' : 'keyword' },
-                    'geolocation': { 'type' : 'keyword' },
+                    'ip_address': { 'type' : 'keyword' },
                     'page': { 'type': 'keyword' },
                     'code_location': { 'type' : 'keyword' },
                 }
@@ -28,7 +28,6 @@ audit_logs_mapping = {
                     'security_relevant': { 'type' : 'boolean' },
                     'message': { 'type' : 'text' },
                     'http_status_code': { 'type' : 'keyword' },
-                    'http_headers': { 'type' : 'object', 'enabled' : False },
                     'user_agent': { 'type' : 'keyword' },
                 }
             },
