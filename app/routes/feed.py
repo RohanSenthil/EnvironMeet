@@ -134,7 +134,7 @@ def createPost():
 
 
 @app.route('/post/edit/<hashedid>', methods=['POST'])
-@limiter.limit('10/hour')
+@limiter.limit('3/minute')
 @login_required
 def editPost(hashedid):
 
@@ -163,7 +163,7 @@ def editPost(hashedid):
 
 
 @app.route('/post/delete/<hashedid>', methods=['POST'])
-@limiter.limit('10/hour')
+@limiter.limit('3/minute')
 @login_required
 def deletePost(hashedid):
 
@@ -289,7 +289,7 @@ def editComment(hashedid):
 
 
 @app.route('/post/comment/delete/<hashedid>', methods=['POST'])
-@limiter.limit('30/minute')
+@limiter.limit('25/minute')
 @login_required
 def deleteComment(hashedid):
 
