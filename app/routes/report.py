@@ -33,17 +33,26 @@ def reportpost(hashedid):
 
     return render_template('reportpost.html', form=reportpost, user=user, post=post, get_user_from_id=id_mappings.get_user_from_id)
 
-@app.route('/report/post/<hashedid>', methods=["GET","POST"])
+@app.route('/report/event/<hashedid>', methods=["GET","POST"])
 @login_required
 def reportevent(hashedid):
     eventid = id_mappings.hash_to_object_id(hashedid)
     event = Events.query.get(eventid)
     user = current_user
     reportevent = Report(request.form)
-    if reportpost.comment.data is None:
-        if request.method == 'POST' and reportpost.validate():
+    if reportevent.comment.data is None:
+        if request.method == 'POST' and reportevent.validate():
             print('cuh')
-            postreport = PostReport(postid=event.id, author=event.author, reason=reportpost.reason.data, reporter=user.id)
-            db.session.add(postreport)
+            eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, reporter=user.id)
+            db.session.add(eventreport)
             db.session.commit()
             db.session.close()
+    else:
+        if request.method == 'POST' and reportevent.validate():
+            print('cuh')
+            eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, comment=reportevent.comment.data, reporter=user.id)
+            db.session.add(eventreport)
+            db.session.commit()
+            db.session.close()
+
+    return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id)

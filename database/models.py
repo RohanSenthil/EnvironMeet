@@ -317,8 +317,9 @@ class EventReport(db.Model):
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, eventreported, reason, comment, reporter):
+    def __init__(self, eventreported, organiser, reason, comment, reporter):
         self.eventreported = eventreported
+        self.organiser = organiser
         self.reason = reason
         self.comment = comment
         self.reporter = reporter
