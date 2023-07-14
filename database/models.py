@@ -261,10 +261,10 @@ class LeaderboardContent(db.Model):
     __tablename__ = 'leaderboardcontent'
 
     id = db.Column(db.Integer, db.Sequence('leaderboardcontent_id_seq'), primary_key=True)
-    leaderboardid = db.Column(db.Integer, db.ForeignKey('leaderboard.id'), nullable=False)
+    leaderboardid = db.Column(db.Integer, db.ForeignKey('leaderboard.id', ondelete='CASCADE'), nullable=False)
     leaderboardname = db.Column(db.String(200), nullable=False)
     owner = db.Column(db.String(200))
-    memberid = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    memberid = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False)
     memberpoints = db.Column(db.Integer, nullable=False)
 
     def __init__(self, leaderboardid, leaderboardname, owner, memberid, memberpoints):
@@ -278,8 +278,8 @@ class PostReport(db.Model):
     __tablename__ = 'postreport'
 
     id = db.Column(db.Integer, db.Sequence('postreport_id_seq'), primary_key=True)
-    postid = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    author = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    postid = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'))
+    author = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
@@ -295,7 +295,7 @@ class UserReport(db.Model):
     __tablename__ = 'userreport'
 
     id = db.Column(db.Integer, db.Sequence('userreport_id_seq'), primary_key=True)
-    userreported = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    userreported = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
@@ -310,7 +310,8 @@ class EventReport(db.Model):
     __tablename__ = 'eventreport'
 
     id = db.Column(db.Integer, db.Sequence('eventreport_id_seq'), primary_key=True)
-    eventreported = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
+    eventreported = db.Column(db.Integer, db.ForeignKey('events2.id', ondelete= 'CASCADE'), nullable=False)
+    organiser = db.Column(db.Integer, db.ForeignKey('organiations.id',ondelete='CASCADE'))
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
