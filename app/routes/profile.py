@@ -10,7 +10,7 @@ from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
 import uuid as uuid
-import os
+import os, datetime
 from app.util import share, validation, id_mappings, verification
 
 # @check_is_confirmed
@@ -137,7 +137,6 @@ def load_user(email):
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
     login_form = login(request.form)
-    # totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
@@ -148,11 +147,9 @@ def login_():
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
-                # print(otp(user, totp))
-                # otp(user,totp)
-                flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
                 # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
                 # id_mappings.store_id_mapping(object_id=user.id, hashed_value=hashed_id, act='member')
+
                 # return redirect(url_for('fotp',id=user.id))
                 login_user(user)
                 flash("Login Successful!", "success")
@@ -198,20 +195,24 @@ def sendemail(user):
 def fotp(id):
     # id = id_mappings.hash_to_object_id(hashedid)
     form = getotp(request.form)
+    user = Users.query.get(id)
     totp = pyotp.TOTP('base32secret3232')
-    print(form.num.data)
     if request.method == "POST" and form.validate():
-        if totp.verify(form.num.data):
-            user = Users.query.get(id)
+        stored_token = user.otp_token
+        if stored_token and token == form.num.data:
             login_user(user)
             flash("Login Successful!", "success")
             return redirect(url_for('userprofile'))
         else:
             flash("Wrong OTP. Please try again", "warning")
+
+    token = generate_otp_token(user, totp)
+    send_otp_email(user, token)
+
+    flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
     return render_template('otp.html', form=form)
 
-def otp(user, totp):
-    token = totp.now()
+def send_otp_email(user, token):
     msg = Message()
     msg.subject = "Account Login"
     msg.recipients = [user.email]
@@ -220,8 +221,20 @@ def otp(user, totp):
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
-    return token
 
+def is_otp_token_valid(user):
+    # Check if the stored OTP token is still valid (within the expiration time)
+    expiration_time = user.otp_token_expiration
+    current_time = datetime.datetime.now()
+    return expiration_time is not None and current_time <= expiration_time
+
+def generate_otp_token(user, totp):
+    token = totp.now()  # Generate the OTP token
+    # Store the token and its expiration time for the user
+    user.otp_token = token
+    user.otp_token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=5)  # Set expiration time to 5 minutes from now
+    db.session.commit()
+    return token
 
 @app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_token(token):

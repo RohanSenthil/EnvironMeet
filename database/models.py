@@ -23,6 +23,7 @@ class Posts(db.Model):
     timestamp = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text(), nullable=False)
     image = db.Column(db.String(140))
+    image_id=db.Column(db.String(100))
     comments = db.relationship('Comments', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
     likes = db.relationship('Likes', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
     # associated event
@@ -89,7 +90,8 @@ class Users(db.Model, UserMixin):
                                secondaryjoin=(followers.c.followed_id == id), 
                                backref=db.backref('followers', lazy='dynamic'), 
                                lazy='dynamic')
-    
+    otp_token = db.Column(db.String(6))  # Column to store the OTP token
+    otp_token_expiration = db.Column(db.DateTime)
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
@@ -261,10 +263,10 @@ class LeaderboardContent(db.Model):
     __tablename__ = 'leaderboardcontent'
 
     id = db.Column(db.Integer, db.Sequence('leaderboardcontent_id_seq'), primary_key=True)
-    leaderboardid = db.Column(db.Integer, db.ForeignKey('leaderboard.id'), nullable=False)
+    leaderboardid = db.Column(db.Integer, db.ForeignKey('leaderboard.id', ondelete='CASCADE'), nullable=False)
     leaderboardname = db.Column(db.String(200), nullable=False)
     owner = db.Column(db.String(200))
-    memberid = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False)
+    memberid = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False)
     memberpoints = db.Column(db.Integer, nullable=False)
 
     def __init__(self, leaderboardid, leaderboardname, owner, memberid, memberpoints):
@@ -278,8 +280,8 @@ class PostReport(db.Model):
     __tablename__ = 'postreport'
 
     id = db.Column(db.Integer, db.Sequence('postreport_id_seq'), primary_key=True)
-    postid = db.Column(db.Integer, db.ForeignKey('posts.id'))
-    author = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    postid = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'))
+    author = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
@@ -295,7 +297,7 @@ class UserReport(db.Model):
     __tablename__ = 'userreport'
 
     id = db.Column(db.Integer, db.Sequence('userreport_id_seq'), primary_key=True)
-    userreported = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    userreported = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
@@ -310,13 +312,15 @@ class EventReport(db.Model):
     __tablename__ = 'eventreport'
 
     id = db.Column(db.Integer, db.Sequence('eventreport_id_seq'), primary_key=True)
-    eventreported = db.Column(db.Integer, db.ForeignKey('events2.id'), nullable=False)
+    eventreported = db.Column(db.Integer, db.ForeignKey('events2.id', ondelete= 'CASCADE'), nullable=False)
+    organiser = db.Column(db.Integer, db.ForeignKey('organisations.id',ondelete='CASCADE'))
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, eventreported, reason, comment, reporter):
+    def __init__(self, eventreported, organiser, reason, comment, reporter):
         self.eventreported = eventreported
+        self.organiser = organiser
         self.reason = reason
         self.comment = comment
         self.reporter = reporter

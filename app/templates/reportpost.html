@@ -3,7 +3,7 @@
 {% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Report {% endblock %}
 {% block head %}
-<link rel="stylesheet" href="../../static/styles/reportpost.css">
+<link rel="stylesheet" href="/static/styles/feed.css">
 {% endblock %}
 
 {% block content %}
@@ -12,6 +12,47 @@
     EnvironMeet - Report Post
     </h1>
 <div class="content">
+    <a href="{{ url_for('feed') }}" class="back-btn">
+        <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z" fill-rule="nonzero"/></svg>
+        Back to Feed
+    </a>
+
+    <div class="postsContainer">
+            <div class="postBox">
+
+                <div class="top">
+                    <div class="heading">
+                        <div class="left">
+                            <a href="/user/{{ get_user_from_id(post.author).username }}"><img class="avatar" src="/{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar"></a>
+                            <div class="info">
+                                <span class="infoTop">
+                                    <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> is at <a href="#">East Coast Park Beach Cleanup</a>
+                                </span>
+                                <span class="timestamp">
+                                    {{ post.timestamp|formatTimestamp }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="desc">
+                        <p>{{ post.desc }}</p>
+                    </div>
+                    <div class="mediaFiles">
+                        {% if post.image is not none %}
+                        <img src="/{{ post.image }}">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+
+                <div class="divider"></div>
+
+
+            </div>
+            </div>
+        </div>
     <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
         <div class="form-group p-1">
             {{ render_field(form.reason, class="form-check", style="list-style-type:none") }}
@@ -23,5 +64,7 @@
     </form>
 
 </div>
+
+<script src="/static/scripts/feed.js"></script>
 
 {% endblock %}
