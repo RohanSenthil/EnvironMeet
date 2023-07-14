@@ -24,6 +24,8 @@
           <th>Image</th>
           <th>Date</th>
           <th>Time</th>
+            <th>Price</th>
+          <th>Points</th>
             <th>Attendees</th>
         </tr>
       </thead>
@@ -32,23 +34,34 @@
           <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
         </tr> -->
         {% for record in records %}
+                {% if user.is_authenticated %}
+                {% if record.organiser == user.user_id %}
         <tr>
           <td>{{ record.name }}</td>
             <td id="tsm"><img src="/{{ record.image }}"></td>
           <td>{{ record.date }}</td>
           <td>{{ record.time }}</td>
+            <td>{{ record.price }}</td>
+          <td>{{ record.points }}</td>
             <td>
-                {% for man in names %}
-                {% if record.id == man.eventid %}
                 <select>
+                    {% for man in names %}
+                {% if record.id == man.eventid %}
                 <option>
                     {{ man.name }}
                 </option>
-            </select>
-                {% endif %}
+                    {% endif %}
                 {% endfor %}
+            </select>
             </td>
           <td>
+              <a href="{{ url_for('updateevents', id=record.id) }}">
+              <svg id="update" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
+                <g id="ic_border_color_24px" transform="translate(0 0.003)">
+                  <path id="Path_81" data-name="Path 81" d="M17.75,7,14,3.25l-10,10V17H7.75Zm2.96-2.96a1,1,0,0,0,0-1.41L18.37.29a1,1,0,0,0-1.41,0L15,2.25,18.75,6Z"/>
+                </g>
+              </svg>
+            </a>
             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ record.id }}">
               <svg id="delete" xmlns="http://www.w3.org/2000/svg" width="18.669" height="24.003" viewBox="0 0 18.669 24.003">
                 <path id="ic_delete_24px" d="M6.333,24.336A2.675,2.675,0,0,0,9,27H19.668a2.675,2.675,0,0,0,2.667-2.667v-16h-16Zm17.335-20H19L17.668,3H11L9.667,4.333H5V7H23.669Z" transform="translate(-5 -3)"/>
@@ -56,6 +69,8 @@
             </button>
           </td>
         </tr>
+                {% endif %}
+              {% endif %}
         {% endfor %}
       </tbody>
     </table>
