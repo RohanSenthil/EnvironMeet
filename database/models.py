@@ -311,7 +311,7 @@ class EventReport(db.Model):
 
     id = db.Column(db.Integer, db.Sequence('eventreport_id_seq'), primary_key=True)
     eventreported = db.Column(db.Integer, db.ForeignKey('events2.id', ondelete= 'CASCADE'), nullable=False)
-    organiser = db.Column(db.Integer, db.ForeignKey('organiations.id',ondelete='CASCADE'))
+    organiser = db.Column(db.Integer, db.ForeignKey('organisations.id',ondelete='CASCADE'))
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
