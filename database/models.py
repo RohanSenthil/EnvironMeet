@@ -90,7 +90,8 @@ class Users(db.Model, UserMixin):
                                secondaryjoin=(followers.c.followed_id == id), 
                                backref=db.backref('followers', lazy='dynamic'), 
                                lazy='dynamic')
-    
+    otp_token = db.Column(db.String(6))  # Column to store the OTP token
+    otp_token_expiration = db.Column(db.DateTime)
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
@@ -197,8 +198,8 @@ class Events(db.Model):
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.Integer, db.ForeignKey('users.id' ,  ondelete='CASCADE'), nullable=False)
     name = db.Column(db.String(100))
-    date = db.Column(db.Text)
-    time = db.Column(db.Text)
+    date = db.Column(db.Date)
+    time = db.Column(db.Time)
     price = db.Column(db.Text)
     points = db.Column(db.Integer)
     image = db.Column(db.String(140))
@@ -317,8 +318,9 @@ class EventReport(db.Model):
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
 
-    def __init__(self, eventreported, reason, comment, reporter):
+    def __init__(self, eventreported, organiser, reason, comment, reporter):
         self.eventreported = eventreported
+        self.organiser = organiser
         self.reason = reason
         self.comment = comment
         self.reporter = reporter
