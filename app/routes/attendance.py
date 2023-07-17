@@ -86,3 +86,31 @@ def updateevents(id):
         updateform.points.data = oldevents.points
 
     return render_template('updateevent.html', form=updateform, oldevents=oldevents)
+
+@app.route('/attendance/checkorgs/attendees/<id>')
+def check_attendees(id):
+    event = Events.query.get(id)
+    if event is None:
+        return jsonify({'error': 'Event not found'}, 404)
+
+    attendees = event.attendees
+
+    user = current_user
+
+    return render_template('checkattendees.html', event=event, attendees=attendees, user=user)
+
+@app.route('/attendance/checkorgs/attendees/delete/<id>')
+def deleteattendee(id):
+    attendees = SignUps.query.filter_by(id=id).first()
+    if attendees:
+        db.session.delete(attendees)
+        db.session.commit()
+    return redirect(url_for('check_attendees', id=attendees.eventid))
+
+@app.route('/attendance/checkorgs/attendees/markattendance/<int:id>')
+def markattendance(id):
+    attendee = SignUps.query.get(id)
+    if attendee:
+        attendee.attendance_marked = "Yes"
+        db.session.commit()
+    return redirect(url_for('check_attendees', id=attendee.eventid))

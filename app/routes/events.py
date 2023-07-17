@@ -108,7 +108,7 @@ def signup_events(hashedEventid):
         if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
 
-        signup = SignUps(user_id=user.id, name=signup.name.data, email=signup.email.data, eventid=eventid)
+        signup = SignUps(user_id=user.id, name=signup.name.data, email=signup.email.data, eventid=eventid, attendance_marked='no')
         db.session.add(signup)
         db.session.commit()
         

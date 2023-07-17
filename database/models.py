@@ -203,6 +203,7 @@ class Events(db.Model):
     price = db.Column(db.Text)
     points = db.Column(db.Integer)
     image = db.Column(db.String(140))
+    attendees = db.relationship('SignUps', backref='event')
     # price = db.Column(db.Price)
     # image
     # associated event
@@ -224,12 +225,14 @@ class SignUps(db.Model):
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
     eventid = db.Column(db.Integer, db.ForeignKey('events2.id' , ondelete='CASCADE'))
+    attendance_marked = db.Column(db.Enum('Yes','No'), nullable=False, server_default='No')
 
-    def __init__(self, user_id, name, email, eventid):
+    def __init__(self, user_id, name, email, eventid, attendance_marked):
         self.user_id = user_id
         self.name = name
         self.email = email
         self.eventid = eventid
+        self.attendance_marked = attendance_marked
 
 # class Attendance(db.Model):
 #
