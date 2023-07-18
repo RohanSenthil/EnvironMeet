@@ -23,10 +23,10 @@ class Posts(db.Model):
     timestamp = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), onupdate=db.func.now())
     desc = db.Column(db.Text(), nullable=False)
     image = db.Column(db.String(140))
-    image_id=db.Column(db.String(100))
+    image_id = db.Column(db.String(100))
+    event = db.Column(db.String(100), nullable=True)
     comments = db.relationship('Comments', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
     likes = db.relationship('Likes', backref='posts', cascade='all, delete, delete-orphan', lazy=True, passive_deletes=True)
-    # associated event
 
     def __init__(self, author, desc):
         self.author = author

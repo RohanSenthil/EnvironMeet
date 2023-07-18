@@ -81,7 +81,11 @@
                                     <a href="/user/{{ get_user_from_id(post.author).username }}"><img class="avatar" src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar"></a>
                                     <div class="info">
                                         <span class="infoTop">
-                                            <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> is at <a href="#">East Coast Park Beach Cleanup</a>
+                                            <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> 
+                                            {% if post.event %}
+                                                is at 
+                                                <a href="#">{{ get_event_from_id(post.event).name }}</a>
+                                            {% endif %}
                                         </span>
                                         <span class="timestamp">
                                             {{ post.timestamp|formatTimestamp }}
@@ -377,7 +381,11 @@
                                     <a href="/user/{{ get_user_from_id(post.author).username }}"><img class="avatar" src="{{ get_user_from_id(post.author).profile_pic }}" alt="Avatar"></a>
                                     <div class="info">
                                         <span class="infoTop">
-                                            <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> is at <a href="#">East Coast Park Beach Cleanup</a>
+                                            <a class="posterName" href="/user/{{ get_user_from_id(post.author).username }}"> {{ get_user_from_id(post.author).username }}</a> 
+                                            {% if post.event %}
+                                                is at 
+                                                <a href="#">{{ get_event_from_id(post.event).name }}</a>
+                                            {% endif %}
                                         </span>
                                         <span class="timestamp">
                                             {{ post.timestamp|formatTimestamp }}

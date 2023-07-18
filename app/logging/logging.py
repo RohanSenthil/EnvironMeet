@@ -58,7 +58,7 @@ class OpenSearchLogHandler(logging.Handler):
 with app.app_context():
 
     # connected = log_client.ping()
-    connected = True
+    connected = False
 
     if connected:
 
@@ -89,7 +89,7 @@ with app.app_context():
 
 
 # Handle global exceptions
-@app.errorhandler(Exception)
-def handle_global_exceptions(error):
-    app.logger.exception(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
+# @app.errorhandler(Exception)
+# def handle_global_exceptions(error):
+#     app.logger.exception(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
 

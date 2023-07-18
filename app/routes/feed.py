@@ -1,8 +1,8 @@
 from flask_login import login_required, current_user
 from app import app, db, imagekit
 from app.util.rate_limiting import limiter
-from flask import render_template, request, redirect, url_for, flash
-from database.models import Posts, Likes, Comments
+from flask import render_template, request, redirect, url_for
+from database.models import Posts, Likes, Comments, SignUps
 from app.forms.feedForms import PostForm 
 from werkzeug.utils import secure_filename
 import os
@@ -19,18 +19,17 @@ def feed():
     newPostForm = PostForm()
     posts = Posts.query.all()
     user = current_user
-
     if user.is_authenticated:
         following = get_following(user)
 
-        # event_choices = newPostForm.event.choices
-        # attendedEvents = Attendance.query.filter_by(userid=current_user.id)
-        # events_list=[(i.eventid, id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
-        # newPostForm.event.choices = evnet_choices + events_list
+        event_choices = newPostForm.event.choices
+        attendedEvents = SignUps.query.filter_by(user_id=current_user.id)
+        events_list = [(id_mappings.object_id_to_hash(i.eventid, act='event'), id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
+        newPostForm.event.choices = event_choices + events_list
     else:
         following = []
 
-    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, following=following)
+    return render_template('feed.html', posts=posts, newPostForm=newPostForm, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, following=following, get_event_from_id=id_mappings.get_event_from_id)
 
 
 @app.route('/post/view/<encoded_hashedid>', methods=['GET'])
@@ -51,7 +50,7 @@ def viewPost(encoded_hashedid):
     user = current_user
 
     if post is not None:
-        return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
+        return render_template('post.html', post=post, user=user, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, get_event_from_id=id_mappings.get_event_from_id)
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 404)
     
@@ -63,9 +62,17 @@ def viewPost(encoded_hashedid):
 def createPost():
     newPostForm = PostForm()
 
+    event_choices = newPostForm.event.choices
+    attendedEvents = SignUps.query.filter_by(user_id=current_user.id)
+    events_list = [(id_mappings.object_id_to_hash(i.eventid, act='event'), id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
+    newPostForm.event.choices = event_choices + events_list
+    
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
         newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
+
+        if newPostForm.event.data != 'None':
+            newPost.event = id_mappings.hash_to_object_id(newPostForm.event.data)
 
         # Handling file upload
         uploaded_file = newPostForm.image.data 
@@ -116,7 +123,7 @@ def createPost():
                 newPost.image_id = upload.file_id
 
                 if os.path.exists('app/' + new_path):
-                        os.remove('app/' + new_path)
+                    os.remove('app/' + new_path)
 
             else:
                 app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
@@ -184,8 +191,7 @@ def deletePost(hashedid):
                 if os.path.exists(imageFileName):
                     os.remove(imageFileName)
 
-                delete = imagekit.delete_file(file_id=imageFileName)
-                print(delete.response_metadata.raw)
+                imagekit.delete_file(file_id=imageFileName)
 
             for comment in post.comments:
                 commentHashedid = id_mappings.object_id_to_hash(comment.id)
