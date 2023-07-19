@@ -15,26 +15,15 @@ def reportpost(hashedid):
     user = current_user
     reportpost = Report(request.form)
     print(post.id)
-    if reportpost.comment.data is None:
-        if request.method == 'POST' and reportpost.validate():
-            print('cuh')
-            postreport = PostReport(postid=post.id, author=post.author, reason=reportpost.reason.data, reporter=user.id)
-            db.session.add(postreport)
-            db.session.commit()
-            db.session.close()
-            hashed_id = id_mappings.hash_object_id(object_id=postreport.id, act='post')
-            id_mappings.store_id_mapping(object_id=postreport.id, hashed_value=hashed_id, act='post')
-            return redirect(url_for('feed'))
-    else:
-        if request.method == 'POST' and reportpost.validate():
-            print('cuh')
-            postreport = PostReport(postid=post.id, author=post.author, reason=reportpost.reason.data, comment=reportpost.comment.data, reporter=user.id)
-            db.session.add(postreport)
-            db.session.commit()
-            db.session.close()
-            hashed_id = id_mappings.hash_object_id(object_id=postreport.id, act='post')
-            id_mappings.store_id_mapping(object_id=postreport.id, hashed_value=hashed_id, act='post')
-            return redirect(url_for('feed'))
+    if request.method == 'POST' and reportpost.validate():
+        print('cuh')
+        postreport = PostReport(postid=post.id, author=post.author, reason=reportpost.reason.data, comment=reportpost.comment.data, reporter=user.id, discriminator=user.discriminator)
+        db.session.add(postreport)
+        db.session.commit()
+        hashed_id = id_mappings.hash_object_id(object_id=postreport.id, act='reportpost')
+        id_mappings.store_id_mapping(object_id=postreport.id, hashed_value=hashed_id, act='reportpost')
+        # flash('You have ')
+        return redirect(url_for('feed'))
 
     return render_template('reportpost.html', form=reportpost, user=user, post=post, get_user_from_id=id_mappings.get_user_from_id)
 
@@ -45,20 +34,23 @@ def reportevent(hashedid):
     event = Events.query.get(eventid)
     user = current_user
     reportevent = Report(request.form)
-    if reportevent.comment.data is None:
-        if request.method == 'POST' and reportevent.validate():
-            print('cuh')
-            eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, reporter=user.id)
-            db.session.add(eventreport)
-            db.session.commit()
-            db.session.close()
-            return redirect(url_for('events'))
-    else:
-        if request.method == 'POST' and reportevent.validate():
-            print('cuh')
-            eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, comment=reportevent.comment.data, reporter=user.id)
-            db.session.add(eventreport)
-            db.session.commit()
-            db.session.close()
+    if request.method == 'POST' and reportevent.validate():
+        print('war')
+        eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, comment=reportevent.comment.data, reporter=user.id)
+        db.session.add(eventreport)
+        db.session.commit()
+        hashed_id = id_mappings.hash_object_id(object_id=eventreport.id, act='reportevent')
+        id_mappings.store_id_mapping(object_id=eventreport.id, hashed_value=hashed_id, act='reportevent')
+        return redirect(url_for('events'))
 
-    return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id)
+    return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id, event=event)
+
+@app.route('/report/event/<hashedid>', methods=["GET","POST"])
+@login_required
+def reportuser(hashedid):
+    userid = id_mappings.hash_to_object_id(hashedid)
+    user = Events.query.get(userid)
+    currentuser = current_user
+    reportuser = Report(request.form)
+    if reportuser.comment.data is None:
+        'print'
