@@ -34,10 +34,10 @@ def deleteevent(id):
     if event:
         db.session.delete(event)
         db.session.commit()
-    return redirect(url_for('display_attendance_org'))
+    return redirect(url_for('manage_events'))
 
-@app.route('/attendance/checkorgs')
-def display_attendance_org():
+@app.route('/events/manage')
+def manage_events():
     eventssignups = Events.query.all()
 
     user = current_user
@@ -77,7 +77,7 @@ def updateevents(id):
         db.session.commit()
         db.session.close()
 
-        return redirect(url_for('display_attendance_org'))
+        return redirect(url_for('manage_events'))
     else:
         updateform.name.data = oldevents.name
         updateform.date.data = oldevents.date
