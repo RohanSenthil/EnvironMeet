@@ -144,6 +144,7 @@ a {
     width: 80%;
     transition: 1s ease;
     float: right;
+    padding: 1rem;
 }
 
 .nav-container-small .logo {

@@ -76,22 +76,17 @@
     vertical-align: middle;
 }
 .EventsContainer1 {
-    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem;
-    display: flex;
-    align-content:center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 1rem;
 }
-.EventsContainer1 {
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-    align-content:center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+@media (min-width: 600px) {
+    .EventsContainer1 { grid-template-columns: repeat(2, 1fr); }
 }
+@media (min-width: 900px) {
+    .EventsContainer1 { grid-template-columns: repeat(3, 1fr); }
+  }
 .EventsBox1 p{
     font-size: 80%;
     margin-top: 1px;
@@ -183,15 +178,12 @@ label {
     margin-bottom: 3rem;
 }
 .Guolai {
-    border: #D6D2D2 1px solid;
-    padding: 1rem;
-    background-color: #ECE4CB;
+    border: none;
+    background-color: transparent;
     border-radius: 12px;
     margin-bottom: 3rem;
     display: flex;
     justify-content: center;
-    width: 800px;
-    margin-left:100px;
 }
 h5{
     font-weight:bold;
