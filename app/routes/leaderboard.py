@@ -41,9 +41,9 @@ def leaderboardinvite():
         leaderboardcontent = LeaderboardContent(leaderboardid=invleaderboard.id, leaderboardname=createinv.name.data, owner=user.username, memberid=user.id, memberpoints=user.points)
         db.session.add(leaderboardcontent)
         db.session.commit()
-        db.session.close()
 
         hashed_id = id_mappings.hash_object_id(object_id=invleaderboard.id, act='leaderboard')
+        id_mappings.store_id_mapping(object_id=invleaderboard.id, hashed_value=hashed_id, act='leaderboard')
         return redirect(url_for('leaderboardinvite'))
 
     return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards)

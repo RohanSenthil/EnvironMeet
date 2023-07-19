@@ -22,6 +22,9 @@ def reportpost(hashedid):
             db.session.add(postreport)
             db.session.commit()
             db.session.close()
+            hashed_id = id_mappings.hash_object_id(object_id=postreport.id, act='post')
+            id_mappings.store_id_mapping(object_id=postreport.id, hashed_value=hashed_id, act='post')
+            return redirect(url_for('feed'))
     else:
         if request.method == 'POST' and reportpost.validate():
             print('cuh')
@@ -29,7 +32,9 @@ def reportpost(hashedid):
             db.session.add(postreport)
             db.session.commit()
             db.session.close()
-
+            hashed_id = id_mappings.hash_object_id(object_id=postreport.id, act='post')
+            id_mappings.store_id_mapping(object_id=postreport.id, hashed_value=hashed_id, act='post')
+            return redirect(url_for('feed'))
 
     return render_template('reportpost.html', form=reportpost, user=user, post=post, get_user_from_id=id_mappings.get_user_from_id)
 
@@ -47,6 +52,7 @@ def reportevent(hashedid):
             db.session.add(eventreport)
             db.session.commit()
             db.session.close()
+            return redirect(url_for('events'))
     else:
         if request.method == 'POST' and reportevent.validate():
             print('cuh')
