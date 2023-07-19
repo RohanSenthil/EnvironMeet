@@ -12,6 +12,8 @@
     border: none;
     border-radius: 2rem;
     padding: 0.5rem 1rem;
+    text-align: center;
+    height: min-content;
 }
 .content2 {
   margin: 0 auto;
@@ -123,10 +125,7 @@
     width: 224px;
     height: 148px;
 }
-.push{
-    margin-bottom: -40px;
-    flex-grow: 1;
-}
+
 .bingchilling{
     display: flex;
     margin-bottom:10px;
@@ -337,4 +336,11 @@ h6{
 }
 table{
     border: 1px solid black;
+}
+
+.eventRow {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2rem;
 }

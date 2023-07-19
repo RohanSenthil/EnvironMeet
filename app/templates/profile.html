@@ -42,13 +42,20 @@
     <br><br>
     <div class="profile-stats">
         <ul>
-            <li><span class="profile-stat-count">
+            <li>
+                <span class="profile-stat-count">
+                {% if loggedout == False %}
                 {% if not current_user.is_following(user) %}
                 <button id="friend" class="btn btn-light" onclick="location.href='{{ url_for('follow', username=user.username) }}'">Follow</button>
                 {% else %}
                 <button id="friend" class="btn btn-light" onclick="location.href='{{ url_for('unfollow', username=user.username) }}'">Unfollow</button>
                 {% endif %}
-            </span></li>
+
+                {% elif loggedout == True %}
+                <button id="friend" class="btn btn-light" onclick="location.href='{{ url_for('login_') }}'">Follow</button>
+                {% endif %}
+                </span>
+            </li>
             <li><span class="profile-stat-count">{{ posts }}</span> posts</li>
             <li><span class="profile-stat-count">{{ followers }}</span> followers</li>
             <li><span class="profile-stat-count">{{ following }}</span> following</li>

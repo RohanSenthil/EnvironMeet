@@ -18,7 +18,7 @@ def events():
     events = Events.query.all()
     user = current_user
 
-    return render_template('events.html', events=events, user=user, orgObj=Organisations, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
+    return render_template('events.html', events=events, user=user, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 @app.route('/events/add', methods=["GET","POST"])
 @login_required

@@ -82,9 +82,16 @@
         {% endif %}
     {% endif %}
     {% if loggedout == True %}
-        <a href="/register">Create a new account?</a>
-        <br>
-        <a href="/login">Already have an account?</a>
+    <div class="container">
+        <div class="row">
+          <div class="col">
+            <a class="btn btn-light stretched-link" href="/register">Create a new account?</a>
+          </div>
+          <div class="col">
+            <a class="btn btn-light stretched-link" href="/login">Already have an account?</a>
+          </div>
+        </div>
+    </div>
     {% endif %}
 </div>
 

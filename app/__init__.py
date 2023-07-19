@@ -8,6 +8,7 @@ import bcrypt
 from flask_security import Security, SQLAlchemyUserDatastore
 from opensearchpy import OpenSearch
 from imagekitio import ImageKit
+from flask_login import current_user
 
 
 app = Flask(__name__)
@@ -35,8 +36,7 @@ app.config['UPLOAD_PATH'] = os.environ.get('UPLOAD_PATH')
 # For Testing
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-from database.models import db
-from database.models import db
+from database.models import db, Organisations
 
 db.init_app(app)
 with app.app_context():
@@ -78,6 +78,11 @@ imagekit = ImageKit(
 
 # Verification
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT') 
+
+# Pass variables to base template
+@app.context_processor
+def utility_processor():
+    return dict(user=current_user, orgObj=Organisations)
 
 from app import routes
 from app.util import filters

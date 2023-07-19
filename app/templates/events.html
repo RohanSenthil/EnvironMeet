@@ -23,23 +23,10 @@
         </div>
         {% if user.is_authenticated %}
     <div class="bingchilling">
-            {% if user|isinstance(orgObj) %}
-            <div class="push">
-                <a href="events/add" role="button" class="wgaming">Create Event</a>
-            </div>
-            {% endif %}
-
             {% if user|isinstance(memberObj) %}
         <!-- Check Attendance Button (for members) -->
             <div class="push">
                 <a href="/attendance" role="button" class="egioesigseions">Check Attendance</a>
-            </div>
-            {% endif %}
-
-        <!-- Check Events Attendance (Orgs) Button (for organizations) -->
-            {% if user|isinstance(orgObj) %}
-            <div class="push">
-                <a href="/attendance/checkorgs" role="button" class="egioesigseions">Manage Events</a>
             </div>
             {% endif %}
 
