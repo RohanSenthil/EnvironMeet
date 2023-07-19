@@ -2,7 +2,7 @@
     outline: none;
 }
 .content{
-    width: 55%;
+    width: 90%;
     margin: 0 auto;
     padding: 2rem;
 }
@@ -36,9 +36,8 @@
     margin-top: 5px;
 }
 .SearchEventContainer {
-    width: 50%;
+    width: 75%;
     margin: 0 auto;
-    padding: 2rem;
 }
 
 .SearchEventBox {
@@ -48,8 +47,7 @@
     border-radius: 12px;
     display: flex;
     flex-direction: row;
-    width: 200%;
-    margin-left: -190px;
+    width: 100%;
     margin-bottom: 20px;
 }
 a div{
@@ -77,18 +75,7 @@ a div{
     display: inline-block;
     vertical-align: middle;
 }
-.EventsContainer1 {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    gap: 1rem;
-}
-@media (min-width: 600px) {
-    .EventsContainer1 { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 900px) {
-    .EventsContainer1 { grid-template-columns: repeat(3, 1fr); }
-  }
+
 .EventsBox1 p{
     font-size: 80%;
     margin-top: 1px;
@@ -103,6 +90,7 @@ a div{
 	text-align:center;
 	margin-left:-10px
 }
+
 .eventsCard2 {
 	width: 224px;
 	height: 500px;
@@ -175,7 +163,7 @@ label {
 .stuff {
     border: #D6D2D2 1px solid;
     padding: 1rem;
-    background-color: #ECE4CB;
+    background-color: #fff;
     border-radius: 12px;
     margin-bottom: 3rem;
 }
@@ -240,7 +228,15 @@ h6{
 }
 #syvnieg{
     margin-top:23px;
-    width:1000%;
+    display: flex;
+    justify-content: flex-end;
+}
+#syvnieg button {
+    color: #fff;
+    background-color: var(--env-green);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
 }
 #remainings{
     margin-right:-10px;
@@ -332,9 +328,94 @@ table{
     border: 1px solid black;
 }
 
+/* Hanrolo styling */
 .eventRow {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     margin-top: 2rem;
+}
+
+.EventsContainer1 {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+    /* max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem; */
+}
+
+/* @media (min-width: 600px) {
+    .EventsContainer1 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+    .EventsContainer1 { grid-template-columns: repeat(3, 1fr); }
+} */
+
+.eventCard {
+	background-color: #FFF;
+	box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+	border-radius: 15px;
+	overflow: hidden;
+	transition: .15s ease-in;
+    margin: 1rem 1rem;
+    cursor: pointer;
+    width: 250px;
+    position: relative;
+}
+
+.eventCard:hover, .eventCard:focus-within {
+    transform: translatey(-5px);
+}
+
+.card-image {
+	overflow: hidden;
+    width: 100%;
+}
+
+.card-image img {
+    width: 100%;
+    object-fit: cover;
+    background-size: cover;
+}
+
+.card-header {
+	margin-top: 1.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;	
+    padding: 1.25rem
+}
+
+.card-footer {
+	margin-top: 1.25rem;
+	border-top: 1px solid #ddd;
+	padding-top: 1.25rem;
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1.25rem
+}
+
+.card-meta {	
+	display: flex;
+	align-items: center;
+	color: #787878;
+}
+
+.card-meta svg {
+    margin-right: 5px;
+}
+
+.eventCard a {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: none;
+    font-size: 0;
 }
