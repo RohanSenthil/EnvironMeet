@@ -48,11 +48,13 @@
     border-radius: 12px;
     display: flex;
     flex-direction: row;
-    width: 290%;
-    margin-left: -440px;
+    width: 200%;
+    margin-left: -190px;
     margin-bottom: 20px;
 }
-
+a div{
+    color: black;
+}
 .SearchEventBox .textInput::placeholder {
     color: #C0C0C0;
 }

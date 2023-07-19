@@ -35,7 +35,7 @@ def add_events():
         if form.organiser.data != current_user.name:
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 404)
 
-        event = Events(organiser=current_user.id, name=form.name.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
+        event = Events(organiser=current_user.id, name=form.name.data, eventdesc=form.eventdesc.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
 
         uploaded_file = request.files['image']
         #Upload images to uploads folder

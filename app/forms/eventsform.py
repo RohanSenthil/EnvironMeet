@@ -30,6 +30,7 @@ from wtforms.fields import DateField
 class FormEvents(Form):
     organiser = StringField('Organization: ', render_kw={'readonly': True}, validators=[InputRequired()])
     name = StringField('Name of event:', validators= [InputRequired()])
+    eventdesc = StringField('Description:', validators=[InputRequired()])
     date = DateField('Date: ',  validators= [InputRequired()])
     time = TimeField('Time: ',  validators= [InputRequired()])
     price = StringField('Price (Opt): ', validators=[InputRequired()])

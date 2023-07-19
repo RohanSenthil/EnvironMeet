@@ -198,6 +198,7 @@ class Events(db.Model):
     id = db.Column(db.Integer, db.Sequence('events_id_seq'), primary_key=True)
     organiser = db.Column(db.Integer, db.ForeignKey('users.id' ,  ondelete='CASCADE'), nullable=False)
     name = db.Column(db.String(100))
+    eventdesc = db.Column(db.String(500))
     date = db.Column(db.Date)
     time = db.Column(db.Time)
     price = db.Column(db.Text)
@@ -208,9 +209,10 @@ class Events(db.Model):
     # image
     # associated event
 
-    def __init__(self, organiser, name, date, time, price, points):
+    def __init__(self, organiser, name, eventdesc, date, time, price, points):
         self.organiser = organiser
         self.name = name
+        self.eventdesc = eventdesc
         self.date = date
         self.time = time
         self.price = price
