@@ -38,3 +38,14 @@
 .profile_pic img{
     border-radius: 50%;
 }
+
+.container {
+    margin: 0 auto !important
+}
+
+.col{
+    background-color: white;
+    margin: 20px;
+    padding: 30%;
+    border-radius: 10%;
+}
