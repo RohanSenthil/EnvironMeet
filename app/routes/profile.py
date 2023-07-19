@@ -207,7 +207,8 @@ def fotp(id):
             flash("Wrong OTP. Please try again", "warning")
 
     token = generate_otp_token(user, totp)
-    send_otp_email(user, token)
+    print(token)
+    # send_otp_email(user, token)
 
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
     return render_template('otp.html', form=form)
