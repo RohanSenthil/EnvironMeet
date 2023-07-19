@@ -3,7 +3,7 @@
 {% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Report {% endblock %}
 {% block head %}
-<link rel="stylesheet" href="/static/styles/event.css">
+<link rel="stylesheet" href="../../static/styles/events.css">
 {% endblock %}
 
 {% block content %}
@@ -11,6 +11,23 @@
 <h1>
     EnvironMeet - Report Event
     </h1>
+<div class="eventsCard">
+            <div class="eventname">
+            {{ event.name }}
+                </div>
+            <div class="eventimage">
+                {% if event.image is not none %}
+                <img src="/{{ event.image }}">
+                {% endif %}
+            </div>
+            <p class="lavel" id="datetime">Date and Time (in 24Hrs):</p>
+            {{ event.date }} </br>
+            {{ event.time }}
+            <p class="lavel" id="PRICE">Price:</p>{{ event.price }}
+            <div class="eventorg">
+            <p class="lavel" id="org">Organiser:</p><span class="lol">{{ get_user_from_id(event.organiser).name }}</span></br>
+            </div>
+        </div>
 <div class="content">
     <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
         <div class="form-group p-1">

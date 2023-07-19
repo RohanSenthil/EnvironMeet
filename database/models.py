@@ -288,13 +288,15 @@ class PostReport(db.Model):
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide',  'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
+    discriminator = db.Column(db.String(50))
 
-    def __init__(self, postid, author, reason, comment, reporter):
+    def __init__(self, postid, author, reason, comment, reporter, discriminator):
         self.postid = postid
         self.author = author
         self.reason = reason
         self.comment = comment
         self.reporter = reporter
+        self.discriminator = discriminator
 
 class UserReport(db.Model):
     __tablename__ = 'userreport'
@@ -304,12 +306,14 @@ class UserReport(db.Model):
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
+    discriminator = db.Column(db.String(50))
 
-    def __init__(self, userreported, reason, comment,reporter):
+    def __init__(self, userreported, reason, comment,reporter, discriminator):
         self.userreported = userreported
         self.reason = reason
         self.comment = comment
         self.reporter = reporter
+        self.discriminator = discriminator
 
 class EventReport(db.Model):
     __tablename__ = 'eventreport'
@@ -320,13 +324,15 @@ class EventReport(db.Model):
     reason = db.Column(db.Enum('Spam', 'Nudity or Sexual Activity', 'Hate Speech or Symbol', 'Violence', 'Sale of illegal goods', 'Bullying or Harrasment', 'Intellectual Property Violation', 'Suicide', 'Eating Disorders', 'Scam or Fraud', 'False Information', "I Just Don't Like It"))
     comment = db.Column(db.Text)
     reporter = db.Column(db.Integer)
+    discriminator = db.Column(db.String(50))
 
-    def __init__(self, eventreported, organiser, reason, comment, reporter):
+    def __init__(self, eventreported, organiser, reason, comment, reporter, discriminator):
         self.eventreported = eventreported
         self.organiser = organiser
         self.reason = reason
         self.comment = comment
         self.reporter = reporter
+        self.discriminator = discriminator
 
 
 class Id_Hash_Mappings(db.Model):
