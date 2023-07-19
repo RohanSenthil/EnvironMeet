@@ -273,7 +273,12 @@ def othersprofile(username):
     for i in Users.query.all():
         if user.is_following(i):
             following += 1
-    return render_template('profile.html', user=user, current_user=current_user, posts=posts, followers=followers, following=following)
+            
+    if not current_user.is_authenticated:
+        loggedout = True
+    else:
+        loggedout = False
+    return render_template('profile.html', user=user, current_user=current_user, posts=posts, followers=followers, following=following, loggedout=loggedout)
 
 
 @app.route('/follow/<username>')
