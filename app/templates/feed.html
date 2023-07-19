@@ -93,15 +93,14 @@
                                     </div>
                                 </div>
             
-                                <!-- Some logic if post belong to account show actions menu -->
                                 {% if user.is_authenticated %}
-                                {% if user.id == post.author %}
                                 <div class="actions-dropdown">
                                     <button class="actions-menu">
                                         <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
                                     </button>
             
                                     <!-- Edit Modal -->
+                                    {% if user.id == post.author %}
                                     <form method="POST" autocomplete="off" action="{{ url_for('editPost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
                                         {{ newPostForm.csrf_token }}
                                         <div class="modal fade" id="editModal_{{ object_id_to_hash(object_id=post.id, act='post') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -130,8 +129,10 @@
                                             </div>
                                         </div>
                                     </form>
+                                    {% endif %}
             
                                     <!-- Delete Modal -->
+                                    {% if user.id == post.author %}
                                     <form method="POST" autocomplete="off" action="{{ url_for('deletePost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
                                         {{ newPostForm.csrf_token }}
                                         <div class="modal fade deleteModal" id="deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -148,8 +149,10 @@
                                           </div>
                                         </div>
                                     </form>
+                                    {% endif %}
             
                                     <div class="dropdown-content">
+                                        {% if user.id == post.author %}
                                         <span class="editAction">
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Edit</button>
                                         </span>
@@ -157,10 +160,14 @@
                                         <span class="deleteAction">
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Delete</button>
                                         </span>
+                                        {% endif %}
+                                        <a class="reportAction" href="{{ url_for('reportpost', hashedid=object_id_to_hash(object_id=post.id, act='post'))}}">
+                                            <button type="button" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Report</button>
+                                        </a>
                                     </div>
                                 </div>
                                 {% endif %}
-                                {% endif %}
+
                             </div>
                             <div class="desc">
                                 <p>{{ post.desc }}</p>
@@ -368,8 +375,7 @@
                 </div>
         </div>
 
-        {% else %}
-        <div class="tab-group" id="explore-tab">
+        <div class="tab-group" id="explore-tab" style="{{ 'display: none;' if user.is_authenticated }}">
             <div class="postsContainer">
                 {% for post in posts|reverse %}
                 {% if post.author not in following and post.author != user.id %}
@@ -393,15 +399,14 @@
                                     </div>
                                 </div>
             
-                                <!-- Some logic if post belong to account show actions menu -->
                                 {% if user.is_authenticated %}
-                                {% if user.id == post.author %}
                                 <div class="actions-dropdown">
                                     <button class="actions-menu">
                                         <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
                                     </button>
             
                                     <!-- Edit Modal -->
+                                    {% if user.id == post.author %}
                                     <form method="POST" autocomplete="off" action="{{ url_for('editPost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
                                         {{ newPostForm.csrf_token }}
                                         <div class="modal fade" id="editModal_{{ object_id_to_hash(object_id=post.id, act='post') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -430,8 +435,10 @@
                                             </div>
                                         </div>
                                     </form>
+                                    {% endif %}
             
                                     <!-- Delete Modal -->
+                                    {% if user.id == post.author %}
                                     <form method="POST" autocomplete="off" action="{{ url_for('deletePost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
                                         {{ newPostForm.csrf_token }}
                                         <div class="modal fade deleteModal" id="deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -448,8 +455,10 @@
                                           </div>
                                         </div>
                                     </form>
+                                    {% endif %}
             
                                     <div class="dropdown-content">
+                                        {% if user.id == post.author %}
                                         <span class="editAction">
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Edit</button>
                                         </span>
@@ -457,10 +466,14 @@
                                         <span class="deleteAction">
                                             <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Delete</button>
                                         </span>
+                                        {% endif %}
+                                        <a class="reportAction" href="{{ url_for('reportpost', hashedid=object_id_to_hash(object_id=post.id, act='post'))}}">
+                                            <button type="button" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Report</button>
+                                        </a>
                                     </div>
                                 </div>
                                 {% endif %}
-                                {% endif %}
+                                
                             </div>
                             <div class="desc">
                                 <p>{{ post.desc }}</p>

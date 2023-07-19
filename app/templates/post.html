@@ -38,72 +38,81 @@
                             </div>
                         </div>
     
-                        <!-- Some logic if post belong to account show actions menu -->
                         {% if user.is_authenticated %}
-                        {% if user.id == post.author %}
-                        <div class="actions-dropdown">
-                            <button class="actions-menu">
-                                <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
-                            </button>
-    
-                            <!-- Edit Modal -->
-                            <form method="POST" autocomplete="off" action="{{ url_for('editPost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
-                                <div class="modal fade" id="editModal_{{ object_id_to_hash(object_id=post.id, act='post') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="closeModalBtn" data-bs-dismiss="modal">
-                                                    <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"/></svg>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="desc">
-                                                    <textarea name="desc_{{ object_id_to_hash(object_id=post.id, act='post')}}" class="textInput newPostInput editPostInput" id="newPostInput" placeholder="What have you been up to?" required minlength="1" maxlength="500">{{ post.desc }}</textarea>
+                                <div class="actions-dropdown">
+                                    <button class="actions-menu">
+                                        <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 16.495c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75zm0-8.25c1.242 0 2.25 1.008 2.25 2.25s-1.008 2.25-2.25 2.25-2.25-1.008-2.25-2.25 1.008-2.25 2.25-2.25zm0 1.5c.414 0 .75.336.75.75s-.336.75-.75.75-.75-.336-.75-.75.336-.75.75-.75z"/></svg>
+                                    </button>
+            
+                                    <!-- Edit Modal -->
+                                    {% if user.id == post.author %}
+                                    <form method="POST" autocomplete="off" action="{{ url_for('editPost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
+                                        {{ newPostForm.csrf_token }}
+                                        <div class="modal fade" id="editModal_{{ object_id_to_hash(object_id=post.id, act='post') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="closeModalBtn" data-bs-dismiss="modal">
+                                                            <svg clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m12 10.93 5.719-5.72c.146-.146.339-.219.531-.219.404 0 .75.324.75.749 0 .193-.073.385-.219.532l-5.72 5.719 5.719 5.719c.147.147.22.339.22.531 0 .427-.349.75-.75.75-.192 0-.385-.073-.531-.219l-5.719-5.719-5.719 5.719c-.146.146-.339.219-.531.219-.401 0-.75-.323-.75-.75 0-.192.073-.384.22-.531l5.719-5.719-5.72-5.719c-.146-.147-.219-.339-.219-.532 0-.425.346-.749.75-.749.192 0 .385.073.531.219z"/></svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="desc">
+                                                            <textarea name="desc_{{ object_id_to_hash(object_id=post.id, act='post')}}" class="textInput newPostInput editPostInput" id="newPostInput" placeholder="What have you been up to?" required minlength="1" maxlength="500">{{ post.desc }}</textarea>
+                                                        </div>
+                                                        <div class="mediaFiles">
+                                                            {% if post.image is not none %}
+                                                            <img src="{{ post.image }}">
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer col-12 mt-5">
+                                                        <span class="charCounters">{{ 500 - post.desc|length }}</span>
+                                                        <button type="submit" class="postBtn editPostBtn" value="{{ object_id_to_hash(object_id=post.id, act='post')}}">Post</button>
+                                                    </div>
                                                 </div>
-                                                <div class="mediaFiles">
-                                                    {% if post.image is not none %}
-                                                    <img src="{{ post.image }}">
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer col-12 mt-5">
-                                                <span class="charCounters">{{ 500 - post.desc|length }}</span>
-                                                <button type="submit" class="postBtn editPostBtn" value="{{ object_id_to_hash(object_id=post.id, act='post')}}">Post</button>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </form>
-    
-                            <!-- Delete Modal -->
-                            <form method="POST" autocomplete="off" action="{{ url_for('deletePost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
-                                <div class="modal fade deleteModal" id="deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                      <div class="modal-content">
-                                        <div class="modal-body">
-                                            <h2>Delete Post?</h2>
+                                    </form>
+                                    {% endif %}
+            
+                                    <!-- Delete Modal -->
+                                    {% if user.id == post.author %}
+                                    <form method="POST" autocomplete="off" action="{{ url_for('deletePost', hashedid=object_id_to_hash(object_id=post.id, act='post')) }}">
+                                        {{ newPostForm.csrf_token }}
+                                        <div class="modal fade deleteModal" id="deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                              <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <h2>Delete Post?</h2>
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                                  <button type="submit" class="btn btn-primary">Yes</button>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
-                                        <div class="modal-footer">
-                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                          <button type="submit" class="btn btn-primary">Yes</button>
-                                      </div>
+                                    </form>
+                                    {% endif %}
+            
+                                    <div class="dropdown-content">
+                                        {% if user.id == post.author %}
+                                        <span class="editAction">
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Edit</button>
+                                        </span>
+            
+                                        <span class="deleteAction">
+                                            <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Delete</button>
+                                        </span>
+                                        {% endif %}
+                                        <a class="reportAction" href="{{ url_for('reportpost', hashedid=object_id_to_hash(object_id=post.id, act='post'))}}">
+                                            <button type="button" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Report</button>
+                                        </a>
                                     </div>
-                                  </div>
                                 </div>
-                            </form>
-    
-                            <div class="dropdown-content">
-                                <span class="editAction">
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#editModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Edit</button>
-                                </span>
-    
-                                <span class="deleteAction">
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#deleteModal_{{ object_id_to_hash(object_id=post.id, act='post')}}" value="{{ object_id_to_hash(object_id=post.id, act='post') }}">Delete</button>
-                                </span>
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% endif %}
+                                {% endif %}
+
                     </div>
                     <div class="desc">
                         <p>{{ post.desc }}</p>

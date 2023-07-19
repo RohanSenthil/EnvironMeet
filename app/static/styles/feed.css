@@ -387,6 +387,10 @@
     color: red !important;
 }
 
+.reportAction button {
+    color: red !important;
+}
+
 
 /* Divider */
 .divider {
