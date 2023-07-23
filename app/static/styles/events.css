@@ -111,11 +111,6 @@ a div{
     height: 148px;
 }
 
-.bingchilling{
-    display: flex;
-    margin-bottom:10px;
-    margin-top:-30px;
-}
 .title{
     margin-top: -11px;
 }
@@ -340,19 +335,7 @@ table{
     display: flex;
     justify-content: center;
     flex-flow: row wrap;
-    /* max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    gap: 1rem; */
 }
-
-/* @media (min-width: 600px) {
-    .EventsContainer1 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (min-width: 900px) {
-    .EventsContainer1 { grid-template-columns: repeat(3, 1fr); }
-} */
 
 .eventCard {
 	background-color: #FFF;
@@ -418,4 +401,14 @@ table{
     bottom: 0;
     background: none;
     font-size: 0;
+}
+
+.bingchilling {
+    margin: 0 auto;
+    width: 75%;
+}
+
+.push {
+    display: flex;
+    justify-content: center;
 }

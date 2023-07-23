@@ -26,6 +26,7 @@ def feed():
         attendedEvents = SignUps.query.filter_by(user_id=current_user.id)
         events_list = [(id_mappings.object_id_to_hash(i.eventid, act='event'), id_mappings.get_event_from_id(i.eventid).name) for i in attendedEvents]
         newPostForm.event.choices = event_choices + events_list
+
     else:
         following = []
 
