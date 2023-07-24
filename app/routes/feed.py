@@ -82,7 +82,6 @@ def createPost():
         if uploaded_file is not None:
 
             if not validation.file_is_image(uploaded_file.stream):
-                app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
                 return jsonify({'error': 'File type not allowed'}, 415)
 
             filename = uploaded_file.filename
@@ -127,7 +126,6 @@ def createPost():
                     os.remove('app/' + new_path)
 
             else:
-                app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
                 newPost.image = None
 
         db.session.add(newPost)
@@ -211,6 +209,7 @@ def deletePost(hashedid):
 
 
 @app.route('/post/like/<hashedid>', methods=['POST'])
+@limiter.exempt()
 @login_required
 def likePost(hashedid):
 
@@ -324,6 +323,7 @@ def deleteComment(hashedid):
 
 
 @app.route('/post/share/<hashedid>', methods=['POST'])
+@limiter.exempt()
 def sharePost(hashedid):
 
     native = share.generateNativeLink(hashedid, request.url_root)

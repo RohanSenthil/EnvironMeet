@@ -5,6 +5,9 @@ import numpy as np
 import imghdr
 import requests
 import os
+from app import app
+from flask import request, abort
+import time
 
 
 def scan_file(file_data):
@@ -18,36 +21,53 @@ def scan_file(file_data):
     
     if 'resource' in response_json:
         resource = response_json['resource']
-        result = isMalicious(resource)
-        print(result)
+        result = isFileMalicious(resource)
         return result
     else:
         return 'Scan request failed'
     
 
-def isMalicious(resource):
-    url = 'https://www.virustotal.com/vtapi/v2/file/report'
-    params = {'apikey': os.environ.get('virustotal_api_key'), 'resource': resource}
+def isFileMalicious(resource):
 
-    response = requests.get(url, params=params)
-    response_json = response.json()
+    max_attempts = 5
+    poll_interval = 5
+    
+    for attempt in range(max_attempts):
 
-    if 'positives' in response_json:
-        positives = response_json['positives']
-        if positives > 0:
-            return True
+        url = 'https://www.virustotal.com/vtapi/v2/file/report'
+        params = {'apikey': os.environ.get('virustotal_api_key'), 'resource': resource}
+
+        response = requests.get(url, params=params)
+        response_json = response.json()
+
+        if 'positives' in response_json:
+            positives = response_json['positives']
+            if positives > 0:
+                app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
+                return True
+            else:
+                return False
+        elif 'response_code' in response_json and response_json['response_code'] <= 1:
+            time.sleep(poll_interval)
         else:
-            return False
-    else:
-        return 'Unable to retrieve scan results'
+            return 'Unable to retrieve scan results'
+        
+    return 'Timeout: Analysis did not complete within the given number of attempts.'
 
 
 def file_is_image(stream):
     header = stream.read(512)
     stream.seek(0)
     format = imghdr.what(None, header)
+
     if not format:
+        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
         return False
+    
+    if format not in ['jpeg', 'jpg', 'png']:
+        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
+        return False
+    
     return ('.' + (format if format != 'jpeg' else 'jpg')) in ['.jpg', '.png']
 
 
@@ -88,3 +108,15 @@ def randomize_image(og_image):
         return randomize_image(og_image)
 
     return randomized_image
+
+
+@app.before_request
+def check_file_served():
+
+    requested_path = request.path
+
+    safe_locations = [rule.rule for rule in app.url_map.iter_rules()]
+
+    if not any(requested_path.startswith(location) for location in safe_locations):
+        app.logger.warning(f'Unauthorized file serving attempt: {requested_path}', extra={'security_relevant': True, 'http_status_code': 403})
+        abort(403)  

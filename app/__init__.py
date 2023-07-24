@@ -9,6 +9,7 @@ from flask_security import Security, SQLAlchemyUserDatastore
 from opensearchpy import OpenSearch
 from imagekitio import ImageKit
 from flask_login import current_user
+from flask_wtf.csrf import CSRFProtect
 
 
 app = Flask(__name__)
@@ -28,6 +29,8 @@ log_client = OpenSearch(
     ssl_assert_hostname = False,
     ssl_show_warn = False
 )
+
+from app.logging import logging
 
 # Other Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -79,6 +82,8 @@ imagekit = ImageKit(
 # Verification
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT') 
 
+csrf = CSRFProtect(app)
+
 # Pass variables to base template
 @app.context_processor
 def utility_processor():
@@ -86,4 +91,3 @@ def utility_processor():
 
 from app import routes
 from app.util import filters
-from app.logging import logging

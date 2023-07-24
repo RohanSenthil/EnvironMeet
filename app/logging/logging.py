@@ -4,7 +4,11 @@ from datetime import datetime
 from flask import request
 from app.logging.index_mappings import audit_logs_mapping
 from flask_login import current_user
-
+from flask_wtf.csrf import CSRFError
+from flask.json import jsonify
+import re
+import hashlib
+import json
 # Example Usage
 # app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
 # Edit values to relevant values
@@ -25,6 +29,12 @@ class OpenSearchLogHandler(logging.Handler):
         super().__init__()
 
 
+    def sanitize_input(self, input_string):
+        valid_char_re = r'^[a-zA-Z0-9\s.!?-_#@%&=/\\():]+$'
+        # Remove unwanted characters
+        return re.sub(valid_char_re, '', input_string)
+
+
     def emit(self, record):
         print(record.__dict__)
         log_message = {
@@ -35,7 +45,7 @@ class OpenSearchLogHandler(logging.Handler):
             'where': {
                 'application_address': request.host,
                 'ip_address': request.remote_addr,
-                'page': request.url,
+                'page': self.sanitize_input(request.url),
                 'code_location': record.filename,
             },
             'who': {
@@ -46,19 +56,24 @@ class OpenSearchLogHandler(logging.Handler):
                 'event': record.levelname,
                 'severity': record.levelno,
                 'security_relevant': record.security_relevant,
-                'message': self.format(record),
+                'message': self.sanitize_input(self.format(record)),
                 'http_status_code': record.http_status_code,
-                'user_agent': request.headers.get('User-Agent'),
+                'user_agent': self.sanitize_input(request.headers.get('User-Agent')),
             },
         }
 
-        log_client.index(index=index_name, body=log_message, refresh=True)
+        log_message['hash'] = hashlib.sha256(json.dumps(log_message).encode()).hexdigest()
+
+        try:
+            log_client.index(index=index_name, body=log_message, refresh=True)
+        except Exception as e:
+            app.logger.error(f'Error logging message to OpenSearch: {e}', extra={'security_relevant': True, 'http_status_code': 500})
 
 
 with app.app_context():
 
-    # connected = log_client.ping()
-    connected = False
+    connected = log_client.ping()
+    # connected = False
 
     if connected:
 
@@ -91,5 +106,11 @@ with app.app_context():
 # Handle global exceptions
 # @app.errorhandler(Exception)
 # def handle_global_exceptions(error):
-#     app.logger.exception(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
+#     app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
 
+
+# Handle CSRF Errors
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    app.logger.error(e.description, extra={'security_relevant': False, 'http_status_code': 400})
+    return jsonify({'error': 'Invalid Request'}, 400)
