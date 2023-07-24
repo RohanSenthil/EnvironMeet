@@ -2,7 +2,16 @@ const likePost = (postid) => {
     btn = document.getElementById(`post${ postid }LikesBtn`);
     count = document.getElementById(`post${ postid }LikesCount`);
 
-    fetch(`/post/like/${postid}`, {method:'POST'}).then((res) => res.json()).then((data) => {
+    const csrfTokenElem= document.getElementById(`post${ postid }Likes`).querySelector('input[name="csrf_token"]');
+
+    if (csrfTokenElem) {
+        csrfToken = csrfTokenElem.value
+    } 
+    else {
+        csrfToken = null
+    }
+
+    fetch(`/post/like/${postid}`, {method:'POST', headers: {'X-CSRFToken': csrfToken}}).then((res) => res.json()).then((data) => {
         count.textContent = data['likes'];
         
         if (data['liked'] == true) {

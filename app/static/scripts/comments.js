@@ -35,7 +35,16 @@ const addComment = (postid) => {
     let searchData = new URLSearchParams();
     searchData.append('desc', document.getElementById(`commentInput-${postid}`).value);
 
-    fetch(`/post/comment/add/${postid}`, {method: 'POST', 
+    const csrfTokenElem = document.getElementById(`commentForm-${postid}`).querySelector('input[name="csrf_token"]');
+
+    if (csrfTokenElem) {
+        csrfToken = csrfTokenElem.value
+    } 
+    else {
+        csrfToken = null
+    }
+
+    fetch(`/post/comment/add/${postid}`, {method: 'POST', headers: {'X-CSRFToken': csrfToken},
     body: searchData}).then((res) => res.json())
     .then((data) => { 
         if (data['success']) {
@@ -45,7 +54,7 @@ const addComment = (postid) => {
         }
 
     })
-    .catch((e) => alert('ERROR: This comment cannot be posted'));
+    .catch((e) => alert(e, 'ERROR: This comment cannot be posted'));
 
     return false;
 }
@@ -55,10 +64,20 @@ const editComment = (commentid) => {
     let searchData = new URLSearchParams();
     searchData.append('desc', document.getElementById(`editCommentInput-${commentid}`).value);
 
+    const csrfTokenElem = document.getElementById(`editCommentModal_${postid}`).querySelector('input[name="csrf_token"]');
+
+    if (csrfTokenElem) {
+        csrfToken = csrfTokenElem.value
+    } 
+    else {
+        csrfToken = null
+    }
+
+
     const editModal = document.getElementById(`editCommentModal_${commentid}`)
     $(editModal).modal('hide');
 
-    fetch(`/post/comment/edit/${commentid}`, {method: 'POST', 
+    fetch(`/post/comment/edit/${commentid}`, {method: 'POST', headers: {'X-CSRFToken': csrfToken},
     body: searchData}).then((res) => res.json())
     .then((data) => { 
         if (data['success']) {
@@ -79,9 +98,19 @@ const deleteComment = (commentid) => {
     const deleteItem = document.getElementById(`commentText-${commentid}`);
     const deleteModal = document.getElementById(`deleteCommentModal_${commentid}`)
 
+    const csrfTokenElem = document.getElementById(`deleteCommentModal_${postid}`).querySelector('input[name="csrf_token"]');
+
+    if (csrfTokenElem) {
+        csrfToken = csrfTokenElem.value
+    } 
+    else {
+        csrfToken = null
+    }
+
+
     $(deleteModal).modal('hide');
 
-    fetch(`/post/comment/delete/${commentid}`, {method: 'POST'}).then((res) => res.json())
+    fetch(`/post/comment/delete/${commentid}`, {method: 'POST', headers: {'X-CSRFToken': csrfToken}}).then((res) => res.json())
     .then((data) => { 
         if (data['success']) {
             const parentBox = document.getElementById(`commentSection-${data['postid']}`);

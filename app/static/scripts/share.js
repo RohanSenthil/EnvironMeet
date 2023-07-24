@@ -1,6 +1,16 @@
 const sharePost = (postid) => {
 
-    fetch(`/post/share/${postid}`, {method:'POST'}).then((res) => res.json()).then((data) => {
+    const csrfTokenElem = document.getElementById(`sharePost${ postid }`).querySelector('input[name="csrf_token"]');
+    
+    if (csrfTokenElem) {
+        csrfToken = csrfTokenElem.value
+    } 
+    else {
+        csrfToken = null
+    }
+
+
+    fetch(`/post/share/${postid}`, {method:'POST', headers: {'X-CSRFToken': csrfToken},}).then((res) => res.json()).then((data) => {
         if (data['success']) {
 
             const url = encodeURI(data['native']);
