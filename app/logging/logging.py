@@ -47,6 +47,7 @@ class OpenSearchLogHandler(logging.Handler):
                 'ip_address': request.remote_addr,
                 'page': self.sanitize_input(request.url),
                 'code_location': record.filename,
+                'referer': self.sanitize_input(request.headers.get('Referer')),
             },
             'who': {
                 'source_address': request.environ.get('HTTP_X_FORWARDED_FOR') or request.remote_addr,

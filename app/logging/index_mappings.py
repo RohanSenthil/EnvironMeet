@@ -13,6 +13,7 @@ audit_logs_mapping = {
                     'ip_address': { 'type' : 'keyword' },
                     'page': { 'type': 'keyword' },
                     'code_location': { 'type' : 'keyword' },
+                    'referer': { 'type' : 'keyword' },
                 }
             },
             'who': {
