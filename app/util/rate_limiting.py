@@ -2,6 +2,7 @@ from flask import make_response, render_template
 from flask_limiter import Limiter, RequestLimit
 from app import app
 from flask_limiter.util import get_remote_address
+from flask.json import jsonify
 # from database.models import db, RateLimit
 # import datetime
 
@@ -22,7 +23,8 @@ from flask_limiter.util import get_remote_address
 def exceed_rate_responder(requestLimit = RequestLimit):
     # save_rate_limit_data(endpoint=endpoint, limit=requestLimit.limit, period=period)
     app.logger.warning(f'Exceeded Rate Limit: {requestLimit.limit}', extra={'security_relevant': True, 'http_status_code': 429})
-    return make_response(render_template('rateLimit.html', requestLimit=requestLimit), 429)
+    return jsonify({'error': 'Rate Limit Exceeded'})
+    # return make_response(render_template('rateLimit.html', requestLimit=requestLimit), 429)
 
 
 # Rate Limiting
