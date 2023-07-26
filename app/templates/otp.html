@@ -22,6 +22,7 @@
   {% endif %}
   {% endwith %}
 <form method="POST" action="">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <br>
     <div class="form-outline mb-4">
       {{ render_field(form.num, class="form-control") }}

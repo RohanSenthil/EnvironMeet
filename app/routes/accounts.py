@@ -195,7 +195,7 @@ def sendverificationemail(user):
 @app.route('/organisations')
 def organisations():
     organisations = Organisations.query.all()
-    return render_template('/accounts/organisation/orgs.html', organisations=organisations)
+    return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 @app.route('/organisations/create', methods=['GET','POST'])
 def createorganisations():
@@ -216,17 +216,22 @@ def createorganisations():
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name)
+        organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
         db.session.add(organisation)
         db.session.commit()
         db.session.close()
+        sendverificationemail(organisation)
+        hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
+        id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
+        flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
 
-@app.route('/orgnanisations/update/<id>', methods=['GET','POST'])
-def updateorganisation(id):
+@app.route('/orgnanisations/update/<hashedid>', methods=['GET','POST'])
+def updateorganisation(hashedid):
+    orgid = id_mappings.hash_to_object_id(hashedid)
     updateform = updateo(request.form)
-    oldorg = Organisations.query.get(id)
+    oldorg = Organisations.query.get(orgid)
     if request.method == "POST" and updateform.validate():
         name = request.form['name']
         username = request.form['username']
@@ -263,13 +268,15 @@ def updateorganisation(id):
 
     return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
 
-@app.route('/organisations/delete/<id>')
+@app.route('/organisations/delete/<hashedid>')
 # @privileged_route("admin")
-def deleteorganisation(id):
-    organisation = Organisations.query.filter_by(id=id).first()
+def deleteorganisation(hashedid):
+    orgid = id_mappings.hash_to_object_id(hashedid)
+    organisation = Organisations.query.filter_by(id=orgid).first()
     if organisation:
         db.session.delete(organisation)
         db.session.commit()
+        id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('organisations'))
 
 

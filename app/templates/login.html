@@ -22,7 +22,7 @@
   {% endif %}
   {% endwith %}
 <form method="POST" action="">
-  
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <!-- <div class="d-flex align-items-center mb-3 pb-1">
         <div class="logo">
             <img src="../static/images/environman.png" alt="">
