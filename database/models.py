@@ -191,6 +191,20 @@ class Organisations(Users):
     def __repr__(self):
         return f"<Organization(id={self.id}, name='{self.name}', address='{self.address}', contact='{self.contact}')>"
 
+class Admins(Users):
+
+    __tablename__ = 'admins'
+
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'admin',
+    }
+
+    def __repr__(self):
+        return f"<Admin(id={self.id}, name='{self.name}', email='{self.email}')>"
+
 class Events(db.Model):
 
     __tablename__ = 'events2'
