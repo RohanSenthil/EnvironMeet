@@ -19,7 +19,7 @@ from app.util import share, validation, id_mappings, verification
 def userprofile():
     numposts = 0
     followers = 0
-    following = 0
+    numfollowing = 0
     profile_pic = None
     member = False
     organisation = False
@@ -47,10 +47,10 @@ def userprofile():
                 followers += 1
         for i in Users.query.all():
             if current_user.is_following(i):
-                following += 1
+                numfollowing += 1
         following = [user.id for user in current_user.followed.all()]
         profile_pic = current_user.profile_pic
-    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
+    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing)
 
 @app.route('/update', methods=['GET','POST'])
 def profileupdate():
