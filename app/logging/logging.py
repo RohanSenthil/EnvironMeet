@@ -15,7 +15,6 @@ import json
 # Typically .warning used, can also use .error or .critical etc. depending on context, refer to python logger levels
 
 def get_current_user_id():
-    print(current_user.is_authenticated)
     if current_user.is_authenticated:
         return current_user.id 
     else:
@@ -30,13 +29,14 @@ class OpenSearchLogHandler(logging.Handler):
 
 
     def sanitize_input(self, input_string):
-        valid_char_re = r'^[a-zA-Z0-9\s.!?-_#@%&=/\\():]+$'
-        # Remove unwanted characters
-        return re.sub(valid_char_re, '', input_string)
-
+        try:
+            valid_char_re = r'^[a-zA-Z0-9\s.!?-_#@%&=/\\():]+$'
+            # Remove unwanted characters
+            return re.sub(valid_char_re, '', input_string)
+        except Exception:    
+            return ''
 
     def emit(self, record):
-        print(record.__dict__)
         log_message = {
             'when': {
                 'timestamp': datetime.utcnow().isoformat(),
@@ -44,12 +44,12 @@ class OpenSearchLogHandler(logging.Handler):
             },
             'where': {
                 'application_address': request.host,
-                'ip_address': request.remote_addr,
                 'page': self.sanitize_input(request.url),
                 'code_location': record.filename,
                 'referer': self.sanitize_input(request.headers.get('Referer')),
             },
             'who': {
+                'ip_address': request.remote_addr,
                 'source_address': request.environ.get('HTTP_X_FORWARDED_FOR') or request.remote_addr,
                 'user_identity': get_current_user_id(),
             },
@@ -113,5 +113,5 @@ with app.app_context():
 # Handle CSRF Errors
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    app.logger.error(e.description, extra={'security_relevant': False, 'http_status_code': 400})
+    app.logger.error(e.description, extra={'security_relevant': True, 'http_status_code': 400})
     return jsonify({'error': 'Invalid Request'}, 400)

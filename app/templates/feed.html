@@ -378,6 +378,7 @@
                 </div>
         </div>
 
+        {% else %}
         <div class="tab-group" id="explore-tab" style="{{ 'display: none;' if user.is_authenticated }}">
             <div class="postsContainer">
                 {% for post in posts|reverse %}

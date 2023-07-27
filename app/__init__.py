@@ -6,10 +6,11 @@ from flask_login import LoginManager
 from flask_mail import Mail
 import bcrypt
 from flask_security import Security, SQLAlchemyUserDatastore
-from opensearchpy import OpenSearch
+from opensearchpy import OpenSearch, RequestsHttpConnection, AWSV4SignerAuth
 from imagekitio import ImageKit
 from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect
+import boto3
 
 
 app = Flask(__name__)
@@ -19,16 +20,35 @@ db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
+# AWS Config
+session = boto3.Session(
+    aws_access_key_id=os.environ.get('aws_access_key_id'),
+    aws_secret_access_key=os.environ.get('aws_secret_access_key'),
+)
+
+region = 'ap-southeast-2'
+service = 'es'
+credentials = session.get_credentials()
+auth = AWSV4SignerAuth(credentials, region, service)
+
 # Log Config
 log_client = OpenSearch(
-    hosts=[{'host': 'localhost', 'port': 9200}],
-    http_compress=True,
-    http_auth = (os.environ.get('OPENSEARCH_USERNAME'), os.environ.get('OPENSEARCH_PASSWORD')), # For testing change creds for prod
+    hosts=[{'host': 'search-environmeet-logs-gu63r25dgclotf2rt4leyepnpi.ap-southeast-2.es.amazonaws.com', 'port':  443}],
+    http_auth = auth, 
     use_ssl = True,
-    verify_certs = False,
-    ssl_assert_hostname = False,
-    ssl_show_warn = False
+    verify_certs = True,
+    connection_class = RequestsHttpConnection,
+    pool_maxsize = 20,
 )
+# log_client = OpenSearch(
+#     hosts=[{'host': 'localhost', 'port': 9200}],
+#     http_compress=True,
+#     http_auth = (os.environ.get('OPENSEARCH_USERNAME'), os.environ.get('OPENSEARCH_PASSWORD')), # For testing change creds for prod
+#     use_ssl = True,
+#     verify_certs = False,
+#     ssl_assert_hostname = False,
+#     ssl_show_warn = False
+# )
 
 from app.logging import logging
 

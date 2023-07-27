@@ -10,7 +10,6 @@ audit_logs_mapping = {
             'where': {
                 'properties': {
                     'application_address': { 'type' : 'keyword' },
-                    'ip_address': { 'type' : 'keyword' },
                     'page': { 'type': 'keyword' },
                     'code_location': { 'type' : 'keyword' },
                     'referer': { 'type' : 'keyword' },
@@ -18,6 +17,7 @@ audit_logs_mapping = {
             },
             'who': {
                 'properties': {
+                    'ip_address': { 'type' : 'keyword' },
                     'source_address': { 'type' : 'keyword' },
                     'user_identity': { 'type' : 'keyword' },
                 }
