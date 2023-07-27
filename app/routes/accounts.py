@@ -11,9 +11,10 @@ import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
-from app.util import share, validation, id_mappings, verification
+from app.util import share, validation, id_mappings
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
+from app.util.verification import check_is_confirmed, admin_required
 
 #MEMBERS
 @app.route('/members', methods=['GET'])
