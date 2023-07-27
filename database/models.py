@@ -197,7 +197,8 @@ class Admins(Users):
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
+    gender = db.Column(db.Enum('Male','Female','Others'))
+    
     __mapper_args__ = {
         'polymorphic_identity': 'admin',
     }

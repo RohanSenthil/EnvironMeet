@@ -4,8 +4,8 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail
-from database.models import Members, Organisations, db, Users
-from app.forms.accountsform import createm, updatem, login, createo, updateo
+from database.models import Members, Organisations, db, Users, Admins
+from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
@@ -291,7 +291,66 @@ def deleteorganisation(hashedid):
 
 
 
+#ADMINS
+@app.route('/admins', methods=['GET'])
+def admins():
+    admins = Admins.query.all() 
+    return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
 
+
+@app.route('/admins/create', methods=['GET','POST'])
+def createadmin():
+    createform = createa(request.form)
+    if request.method == "POST" and createform.validate():
+        pic_name = 'static\images\default_profile_pic.png'
+        # Process the form data
+        emaill = str(createform.email.data).lower()
+        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
+        admin = Admins(name=createform.name.data, email=emaill, username="", password=passwordd, gender=createform.gender.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
+        db.session.add(admin)
+        db.session.commit()
+        # sendverificationemail(admin)
+        hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
+        id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
+        # flash("Verification email sent to inbox.", "primary")
+        return redirect(url_for('admins'))
+    return render_template('/accounts/admin/createa.html', form=createform)
+
+@app.route('/admins/update/<hashedid>', methods=['GET','POST'])
+def updateadmin(hashedid):
+    admid = id_mappings.hash_to_object_id(hashedid)
+    updateform = updatea(request.form)
+    oldadm = Admins.query.get(admid)
+    if request.method == "POST" and updateform.validate():
+        name = request.form['name']
+        gender = request.form['gender']
+        contact = request.form['contact']
+    
+        oldadm.name = name
+        oldadm.gender = gender
+        oldadm.contact = contact
+
+        db.session.commit()
+        db.session.close()
+
+        return redirect(url_for('admins'))#, hashedid=hashedid
+    else:
+        updateform.name.data = oldadm.name
+        updateform.gender.data = oldadm.gender
+        updateform.contact.data = oldadm.contact
+
+        return render_template('accounts/admin/updatea.html', form=updateform, oldadm=oldadm)
+
+@app.route('/admins/delete/<hashedid>')
+# @privileged_route("admin")
+def deleteadmin(hashedid):
+    admid = id_mappings.hash_to_object_id(hashedid)
+    admin = Admins.query.filter_by(id=admid).first()
+    if admin:
+        db.session.delete(admin)
+        db.session.commit()
+        id_mappings.delete_id_mapping(hashedid)
+    return redirect(url_for('admins'))
 
 
 

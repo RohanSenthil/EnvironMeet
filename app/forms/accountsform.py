@@ -103,3 +103,32 @@ class updateo(Form):
 
 class getotp(Form):
     num = StringField('Enter OTP:', validators=[DataRequired(), Regexp(r'^\d{6}$', message='Invalid OTP. Must be a 6-digit number.')])
+
+
+
+
+class createa(Form):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password:', [
+        validators.Length(min=10),
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Confirm Password', validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
+    contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
+
+    def validate_email(self, email):
+        unique = Users.query.filter_by(email=(email.data).lower()).first()
+        if unique:
+            raise ValidationError("Email already in database! Please enter a new email.")
+            
+class updatea(Form):
+    name = StringField('Name', validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
+    contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
+    # def validate_username(self, username):
+    #     unique = Users.query.filter_by(username=(username.data).lower()).first()
+    #     if unique:
+    #         raise ValidationError("Username already in database! Please enter a unique username.")
