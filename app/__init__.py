@@ -107,7 +107,8 @@ csrf = CSRFProtect(app)
 
 #Session
 app.config['APP_SECRET_KEY']=os.environ.get('app_secret_key')
-
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_TYPE'] = "filesystem"
 app.permanent_session_lifetime = timedelta(minutes=1)  # Set session timeout to 30 minutes
 
 # Pass variables to base template

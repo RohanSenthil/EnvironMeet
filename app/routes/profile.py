@@ -24,9 +24,9 @@ def userprofile():
     member = False
     organisation = False
     posts = []
+    following = []  # Initialize 'following' with an empty list
     if not current_user.is_authenticated:
         loggedout = True
-        
     else:
         loggedout = False
 
@@ -158,7 +158,7 @@ def login_():
                 # login_user(user)
                 # flash("Login Successful!", "success")
                 # return redirect(url_for('userprofile'))
-        
+
         flash("Invalid email or password", "danger")
 
     return render_template('login.html', form=login_form)
