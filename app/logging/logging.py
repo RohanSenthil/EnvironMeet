@@ -9,6 +9,7 @@ from flask.json import jsonify
 import re
 import hashlib
 import json
+from app.logging.logs_generator import generate_sample_logs
 # Example Usage
 # app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
 # Edit values to relevant values
@@ -80,11 +81,12 @@ with app.app_context():
 
         print('\nSuccessfully connected to OpenSearch')
 
+        # For Dev purposes only
+        # log_client.indices.delete(index='audit-logs')
+
         index_name = 'audit-logs'
         index_exists = log_client.indices.exists(index=index_name)
 
-        # For Dev purposes only
-        # log_client.indices.delete(index='audit-logs')
 
         if not index_exists:
 
@@ -99,6 +101,10 @@ with app.app_context():
         log_handler = OpenSearchLogHandler()
         app.logger.addHandler(log_handler)
         app.logger.setLevel(logging.INFO)
+
+        # Generate Sample Logs
+        # gen_result = generate_sample_logs(50)
+        # print(gen_result)
 
     else:
         print('\nFailed to connect to OpenSearch')
