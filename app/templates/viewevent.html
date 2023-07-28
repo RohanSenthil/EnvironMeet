@@ -1,0 +1,63 @@
+{% extends "user_base.html" %}
+{% set active_page = "events" %}
+{% block title %} EnvironMeet - Events {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/styles/events.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <div class="event-container">
+        <a href="/events" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+            <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+            </svg>
+            Back
+        </a>
+        <div class="event-title">
+            <h1>{{ event.name }}</h1>
+            <span>Organised by: <a href="/user/{{ get_user_from_id(event.organiser).username }}">{{ get_user_from_id(event.organiser).name }}</a> </span>
+        </div>
+        <div class="img-container">
+            <img src="/{{event.image}}" alt="">
+        </div>
+        <div class="event-row">
+            <div class="event-body event-body-left">
+                <h3>Event Description</h3>
+                <p class="event-desc">
+                    {{ event.eventdesc }}
+                </p>
+                <h6>Date:</h6>
+                <p>{{ event.date }}</p>
+                <h6>Time:</h6>
+                <p>{{ event.time }}</p>
+                <h6>You will earn:</h6>
+                <p>{{ event.points }} points</p>
+            </div>
+            <div class="event-body event-body-right">
+                <div class="price">
+                    {% if event.price == 'Free' %}
+                    {{ event.price }}
+                    {% else %}
+                    <h5>${{ event.price}}</h5>
+                    <p>per person</p>
+                    {% endif %}
+                </div>
+                {% if user.is_authenticated %}
+                {% if user|isinstance(memberObj) %}
+                <div class="push">
+                    <a href="{{ url_for('signup_events', hashedEventid=object_id_to_hash(event.id, act='event')) }}" role="button" class="egioesigseions">Sign up</a>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="push">
+                    <a href="{{ url_for('signup_events', hashedEventid=object_id_to_hash(event.id, act='event')) }}" role="button" class="egioesigseions">Sign up</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

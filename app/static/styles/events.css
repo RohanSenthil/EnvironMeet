@@ -412,3 +412,89 @@ table{
     display: flex;
     justify-content: center;
 }
+
+/* For Events View */
+.event-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.event-title {
+    margin-bottom: 2rem;
+    background-color: #fff;
+    padding: 2rem 3rem; 
+    border-radius: 1rem;
+}
+
+.event-title h1 {
+    font-weight: 700;
+    margin-bottom: 0px;
+}
+
+.event-body {
+    background-color: #fff;
+    padding: 2rem 3rem; 
+    border-radius: 1rem;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.img-container img {
+    height: auto;
+    width: 100%;
+    border-radius: .5rem;
+}
+
+.event-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.event-body-left {
+    width: 65%;
+}
+
+.event-body-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30%;
+    max-height: 215px;
+}
+
+.event-body h3 {
+    font-weight: 700;
+}
+
+.event-body h5 {
+    font-weight: 700;
+    margin-bottom: 0px;
+}
+
+.event-body h6 {
+    margin-bottom: 0px;
+}
+
+.event-body .push a {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.back-btn {
+    margin: 1rem;
+    color: #000 !important;
+}
+
+.back-btn svg {
+    margin-top: -2px;
+    margin-right: 5px;
+}

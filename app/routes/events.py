@@ -90,7 +90,6 @@ def signup_events(hashedEventid):
     if eventid is None:
         return jsonify({'error': 'id does not exist'}, 404)
     
-    print(eventid)
     event = Events.query.get(eventid)
     user = current_user
 
@@ -121,6 +120,19 @@ def signup_events(hashedEventid):
         return redirect(url_for('events'))
 
     return render_template('eventssignup.html', signup=signup, event=event)
+
+
+# Rohan's
+@app.route('/events/view/<hashedid>')
+def view_event(hashedid):
+
+    eventid = id_mappings.hash_to_object_id(hashedid)
+    if eventid is None:
+        return jsonify({'error': 'id does not exist'}, 404)
+    
+    event = Events.query.get(eventid)
+
+    return render_template('viewevent.html', event=event, get_user_from_id=id_mappings.get_user_from_id, object_id_to_hash=id_mappings.object_id_to_hash , user=current_user)
 
 # @app.route('/transfer', methods=['GET', 'POST'])
 # def transfer_column():
