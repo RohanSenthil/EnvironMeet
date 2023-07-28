@@ -149,6 +149,7 @@ def login_():
         elif user:
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 session['user_id'] = user.id
+                session.permanent = True
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
