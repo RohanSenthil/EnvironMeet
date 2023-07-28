@@ -30,6 +30,7 @@
         </div>
 <div class="content">
     <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group p-1">
             {{ render_field(form.reason, class="form-check", style="list-style-type:none") }}
         </div>

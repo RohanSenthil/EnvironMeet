@@ -29,8 +29,8 @@ def leaderboardglobal():
 @app.route('/leaderboard/invite', methods=["GET","POST"])
 @login_required
 def leaderboardinvite():
-
     leaderboards = Leaderboard.query.all()
+    leaderboardcontents = LeaderboardContent.query.all()
     user = current_user
     createinv = InviteForm(request.form)
     if request.method == "POST" and createinv.validate() :
@@ -46,4 +46,17 @@ def leaderboardinvite():
         id_mappings.store_id_mapping(object_id=invleaderboard.id, hashed_value=hashed_id, act='leaderboard')
         return redirect(url_for('leaderboardinvite'))
 
-    return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards)
+    return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards, leaderboardcontents=leaderboardcontents, get_leaderboard_from_id=id_mappings.get_leaderboard_from_id)
+
+@app.route('/leaderboard/invite/<leaderboardname>', methods=["GET","POST"])
+@login_required
+def leaderboardshit(leaderboardname):
+    user = current_user
+    leaderboardin = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname)
+
+    if request.method == 'POST':
+        leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardin.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardin.owner, memberid=user.id, memberpoints=user.points)
+        db.session.add(leaderboardjoin)
+        db.session.commit()
+
+    return render_template('leaderboarduser.html', leaderboardin=leaderboardin, get_user_from_id=id_mappings.get_user_from_id)

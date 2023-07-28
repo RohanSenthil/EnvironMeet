@@ -45,12 +45,33 @@ def reportevent(hashedid):
 
     return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id, event=event)
 
-@app.route('/report/event/<hashedid>', methods=["GET","POST"])
+@app.route('/report/user/<hashedid>', methods=["GET","POST"])
 @login_required
 def reportuser(hashedid):
     userid = id_mappings.hash_to_object_id(hashedid)
-    user = Events.query.get(userid)
+    user = Users.query.get(userid)
+
     currentuser = current_user
+
+    posts = 0
+    for i in Posts.query.filter_by(author=user.id):
+        posts += 1
+    followers = 0
+    for i in Users.query.all():
+        if i.is_following(user):
+            followers += 1
+    following = 0
+    for i in Users.query.all():
+        if user.is_following(i):
+            following += 1
     reportuser = Report(request.form)
-    if reportuser.comment.data is None:
-        'print'
+    if request.method == 'POST' and reportuser.validate():
+        print('userreported')
+        userreport = UserReport(userreported=user.id, reason=reportuser.reason.data, comment=reportuser.comment.data, reporter=currentuser.id, discriminator=currentuser.discriminator)
+        db.session.add(userreport)
+        db.session.commit()
+        hashed_id = id_mappings.hash_object_id(object_id=userreport.id, act='reportevent')
+        id_mappings.store_id_mapping(object_id=userreport.id, hashed_value=hashed_id, act='reportevent')
+        return redirect(url_for('feed'))
+
+    return render_template('reportuser.html', form=reportuser, currentuser=currentuser, get_user_from_id=id_mappings.get_user_from_id, user=user, posts=posts, followers=followers, following=following)

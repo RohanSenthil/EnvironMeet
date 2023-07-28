@@ -1,0 +1,48 @@
+{% extends "user_base.html" %}
+{% set active_page = "report" %}
+{% from '_formhelpers.html' import render_field %}
+{% block title %} EnvironMeet - Report {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/profile.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/accounts.css')}}">
+{% endblock %}
+{% block content %}
+<div class="content">
+  <div class="profile">
+    {% if user.profile_pic %}
+                <div class="profile_pic">
+                    <img src="../{{ user.profile_pic }}" alt="">
+                </div>
+            {% else %}
+                <div class="profile_pic">
+                    <img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" alt="">
+                </div>
+    {% endif %}
+    <h1>{{ user.username }}</h1>
+
+    <br><br>
+    <div class="profile-stats">
+        <ul>
+            <li><span class="profile-stat-count">{{ posts }}</span> posts</li>
+            <li><span class="profile-stat-count">{{ followers }}</span> followers</li>
+            <li><span class="profile-stat-count">{{ following }}</span> following</li>
+        </ul>
+    </div>
+    <table>
+    </table>
+  </div>
+</div>
+<br>
+<form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group p-1">
+            {{ render_field(form.reason, class="form-check", style="list-style-type:none") }}
+        </div>
+        <div class="form-group p-1">
+            {{ render_field(form.comment, class="form-control") }}
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary p-1"/>
+    </form>
+
+{% endblock %}

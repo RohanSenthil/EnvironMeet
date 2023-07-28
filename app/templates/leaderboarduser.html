@@ -1,0 +1,51 @@
+{% extends "user_base.html" %}
+{% set active_page = "leaderboard" %}
+{% from '_formhelpers.html' import render_field %}
+{% block title %} EnvironMeet - Leaderboard {% endblock %}
+<link rel="stylesheet" href="../../static/styles/leaderboard.css">
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+  {% for people in leaderboardin %}
+    <table class="alltimeleaderboard">
+                <tbody>
+                    {% if loop.index == 1 %}
+                    <tr class="leaderboardfirst">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
+                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
+                    </tr>
+                    {% elif loop.index == 2 %}
+                    <tr class="leaderboardsecond">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
+                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
+                    </tr>
+                    {% elif loop.index == 3 %}
+                    <tr class="leaderboardthird">
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
+                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td class="membername">{{ get_user_from_id(people.memberid).username }}}</td>
+                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+  {% endfor %}
+    <br>
+
+    <form action="post">
+        <input type="submit" class="btn btn-success" value="Join">
+    </form>
+</div>
+
+{% endblock %}

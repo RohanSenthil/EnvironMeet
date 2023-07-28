@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-from database.models import Id_Hash_Mappings, Users, Events, SignUps
+from database.models import Id_Hash_Mappings, Users, Events, SignUps, Leaderboard, LeaderboardContent
 from app import db
 
 
@@ -18,6 +18,13 @@ def get_signups_from_id(signup_id):
     signups = SignUps.query.get(signup_id)
     return signups
 
+def get_leaderboard_from_id(leaderboard_id):
+    leaderboard = Leaderboard.query.get(leaderboard_id)
+    return leaderboard
+
+def get_leadeerboardcontent_from_id(leaderboardcontent_id):
+    leaderboardcontent = LeaderboardContent.query.get(leaderboardcontent_id)
+    return leaderboardcontent
 
 # Security
 def gen_salt():

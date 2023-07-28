@@ -6,3 +6,6 @@ class InviteForm(Form):
     name = StringField('Leaderboard Name: ', validators=[InputRequired()])
     desc = StringField('Description: ', validators=[InputRequired()])
     # username = StringField('Username: ', validators=[InputRequired()])
+
+class LeaderboardJoin(Form):
+    reason = StringField('aa')
