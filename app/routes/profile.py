@@ -2,7 +2,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 # from app.routes.helpers import privileged_route
 from flask_mail import Message
 from threading import Thread
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, Flask, session
 from app import app, loginmanager, mail
 from database.models import Members, Organisations, db, Users, followers, Posts
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
@@ -148,6 +148,7 @@ def login_():
             return redirect(url_for('login_'))
         elif user:
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+                session['user_id'] = user.id
                 #login_user(member, remember = login_form.remember.data)
                 #provide_new_login_token(member.email, "member")
                 # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
@@ -159,12 +160,14 @@ def login_():
                 # return redirect(url_for('userprofile'))
         
         flash("Invalid email or password", "danger")
+
     return render_template('login.html', form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout_():
     logout_user()
     # revoke_login_token()
+    session.pop('user_id', None)
     return redirect(url_for('login_'))
 
 @app.route('/forget', methods=['GET', 'POST'])

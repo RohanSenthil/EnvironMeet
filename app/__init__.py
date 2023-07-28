@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from flask_migrate import Migrate
 from database.tools import generate_uri_from_file
 import os
@@ -10,6 +10,7 @@ from opensearchpy import OpenSearch, RequestsHttpConnection, AWSV4SignerAuth
 from imagekitio import ImageKit
 from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect
+from datetime import timedelta
 import boto3
 
 
@@ -103,6 +104,11 @@ imagekit = ImageKit(
 app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT') 
 
 csrf = CSRFProtect(app)
+
+#Session
+app.config['APP_SECRET_KEY']=os.environ.get('app_secret_key')
+
+app.permanent_session_lifetime = timedelta(minutes=1)  # Set session timeout to 30 minutes
 
 # Pass variables to base template
 @app.context_processor
