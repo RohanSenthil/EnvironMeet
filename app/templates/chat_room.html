@@ -1,0 +1,40 @@
+{% extends "user_base.html" %}
+{% set active_page = "chat" %}
+{% block title %} EnvironMeet - Chat {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="/static/styles/chat.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+
+    <div class="message-box">
+        <h2>Chat Room: {{code}}</h2>
+        <div class="messages" id="messages"></div>
+        <div class="inputs">
+          <input
+            type="text"
+            rows="3"
+            placeholder="Message"
+            name="message"
+            id="message"
+          />
+          <button type="button" name="send" id="send-btn">
+            Send
+          </button>
+        </div>
+    </div>
+
+    <script src="/static/scripts/chat.js"></script>
+
+    {% for msg in messages %}
+    <script type="text/javascript">
+        createMessage("{{msg.name}}", "{{msg.message}}");
+    </script>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
