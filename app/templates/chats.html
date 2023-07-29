@@ -10,29 +10,33 @@
 
 <div class="content">
 
-    <form method="POST" class="buttons">
+    <div class="container">
+
+      <div class="page-heading">
+        <h1>Live Chats</h1>
+        <p>Join or start live discussions rooms on environmental issues!</p>
+      </div>
+
+      <form method="POST" class="join-chat">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <h3>Enter The Chat Room</h3>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            placeholder="Pick a name!"
-            name="name"
-            value="{{name}}"
-          />
-        </div>
-        <div class="join">
-          <input type="text" placeholder="Room Code" name="code" value="{{code}}" />
-          <button type="submit" name="join">Join a Room</button>
-        </div>
-        <button type="submit" name="create" class="create-btn">Create a Room</button>
+        <input class="room-code" type="text" placeholder="Chat Room Code" name="code" value="{{code}}" />
+        <button type="submit" name="join" class="join-btn">Join Chat</button>
+        <!-- Style this later -->
         {% if error %}
-        <ul>
-          <li>{{error}}</li>
-        </ul>
+        {{ error }}
         {% endif %}
       </form>
+
+      <form method="POST" class="create-chat" action="{{ url_for('create_chat') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="col">
+          <span class="span-heading">Start a Live Discussion: </span>
+          <span class="span-para">You can share the code to your followers on your feed to promote discussions!</span>
+        </div>
+        <button type="submit" name="create" class="create-btn">Create a Chat</button>
+      </form>
+
+    </div>
 
 </div>
 

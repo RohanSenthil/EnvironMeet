@@ -3,47 +3,66 @@ from flask import render_template, session, request, redirect, url_for
 from flask_socketio import send, join_room, leave_room
 import random
 from string import ascii_uppercase
+from flask_login import current_user, login_required
+import uuid
+
 
 rooms = {}
 
-def generate_unique_code(length):
-    while True:
-        code = ""
-        for _ in range(length):
-            code += random.choice(ascii_uppercase)
+def generate_unique_code():
+    return uuid.uuid4().hex
+    # while True:
+    #     code = ""
+    #     for _ in range(length):
+    #         code += random.choice(ascii_uppercase)
         
-        if code not in rooms:
-            break
+    #     if code not in rooms:
+    #         break
     
-    return code
+    # return code
 
 @app.route("/chats", methods=["POST", "GET"])
 def chats():
-    session.clear()
     if request.method == "POST":
-        name = request.form.get("name")
+
+        if current_user.is_authenticated:
+            name = current_user.username
+        else:
+            name = 'Anonymous'
+
         code = request.form.get("code")
-        join = request.form.get("join", False)
-        create = request.form.get("create", False)
 
         if not name:
             return render_template("chats.html", error="Please enter a name.", code=code, name=name)
 
-        if join != False and not code:
+        if not code:
             return render_template("chats.html", error="Please enter a room code.", code=code, name=name)
         
         room = code
-        if create != False:
-            room = generate_unique_code(4)
-            rooms[room] = {"members": 0, "messages": []}
-        elif code not in rooms:
+        
+        if code not in rooms:
             return render_template("chats.html", error="Room does not exist.", code=code, name=name)
         
         session["room"] = room
         session["name"] = name
+
         return redirect(url_for("room"))
 
     return render_template("chats.html")
+
+
+@app.route("/chats/create", methods=['POST'])
+@login_required
+def create_chat():
+
+    room = generate_unique_code()
+    rooms[room] = {"members": 0, "messages": []}
+
+    session["room"] = room
+    session["name"] = current_user.username
+    
+    return redirect(url_for("room"))
+
 
 @app.route("/room")
 def room():

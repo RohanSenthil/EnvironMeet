@@ -111,7 +111,7 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 
 #Session
 app.config['APP_SECRET_KEY']=os.environ.get('app_secret_key')
-app.permanent_session_lifetime = timedelta(minutes=1)  # Set session timeout to 30 minutes
+app.permanent_session_lifetime = timedelta(minutes=60)  # Set session timeout to 30 minutes
 
 # Pass variables to base template
 @app.context_processor
