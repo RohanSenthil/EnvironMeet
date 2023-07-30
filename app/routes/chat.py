@@ -4,36 +4,38 @@ from flask_socketio import send, join_room, leave_room
 import random
 from string import ascii_uppercase
 from flask_login import current_user, login_required
-import uuid
+from datetime import datetime
 
 
 rooms = {}
 
-def generate_unique_code():
-    return uuid.uuid4().hex
-    # while True:
-    #     code = ""
-    #     for _ in range(length):
-    #         code += random.choice(ascii_uppercase)
+def generate_unique_code(length):
+    while True:
+        code = ""
+        for _ in range(length+1):
+            if _ == 3:
+                code += '-'
+            else:
+                code += random.choice(ascii_uppercase)
         
-    #     if code not in rooms:
-    #         break
+        if code not in rooms:
+            break
     
-    # return code
+    return code
 
 @app.route("/chats", methods=["POST", "GET"])
+@login_required
 def chats():
     if request.method == "POST":
 
-        if current_user.is_authenticated:
-            name = current_user.username
-        else:
-            name = 'Anonymous'
+        # if current_user.is_authenticated:
+        #     name = current_user.username
+        # else:
+        #     name = 'Anonymous'
+
+        name = current_user.username
 
         code = request.form.get("code")
-
-        if not name:
-            return render_template("chats.html", error="Please enter a name.", code=code, name=name)
 
         if not code:
             return render_template("chats.html", error="Please enter a room code.", code=code, name=name)
@@ -55,7 +57,7 @@ def chats():
 @login_required
 def create_chat():
 
-    room = generate_unique_code()
+    room = generate_unique_code(6)
     rooms[room] = {"members": 0, "messages": []}
 
     session["room"] = room
@@ -70,7 +72,7 @@ def room():
     if room is None or session.get("name") is None or room not in rooms:
         return redirect(url_for("chats"))
 
-    return render_template("chat_room.html", code=room, messages=rooms[room]["messages"])
+    return render_template("chat_room.html", code=room, messages=rooms[room]["messages"], user=current_user)
 
 @socketio.on("message")
 def message(data):
@@ -80,16 +82,21 @@ def message(data):
     
     content = {
         "name": session.get("name"),
-        "message": data["data"]
+        "message": data["data"],
+        "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
     }
+
     send(content, to=room)
     rooms[room]["messages"].append(content)
     print(f"{session.get('name')} said: {data['data']}")
+
 
 @socketio.on("connect")
 def connect(auth):
     room = session.get("room")
     name = session.get("name")
+    timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
     if not room or not name:
         return
     if room not in rooms:
@@ -97,14 +104,17 @@ def connect(auth):
         return
     
     join_room(room)
-    send({"name": name, "message": "has entered the room"}, to=room)
+    send({"name": name, "message": "has entered the room", "timestamp": timestamp, "sysgen": True}, to=room)
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
+
 
 @socketio.on("disconnect")
 def disconnect():
     room = session.get("room")
     name = session.get("name")
+    timestamp = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+
     leave_room(room)
 
     if room in rooms:
@@ -112,5 +122,5 @@ def disconnect():
         if rooms[room]["members"] <= 0:
             del rooms[room]
     
-    send({"name": name, "message": "has left the room"}, to=room)
+    send({"name": name, "message": "has left the room", "timestamp": timestamp, "sysgen": True}, to=room)
     print(f"{name} has left the room {room}")

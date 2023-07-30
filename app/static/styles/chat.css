@@ -2,6 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .container {
@@ -10,6 +11,7 @@
     justify-content: center;
     max-width: 75%;
     margin: 0 auto;
+    flex-wrap: wrap;
 }
 
 h1 {
@@ -67,6 +69,7 @@ h1 {
     background-color: #fff;
     padding: 2rem 3rem;
     border-radius: 1rem;
+    flex-wrap: wrap;
 }
 
 .create-chat .span-heading {
@@ -81,32 +84,51 @@ h1 {
     font-size: 14px;
 }
 
+
 .message-box {
-    border-color: black;
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 10px;
-    background-color: whitesmoke;
     height: 80vh;
     display: flex;
     flex-direction: column;
-    width: 80vw;
     align-items: stretch;
+    flex-wrap: wrap;
 }
 
 .messages {
     overflow-y: scroll;
     flex: 1;
     width: 100%;
+    margin: 2rem 0rem;
+    background-color: #fff;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
 }
 
-.inputs {
+.msg-input {
     padding: 10px;
     display: flex;
+    border: #D6D2D2 1px solid;
+    width: 95%;
+    background-color: #fff;
+    border-radius: 1rem;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+#send-btn {
+    color: #fff;
+    background-color: var(--env-green);
+    border: none;
+    border-radius: 2rem;
+    padding: .5rem 1.25rem;
+    margin-top: 5px;;
 }
 
 h2 {
     text-align: center;
+    font-weight: 700;
 }
 
 #message {
@@ -120,9 +142,70 @@ h2 {
     justify-content: space-between;
     padding-left: 10px;
     padding-right: 10px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
 }
 
 .muted {
     font-size: 10px;
     color: darkgray;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    width: 65%;
+    flex-wrap: wrap;
+}
+
+.my-msg {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin-bottom: 1rem;
+    width: 65%;
+    flex-wrap: wrap;
+}
+
+.my-msg .theMsg {
+    background-color: var(--env-green);
+}
+
+.text-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.theMsg {
+    border: none;
+    border-radius: .75rem;
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.text-content {
+    font-style: italic;
+}
+
+.back-btn {
+    margin: 1rem;
+    color: red !important;
+}
+
+.back-btn svg {
+    margin-top: -2px;
+    margin-right: 5px;
+}
+
+.red {
+    color: red;
+    border-color: red;
 }

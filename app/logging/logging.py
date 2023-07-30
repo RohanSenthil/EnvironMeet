@@ -31,9 +31,9 @@ class OpenSearchLogHandler(logging.Handler):
 
     def sanitize_input(self, input_string):
         try:
-            valid_char_re = r'^[a-zA-Z0-9\s.!?-_#@%&=/\\():]+$'
+            valid_char_re = r'^[a-zA-Z0-9\s.!?-_#@%&=/\\():]'
             # Remove unwanted characters
-            return re.sub(valid_char_re, '', input_string)
+            return re.sub(f'[^{valid_char_re}]', '', input_string)
         except Exception:    
             return ''
 

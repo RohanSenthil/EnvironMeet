@@ -14,17 +14,13 @@
 
       <div class="page-heading">
         <h1>Live Chats</h1>
-        <p>Join or start live discussions rooms on environmental issues!</p>
+        <p>Join or start live discussion rooms on environmental issues!</p>
       </div>
 
       <form method="POST" class="join-chat">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <input class="room-code" type="text" placeholder="Chat Room Code" name="code" value="{{code}}" />
+        <input class="room-code {{ 'red' if error }}" type="text" placeholder="Chat Room Code" name="code" value="{{code}}" />
         <button type="submit" name="join" class="join-btn">Join Chat</button>
-        <!-- Style this later -->
-        {% if error %}
-        {{ error }}
-        {% endif %}
       </form>
 
       <form method="POST" class="create-chat" action="{{ url_for('create_chat') }}">

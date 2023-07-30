@@ -12,6 +12,7 @@
     <h1 class="hiaa">Sign up for Event</h1>
     <div class="stuff">
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="form-group col" id="remainings4">
                 {{ signup.name(class="form-control", type="hidden", value=current_user.id) }}
             </div>
