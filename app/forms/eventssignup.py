@@ -19,9 +19,9 @@ from flask import Flask
 # app.config['SECRET_KEY'] = 'wgaming'
 
 class SignUp(Form):
-    name = StringField('Name:', validators= [InputRequired()])
-    email = StringField('Email:', validators=[DataRequired(), Email()])
-    eventid = StringField('Event Name:', validators=[InputRequired()])
+    name = StringField('Name:', render_kw={'readonly': True}, validators= [InputRequired()])
+    email = StringField('Email:', render_kw={'readonly': True}, validators=[DataRequired(), Email()])
+    eventid = StringField('Event Name:', render_kw={'readonly': True}, validators=[InputRequired()])
 
 
 

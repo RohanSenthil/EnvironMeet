@@ -132,7 +132,7 @@ def view_event(hashedid):
     
     event = Events.query.get(eventid)
 
-    return render_template('viewevent.html', event=event, get_user_from_id=id_mappings.get_user_from_id, object_id_to_hash=id_mappings.object_id_to_hash , user=current_user)
+    return render_template('viewevent.html', event=event, get_user_from_id=id_mappings.get_user_from_id, object_id_to_hash=id_mappings.object_id_to_hash , user=current_user, memberObj=Members)
 
 # @app.route('/transfer', methods=['GET', 'POST'])
 # def transfer_column():
