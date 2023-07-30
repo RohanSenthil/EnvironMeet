@@ -38,6 +38,17 @@ class OpenSearchLogHandler(logging.Handler):
             return ''
 
     def emit(self, record):
+
+        try:
+            security_relevant = record.security_relevant
+        except AttributeError:
+            security_relevant = False
+
+        try:
+            http_status_code = record.http_status_code
+        except AttributeError:
+            http_status_code = 500
+
         log_message = {
             'when': {
                 'timestamp': datetime.utcnow().isoformat(),
@@ -57,9 +68,9 @@ class OpenSearchLogHandler(logging.Handler):
             'what': {
                 'event': record.levelname,
                 'severity': record.levelno,
-                'security_relevant': record.security_relevant,
+                'security_relevant': security_relevant,
                 'message': self.sanitize_input(self.format(record)),
-                'http_status_code': record.http_status_code,
+                'http_status_code': http_status_code,
                 'user_agent': self.sanitize_input(request.headers.get('User-Agent')),
             },
         }

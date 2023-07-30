@@ -17,6 +17,9 @@ import boto3
 
 app = Flask(__name__)
 
+# When Fuzzing
+# app.debug = False
+
 # DB Config
 db_uri = generate_uri_from_file('database/db_config.yml')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
