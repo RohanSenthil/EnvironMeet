@@ -3,21 +3,7 @@ from flask_limiter import Limiter, RequestLimit
 from app import app
 from flask_limiter.util import get_remote_address
 from flask.json import jsonify
-# from database.models import db, RateLimit
-# import datetime
-
-
-# def save_rate_limit_data(endpoint, limit, period):
-#     rateLimit = RateLimit(
-#         endpoint=endpoint,
-#         ip=get_remote_address(),
-#         limit=limit,
-#         period=period,
-#         last_hit=datetime.datetime.utcnow()
-#     )
-
-#     db.session.add(rateLimit)
-#     db.session.commit()
+import os
 
 
 def exceed_rate_responder(requestLimit = RequestLimit):
@@ -32,6 +18,7 @@ limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=['1 per second'],
+    storage_uri=f'redis://{os.environ.get("redis_user")}:{os.environ.get("redis_password")}@redis-15175.c252.ap-southeast-1-1.ec2.cloud.redislabs.com:15175',
     # storage_uri='memory://', # For testing only change to db 
     on_breach=exceed_rate_responder,
 )
