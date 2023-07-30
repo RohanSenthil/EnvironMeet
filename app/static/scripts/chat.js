@@ -2,22 +2,54 @@ let socketio = io();
       
 const messages = document.getElementById("messages");
 
-const createMessage = (name, msg) => {
-    const content = `
-    <div class="text">
-        <span>
-            <strong>${name}</strong>: ${msg}
-        </span>
-        <span class="muted">
-            ${new Date().toLocaleString()}
-        </span>
-    </div>
-    `;
-    messages.innerHTML += content;
+const createMessage = (data) => {
+
+    let content = document.createElement('div');
+    content.classList.add(data.sysgen ? 'text': 'message');
+
+    let timestampElement = document.createElement('span');
+    timestampElement.classList.add('muted');
+    timestampElement.textContent = data.timestamp || new Date().toLocaleString('en-GB');
+
+    if (data.sysgen) {
+
+        let textContentElement = document.createElement('span');
+        textContentElement.classList.add('text-content');
+        textContentElement.textContent = `${data.name} ${data.message}`;
+        
+        content.appendChild(textContentElement);
+        content.appendChild(timestampElement)
+    } 
+    else {
+
+        if (current_user == data.name) {
+            content.classList.add('my-msg')
+        }
+
+        let textRow = document.createElement('div');
+        textRow.classList.add('text-row');
+
+        let nameElement = document.createElement('span');
+        let strongElement = document.createElement('strong');
+        strongElement.textContent = data.name;
+        
+        nameElement.appendChild(strongElement)
+        textRow.appendChild(nameElement);
+        textRow.appendChild(timestampElement);
+        content.appendChild(textRow);
+
+        let textRowMsg = document.createElement('div');
+        textRowMsg.classList.add('text-row', 'theMsg');
+        textRowMsg.textContent = data.message;
+        content.appendChild(textRowMsg);
+    }
+
+    messages.appendChild(content);
+
 };
 
 socketio.on("message", (data) => {
-    createMessage(data.name, data.message);
+    createMessage(data);
 });
 
 const sendMessage = () => {

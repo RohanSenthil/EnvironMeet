@@ -10,10 +10,32 @@
 
 <div class="content">
 
+  <div class="container">
+
+    <a href="/chats" class="back-btn red">
+      <svg xmlns="http://www.w3.org/2000/svg" width="7.41" height="12" viewBox="0 0 7.41 12">
+      <path id="Path_23" data-name="Path 23" d="M15.41,16.09,10.83,11.5l4.58-4.59L14,5.5l-6,6,6,6Z" transform="translate(-8 -5.5)"/>
+      </svg>
+      Leave
+    </a>
+
+    <h2>Chat Room: {{ code }}</h2>
+
     <div class="message-box">
-        <h2>Chat Room: {{code}}</h2>
-        <div class="messages" id="messages"></div>
-        <div class="inputs">
+        <div class="messages" id="messages">
+          {% for msg in messages %}
+          <div class="{{ 'my-msg' if user.username == msg.name else 'message' }}">
+            <div class="text-row">
+              <span><strong>{{ msg.name }}</strong></span>
+              <span class="muted">{{ msg.timestamp }}</span>
+            </div>
+            <div class="text-row theMsg">
+              {{ msg.message }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="msg-input">
           <input
             type="text"
             rows="3"
@@ -27,13 +49,13 @@
         </div>
     </div>
 
-    <script src="/static/scripts/chat.js"></script>
+  </div>
 
-    {% for msg in messages %}
-    <script type="text/javascript">
-        createMessage("{{msg.name}}", "{{msg.message}}");
-    </script>
-    {% endfor %}
+  <script>
+    const current_user = '{{ user.username }}';
+  </script>
+
+  <script src="/static/scripts/chat.js"></script>
 
 </div>
 
