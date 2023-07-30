@@ -138,7 +138,7 @@ def profileupdate():
 def load_user(email):
     return Users.query.get(email)
 
-INACTIVITY_THRESHOLD = 60 #1 minute of inactivity
+INACTIVITY_THRESHOLD = 60 * 5 #1 minute of inactivity
 def check_user_activity():
     last_activity = session.get('last_activity')
     if last_activity:
