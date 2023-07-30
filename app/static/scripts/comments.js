@@ -64,7 +64,7 @@ const editComment = (commentid) => {
     let searchData = new URLSearchParams();
     searchData.append('desc', document.getElementById(`editCommentInput-${commentid}`).value);
 
-    const csrfTokenElem = document.getElementById(`editCommentModal_${postid}`).querySelector('input[name="csrf_token"]');
+    const csrfTokenElem = document.getElementById(`editCommentModal_${commentid}`).querySelector('input[name="csrf_token"]');
 
     if (csrfTokenElem) {
         csrfToken = csrfTokenElem.value
@@ -98,7 +98,7 @@ const deleteComment = (commentid) => {
     const deleteItem = document.getElementById(`commentText-${commentid}`);
     const deleteModal = document.getElementById(`deleteCommentModal_${commentid}`)
 
-    const csrfTokenElem = document.getElementById(`deleteCommentModal_${postid}`).querySelector('input[name="csrf_token"]');
+    const csrfTokenElem = document.getElementById(`deleteCommentModal_${commentid}`).querySelector('input[name="csrf_token"]');
 
     if (csrfTokenElem) {
         csrfToken = csrfTokenElem.value
