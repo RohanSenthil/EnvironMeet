@@ -12,13 +12,10 @@ from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
 import boto3
-# from flask_socketio import SocketIO
+from flask_socketio import SocketIO
 
 
 app = Flask(__name__)
-
-# When Fuzzing
-# app.debug = False
 
 # DB Config
 db_uri = generate_uri_from_file('database/db_config.yml')
@@ -110,7 +107,7 @@ app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
 csrf = CSRFProtect(app)
 
 # Socket
-# socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app)
 
 #Session
 app.config['APP_SECRET_KEY']=os.environ.get('app_secret_key')
