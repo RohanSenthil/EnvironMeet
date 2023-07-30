@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 import uuid as uuid
 import os, datetime
 from app.util import share, validation, id_mappings, verification
+from datetime import timedelta
 
 # @check_is_confirmed
 
@@ -137,6 +138,26 @@ def profileupdate():
 def load_user(email):
     return Users.query.get(email)
 
+INACTIVITY_THRESHOLD = 60 #1 minute of inactivity
+def check_user_activity():
+    last_activity = session.get('last_activity')
+    if last_activity:
+        elapsed_time = time.time() - last_activity
+        if elapsed_time > INACTIVITY_THRESHOLD:
+            session.clear()
+            flash("You have been logged out due to inactivity")
+
+@app.before_request
+def before_request():
+    if 'user_id' in session:
+        check_user_activity()
+        session['last_activity'] = time.time()
+
+@app.route('/reset_activity', methods=['POST'])
+def reset_activity():
+    if 'user_id' in session:
+        session['last_activity'] = time.time()
+    return ''
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
     login_form = login(request.form)
@@ -149,16 +170,9 @@ def login_():
         elif user:
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 session['user_id'] = user.id
+                session['last_activity'] = time.time()  # Reset last activity upon successful login
                 session.permanent = True
-                #login_user(member, remember = login_form.remember.data)
-                #provide_new_login_token(member.email, "member")
-                # hashed_id = id_mappings.hash_object_id(object_id=user.id, act='member')
-                # id_mappings.store_id_mapping(object_id=user.id, hashed_value=hashed_id, act='member')
-
-                return redirect(url_for('fotp',id=user.id))
-                # login_user(user)
-                # flash("Login Successful!", "success")
-                # return redirect(url_for('userprofile'))
+                return redirect(url_for('fotp', id=user.id))
 
         flash("Invalid email or password", "danger")
 
@@ -169,6 +183,7 @@ def logout_():
     logout_user()
     # revoke_login_token()
     session.pop('user_id', None)
+    session.pop('last_activity', None)
     return redirect(url_for('login_'))
 
 @app.route('/forget', methods=['GET', 'POST'])

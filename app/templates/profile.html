@@ -65,4 +65,15 @@
     </table>
   </div>
 </div>
+<!-- Include this script in your HTML templates -->
+<script>
+    // Function to reset the inactivity timer
+    function resetInactivityTimer() {
+        fetch('/reset_activity', { method: 'POST' }); // Send a request to the server to reset the last_activity
+    }
+
+    // Add event listeners to reset the timer on user interaction
+    document.addEventListener('click', resetInactivityTimer);
+    document.addEventListener('keydown', resetInactivityTimer);
+</script>
 {% endblock%}

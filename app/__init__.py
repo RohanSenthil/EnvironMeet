@@ -12,7 +12,7 @@ from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
 import boto3
-from flask_socketio import SocketIO
+# from flask_socketio import SocketIO
 
 
 app = Flask(__name__)
@@ -107,11 +107,11 @@ app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT')
 csrf = CSRFProtect(app)
 
 # Socket
-socketio = SocketIO(app, cors_allowed_origins='*')
+# socketio = SocketIO(app, cors_allowed_origins='*')
 
 #Session
 app.config['APP_SECRET_KEY']=os.environ.get('app_secret_key')
-app.permanent_session_lifetime = timedelta(minutes=60)  # Set session timeout to 30 minutes
+# app.permanent_session_lifetime = timedelta(minutes=1)  # Set session timeout to 30 minutes
 
 # Pass variables to base template
 @app.context_processor
