@@ -164,6 +164,7 @@ def reset_activity():
     return ''
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
+    object_id_to_hash = id_mappings.object_id_to_hash
     login_form = login(request.form)
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
@@ -185,8 +186,12 @@ def login_():
 
                 user.failed_login_attempts = 0
                 db.session.commit()
-
-                return redirect(url_for('fotp', id=user.id))
+                if isinstance(user, Members):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='member')))
+                elif isinstance(user, Organisations):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='organisation')))
+                elif isinstance(user, Admins):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='admin')))
 
             else:
                 user.failed_login_attempts += 1
@@ -254,15 +259,15 @@ def reset_token(token):
     return render_template('reset.html', form=resetform)
 
 
-@app.route('/otp/<id>', methods=['GET', 'POST'])
-def fotp(id):
-    # id = id_mappings.hash_to_object_id(hashedid)
+@app.route('/otp/<hashedid>', methods=['GET', 'POST'])
+def fotp(hashedid):
+    id = id_mappings.hash_to_object_id(hashedid)
     form = getotp(request.form)
     user = Users.query.get(id)
     totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and form.validate():
         stored_token = user.otp_token
-        if stored_token and stored_token == form.num.data:
+        if stored_token and stored_token == form.num.data and is_otp_token_valid(user):
             login_user(user)
             flash("Login Successful!", "success")
             if isinstance(user, Members) or isinstance(user, Organisations):
