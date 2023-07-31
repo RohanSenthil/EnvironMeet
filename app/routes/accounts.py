@@ -3,7 +3,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
-from app import app, loginmanager, mail
+from app import app, loginmanager, mail, imagekit
 from database.models import Members, Organisations, db, Users, Admins
 from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea
 from app.routes.helpers import provide_new_login_token, privileged_route
@@ -15,6 +15,9 @@ from app.util import share, validation, id_mappings
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
 from app.util.verification import check_is_confirmed, admin_required
+from PIL import Image
+from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
+from flask.json import jsonify
 
 @app.route('/admin')
 def admin():
@@ -31,22 +34,77 @@ def members():
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
-        print(request.files.get('profile_pic'))
-        if request.files.get('profile_pic').filename != '':
-            profile_pic = request.files.get('profile_pic')
-            print(profile_pic)
-            pic_filename = secure_filename(request.files.get('profile_pic').filename)
-            print("can file")
-            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
-            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
-            pic_name =  "static/uploads/" + pic_name1
-        else:
-            pic_name = 'static\images\default_profile_pic.png'
+        # print(request.files.get('profile_pic'))
+        # if request.files.get('profile_pic').filename != '':
+        #     profile_pic = request.files.get('profile_pic')
+        #     print(profile_pic)
+        #     pic_filename = secure_filename(request.files.get('profile_pic').filename)
+        #     print("can file")
+        #     pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+        #     profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+        #     pic_name =  "static/uploads/" + pic_name1
+        # else:
+        #     pic_name = 'static\images\default_profile_pic.png'
+        
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
+        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
+        
+        # Handling file upload
+        uploaded_file = createform.profile_pic.data 
+        max_content_length = 5 * 1024 * 1024
+
+        if uploaded_file is not None:
+
+            if not validation.file_is_image(uploaded_file.stream):
+                return jsonify({'error': 'File type not allowed'}, 415)
+
+            filename = uploaded_file.filename
+            secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
+            image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
+
+            if uploaded_file.content_length > max_content_length:
+                if uploaded_file.content_length > max_content_length * 2:
+                    return jsonify({'error': 'File size too big'}, 400)
+
+                image = Image.open(uploaded_file)
+                image.thumbnail(max_content_length)
+                og_image = Image.open(image)
+            else:
+                og_image = Image.open(uploaded_file)
+
+    
+            scan_result = validation.scan_file(uploaded_file.read())
+
+            if scan_result == False:
+
+                randomized_image = validation.randomize_image(og_image)
+
+                path_list = image_path.split('/')[1:]
+                new_path = '/'.join(path_list)
+                member.profile_pic = new_path
+                randomized_image.save('app/' + new_path)
+
+                upload = imagekit.upload_file(
+                    file=open('app/' + new_path, 'rb'),
+                    file_name=secureFilename,
+                    options=UploadFileRequestOptions(
+                        folder='/Posts_Images',
+                    ),
+                )
+
+                response = upload.response_metadata.raw
+                member.profile_pic = response['url']
+                member.profile_pic_id = upload.file_id
+
+                if os.path.exists('app/' + new_path):
+                    os.remove('app/' + new_path)
+
+            else:
+                member.profile_pic = 'static\images\default_profile_pic.png'
+
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
@@ -225,9 +283,9 @@ def createorganisations():
         db.session.add(organisation)
         db.session.commit()
         db.session.close()
-        sendverificationemail(organisation)
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
+        sendverificationemail(organisation)
         flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
