@@ -12,7 +12,7 @@
 <h1 class="hiaa">Create Events</h1>
     <div class="stuff">
 <form method="POST" enctype="multipart/form-data">
-    {{ form.csrf_token }}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group col" id="remainings">
      {{ render_field(form.organiser, class="form-control") }}
  </div>
