@@ -84,6 +84,7 @@ class Users(db.Model, UserMixin):
     contact = db.Column(db.Integer)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     profile_pic = db.Column(db.String(1000), nullable=True)
+    profile_pic_id = db.Column(db.String(100))
     followed = db.relationship('Users', 
                                secondary=followers, 
                                primaryjoin=(followers.c.follower_id == id), 

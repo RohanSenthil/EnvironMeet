@@ -3,7 +3,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
-from app import app, loginmanager, mail
+from app import app, loginmanager, mail, imagekit
 from database.models import Members, Organisations, db, Users, followers, Posts, Admins
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
@@ -13,6 +13,9 @@ import uuid as uuid
 import os, datetime
 from app.util import share, validation, id_mappings, verification
 from datetime import timedelta
+from PIL import Image
+from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
+from flask.json import jsonify
 
 # @check_is_confirmed
 
