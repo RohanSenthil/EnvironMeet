@@ -28,6 +28,7 @@ def members():
 
 
 @app.route('/members/create', methods=['GET','POST'])
+@admin_required
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():

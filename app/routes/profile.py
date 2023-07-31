@@ -232,6 +232,24 @@ def sendemail(user):
     '''
     mail.send(msg)
 
+@app.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user = Users.verify_reset_token(token)
+    if not user:
+        flash('That is an invalid token.', "danger")
+        return redirect(url_for('login_'))
+    resetform = reset(request.form)
+    if request.method == "POST" and resetform.validate():
+        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
+        user.password = passwordd
+        db.session.commit()
+        db.session.close()
+        flash('Your password has been updated! You are now able to log in.','success')
+        return redirect(url_for('login_'))
+
+    return render_template('reset.html', form=resetform)
+
+
 @app.route('/otp/<id>', methods=['GET', 'POST'])
 def fotp(id):
     # id = id_mappings.hash_to_object_id(hashedid)
@@ -280,23 +298,6 @@ def generate_otp_token(user, totp):
     user.otp_token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=5)  # Set expiration time to 5 minutes from now
     db.session.commit()
     return token
-
-@app.route('/reset/<token>', methods=['GET', 'POST'])
-def reset_token(token):
-    user = Users.verify_reset_token(token)
-    if not user:
-        flash('That is an invalid token.', "danger")
-        return redirect(url_for('login_'))
-    resetform = reset(request.form)
-    if request.method == "POST" and resetform.validate():
-        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
-        user.password = passwordd
-        db.session.commit()
-        db.session.close()
-        flash('Your password has been updated! You are now able to log in.','success')
-        return redirect(url_for('login_'))
-
-    return render_template('reset.html', form=resetform)
 
 @app.route('/search')
 def search():

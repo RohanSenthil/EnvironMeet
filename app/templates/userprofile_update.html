@@ -34,6 +34,7 @@
       {% if member %}
             <div class="cont">
               <form class="bg-white border border-grey rounded-5 me-5 p-3" method="POST" action="" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                   <div class="form-group p-1">
                     <label for="disabledinput">Email:</label>
                     <input class="form-control" type="text" id="disabledinput" placeholder="{{ olduser.email }}" readonly style="background-color: #f0ecec">
