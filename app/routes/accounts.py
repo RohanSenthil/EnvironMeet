@@ -31,6 +31,7 @@ def members():
 
 
 @app.route('/members/create', methods=['GET','POST'])
+@admin_required
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
@@ -163,6 +164,14 @@ def deletemember(hashedid):
         id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('members'))
 
+@app.route('/members/unlock/<id>')
+def unlockmember(id):
+    member = Members.query.filter_by(id=id).first()
+    if member:
+        member.failed_login_attempts = 0
+        member.is_account_locked = 0
+        db.session.commit()
+    return redirect(url_for('members'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def registermember():
