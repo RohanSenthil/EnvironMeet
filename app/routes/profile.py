@@ -16,6 +16,7 @@ from datetime import timedelta
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
+from app.util.verification import check_is_confirmed
 
 # @check_is_confirmed
 
