@@ -5,10 +5,117 @@ from wtforms.fields import DateField
 from database.models import Members, Organisations, Users
 from flask_wtf import RecaptchaField
 
+class SafeStringField(StringField):
+    def process_formdata(self, valuelist):
+        if valuelist:
+            user_input = valuelist[0]
+            encoded_input = self.html_encode(user_input)
+            self.data = encoded_input
+
+    @staticmethod
+    def html_encode(input_string):
+        html_entities = {
+            '<': '&lt;',
+            '>': '&gt;',
+            '&': '&amp;',
+            '"': '&quot;',
+            "'": '&#39;',
+            '/': '&#47;',
+            ' ': '&nbsp;',
+            '¡': '&iexcl;',
+            '¢': '&cent;',
+            '£': '&pound;',
+            '¤': '&curren;',
+            '¥': '&yen;',
+            '¦': '&brvbar;',
+            '§': '&sect;',
+            '©': '&copy;',
+            '®': '&reg;',
+            '°': '&deg;',
+            '±': '&plusmn;',
+            'µ': '&micro;',
+            '¶': '&para;',
+            '·': '&middot;',
+            '¿': '&iquest;',
+            'À': '&Agrave;',
+            'Á': '&Aacute;',
+            'Â': '&Acirc;',
+            'Ã': '&Atilde;',
+            'Ä': '&Auml;',
+            'Å': '&Aring;',
+            'Æ': '&AElig;',
+            'Ç': '&Ccedil;',
+            'È': '&Egrave;',
+            'É': '&Eacute;',
+            'Ê': '&Ecirc;',
+            'Ë': '&Euml;',
+            'Ì': '&Igrave;',
+            'Í': '&Iacute;',
+            'Î': '&Icirc;',
+            'Ï': '&Iuml;',
+            'Ð': '&ETH;',
+            'Ñ': '&Ntilde;',
+            'Ò': '&Ograve;',
+            'Ó': '&Oacute;',
+            'Ô': '&Ocirc;',
+            'Õ': '&Otilde;',
+            'Ö': '&Ouml;',
+            '×': '&times;',
+            'Ø': '&Oslash;',
+            'Ù': '&Ugrave;',
+            'Ú': '&Uacute;',
+            'Û': '&Ucirc;',
+            'Ü': '&Uuml;',
+            'Ý': '&Yacute;',
+            'Þ': '&THORN;',
+            'ß': '&szlig;',
+            'à': '&agrave;',
+            'á': '&aacute;',
+            'â': '&acirc;',
+            'ã': '&atilde;',
+            'ä': '&auml;',
+            'å': '&aring;',
+            'æ': '&aelig;',
+            'ç': '&ccedil;',
+            'è': '&egrave;',
+            'é': '&eacute;',
+            'ê': '&ecirc;',
+            'ë': '&euml;',
+            'ì': '&igrave;',
+            'í': '&iacute;',
+            'î': '&icirc;',
+            'ï': '&iuml;',
+            'ð': '&eth;',
+            'ñ': '&ntilde;',
+            'ò': '&ograve;',
+            'ó': '&oacute;',
+            'ô': '&ocirc;',
+            'õ': '&otilde;',
+            'ö': '&ouml;',
+            '÷': '&divide;',
+            'ø': '&oslash;',
+            'ù': '&ugrave;',
+            'ú': '&uacute;',
+            'û': '&ucirc;',
+            'ü': '&uuml;',
+            'ý': '&yacute;',
+            'þ': '&thorn;',
+            'ÿ': '&yuml;',
+        }
+
+        encoded_string = ""
+        for char in input_string:
+            if char in html_entities:
+                encoded_string += html_entities[char]
+            else:
+                encoded_string += char
+        return encoded_string
+
+
 class createm(Form):
-    name = StringField('Name', validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    name = SafeStringField('Name', validators=[DataRequired()])
+    username = SafeStringField('Username', validators=[DataRequired()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
         validators.DataRequired(),
@@ -30,10 +137,10 @@ class createm(Form):
             raise ValidationError("Username already in database! Please enter a unique username.")
         
 class updatem(Form):
-    name = StringField('Name', validators=[DataRequired()])
+    name = SafeStringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
-    username = StringField('Username', validators=[DataRequired()])
+    username = SafeStringField('Username', validators=[DataRequired()])
     profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
     # def validate_username(self, username):
     #     unique = Users.query.filter_by(username=(username.data).lower()).first()
@@ -42,14 +149,14 @@ class updatem(Form):
 
 class login(Form):
     recaptcha = RecaptchaField()
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
         validators.DataRequired(),
     ])
 
 class forget(Form):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
         
 class reset(Form):
     password = PasswordField('New Password:', [
@@ -61,20 +168,17 @@ class reset(Form):
 
 
 
-
-
-
 class createo(Form):
-    name = StringField('Name', validators=[DataRequired()])
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    name = SafeStringField('Name', validators=[DataRequired()])
+    username = SafeStringField('Username', validators=[DataRequired()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Confirm Password', validators=[DataRequired()])
-    address = StringField('Address')
+    address = SafeStringField('Address')
     description = TextAreaField('Description:')
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     profile_pic = FileField('Display Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
@@ -90,10 +194,10 @@ class createo(Form):
             raise ValidationError("Username already in database! Please enter a unique username.")
 
 class updateo(Form):
-    name = StringField('Name', validators=[DataRequired()])
+    name = SafeStringField('Name', validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
-    username = StringField('Username', validators=[DataRequired()])
-    address = StringField('Address')
+    username = SafeStringField('Username', validators=[DataRequired()])
+    address = SafeStringField('Address')
     description = TextAreaField('Description:')
     profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
     # def validate_username(self, username):
@@ -106,10 +210,9 @@ class getotp(Form):
 
 
 
-
 class createa(Form):
-    name = StringField('Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    name = SafeStringField('Name', validators=[DataRequired()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
         validators.Length(min=10),
         validators.DataRequired(),
@@ -125,7 +228,7 @@ class createa(Form):
             raise ValidationError("Email already in database! Please enter a new email.")
             
 class updatea(Form):
-    name = StringField('Name', validators=[DataRequired()])
+    name = SafeStringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
     # def validate_username(self, username):
