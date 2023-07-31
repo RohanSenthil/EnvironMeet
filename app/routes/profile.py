@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
 from app import app, loginmanager, mail
-from database.models import Members, Organisations, db, Users, followers, Posts
+from database.models import Members, Organisations, db, Users, followers, Posts, Admins
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt, pyotp, time
@@ -224,7 +224,10 @@ def fotp(id):
         if stored_token and stored_token == form.num.data:
             login_user(user)
             flash("Login Successful!", "success")
-            return redirect(url_for('userprofile'))
+            if isinstance(user, Members) or isinstance(user, Organisations):
+                return redirect(url_for('userprofile'))
+            elif isinstance(user, Admins):
+                return redirect(url_for('admin'))
         else:
             flash("Wrong OTP. Please try again", "warning")
 
@@ -278,7 +281,10 @@ def reset_token(token):
 
 @app.route('/search')
 def search():
-    users = Users.query.all()
+    users = []
+    for i in Users.query.all():
+        if not isinstance(i, Admins):
+            users.append(i)
     return render_template('search.html', users=users)
 
 @app.route('/user/<username>')

@@ -17,6 +17,6 @@ def check_is_confirmed(func):
 def admin_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
-        if not Admins.query.get(id=current_user.id):
+        if isinstance(current_user, Admins):
             return jsonify({'error', 'Unallowed'}, 403)
         return func(*args, **kwargs)

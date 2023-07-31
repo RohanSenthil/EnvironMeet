@@ -16,6 +16,10 @@ from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime
 from app.util.verification import check_is_confirmed, admin_required
 
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
+
 #MEMBERS
 @app.route('/members', methods=['GET'])
 def members():
@@ -45,10 +49,10 @@ def createmember():
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
-        sendverificationemail(member)
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
-        flash("Verification email sent to inbox.", "primary")
+        sendverificationemail(member)
+        flash("Verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         return redirect(url_for('members'))
     return render_template('/accounts/member/createm.html', form=createform)
 
