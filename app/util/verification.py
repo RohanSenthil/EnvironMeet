@@ -18,5 +18,7 @@ def admin_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
         if isinstance(current_user, Admins):
-            return jsonify({'error', 'Unallowed'}, 403)
-        return func(*args, **kwargs)
+            return func(*args, **kwargs)
+        else:
+            return jsonify({'error': 'Unallowed'}), 403
+    return decorated_function
