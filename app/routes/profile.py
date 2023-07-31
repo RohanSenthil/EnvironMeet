@@ -164,15 +164,34 @@ def login_():
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
+
+        if user.is_account_locked:
+            flash("Account is locked. Please contact the administrator", "danger")
+            return(redirect(url_for('login_')))
+
         if not user:
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
+
         elif user:
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 session['user_id'] = user.id
                 session['last_activity'] = time.time()  # Reset last activity upon successful login
                 session.permanent = True
+
+                user.failed_login_attempts = 0
+                db.session.commit()
+
                 return redirect(url_for('fotp', id=user.id))
+
+            else:
+                user.failed_login_attempts += 1
+                db.session.commit()
+
+                if user.failed_login_attempts >= 3:
+                    user.is_account_locked = True
+                    db.session.commit()
+                    flash("Too many failed login attempts. Account is now locked.", "danger")
 
         flash("Invalid email or password", "danger")
 
