@@ -20,5 +20,5 @@ def admin_required(func):
         if isinstance(current_user, Admins):
             return func(*args, **kwargs)
         else:
-            return jsonify({'error': 'Unallowed'}), 403
+            return render_template('403.html')
     return decorated_function
