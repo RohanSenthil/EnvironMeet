@@ -23,7 +23,34 @@
         </div>
 
         <div id="AllTime" class="globalcontent">
-            <table class="alltimeleaderboard">
+            <div class="alltimeleaderboard">
+                <div class="headingRow">
+                    <span class="indexHead">Ranking</span>
+                    <span class="nameHead">Name</span>
+                    <span class="pointsHead">Points</span>
+                </div>
+                <div class="line"></div>
+                <div class="leaderboard-content">
+                    {% for member in members %}
+                    <div class="content-row">
+                        <span class="theIndex {{ 'first' if loop.index == 1 }}{{ 'second' if loop.index == 2 }}{{ 'third' if loop.index == 3 }}">{{ loop.index }}</span>
+                        <span class="theName">
+                            {% if member.profile_pic %}
+                            <img class="avatar" src="/{{ member.profile_pic }}"/>
+                            {% endif %}
+                            {{ member.username }}
+                        </span>
+                        <span class="thePoints"><strong>{{ member.points }}</strong></span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- <table class="alltimeleaderboard">
+                <thead>
+                    <th>Ranking</th>
+                    <th>Name</th>
+                    <th>Points</th>
+                </thead>
                 <tbody>
                     {% for member in members %}
                     {% if loop.index == 1 %}
@@ -53,13 +80,35 @@
                     {% endif %}
                     {% endfor %}
                 </tbody>
-            </table>
+            </table> -->
 
 
 
         </div>
         <div id="Yearly" class="globalcontent">
-            <table class="alltimeleaderboard">
+            <div class="alltimeleaderboard">
+                <div class="headingRow">
+                    <span class="indexHead">Ranking</span>
+                    <span class="nameHead">Name</span>
+                    <span class="pointsHead">Points</span>
+                </div>
+                <div class="line"></div>
+                <div class="leaderboard-content">
+                    {% for member in members %}
+                    <div class="content-row">
+                        <span class="theIndex {{ 'first' if loop.index == 1 }}{{ 'second' if loop.index == 2 }}{{ 'third' if loop.index == 3 }}">{{ loop.index }}</span>
+                        <span class="theName">
+                            {% if member.profile_pic %}
+                            <img class="avatar" src="/{{ member.profile_pic }}"/>
+                            {% endif %}
+                            {{ member.username }}
+                        </span>
+                        <span class="thePoints"><strong>{{ member.yearlypoints }}</strong></span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- <table class="alltimeleaderboard">
                 <tbody>
                     {% for member in yearlymembers %}
                     {% if loop.index == 1 %}
@@ -89,7 +138,7 @@
                     {% endif %}
                     {% endfor %}
                 </tbody>
-            </table>
+            </table> -->
         </div>
     </div>
 
