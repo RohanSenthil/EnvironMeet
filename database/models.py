@@ -84,6 +84,7 @@ class Users(db.Model, UserMixin):
     contact = db.Column(db.Integer)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     profile_pic = db.Column(db.String(1000), nullable=True)
+    profile_pic_id = db.Column(db.String(100))
     followed = db.relationship('Users', 
                                secondary=followers, 
                                primaryjoin=(followers.c.follower_id == id), 
@@ -92,6 +93,8 @@ class Users(db.Model, UserMixin):
                                lazy='dynamic')
     otp_token = db.Column(db.String(6))  # Column to store the OTP token
     otp_token_expiration = db.Column(db.DateTime)
+    failed_login_attempts = db.Column(db.Integer, default=0)
+    is_account_locked = db.Column(db.Boolean, default=False)
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)

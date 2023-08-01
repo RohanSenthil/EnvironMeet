@@ -3,7 +3,7 @@ from database.models import Members, db,Leaderboard, Users, LeaderboardContent
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from sqlalchemy import desc
-from app.forms.leaderboardform import InviteForm
+from app.forms.leaderboardform import InviteForm, LeaderboardJoin
 from app.util import id_mappings
 import time
 
@@ -53,10 +53,13 @@ def leaderboardinvite():
 def leaderboardshit(leaderboardname):
     user = current_user
     leaderboardin = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname)
+    leaderboardaa = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
+    form = LeaderboardJoin(request.form)
+    print(leaderboardin)
 
-    if request.method == 'POST':
-        leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardin.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardin.owner, memberid=user.id, memberpoints=user.points)
+    if request.method == 'POST' and form.validate():
+        leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardaa.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardaa.owner, memberid=user.id, memberpoints=user.points)
         db.session.add(leaderboardjoin)
         db.session.commit()
 
-    return render_template('leaderboarduser.html', leaderboardin=leaderboardin, get_user_from_id=id_mappings.get_user_from_id)
+    return render_template('leaderboarduser.html', leaderboardin=leaderboardin, get_user_from_id=id_mappings.get_user_from_id, form=form)

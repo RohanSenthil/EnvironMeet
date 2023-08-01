@@ -3,8 +3,8 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
-from app import app, loginmanager, mail
-from database.models import Members, Organisations, db, Users, followers, Posts
+from app import app, loginmanager, mail, imagekit
+from database.models import Members, Organisations, db, Users, followers, Posts, Admins
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt, pyotp, time
@@ -13,6 +13,10 @@ import uuid as uuid
 import os, datetime
 from app.util import share, validation, id_mappings, verification
 from datetime import timedelta
+from PIL import Image
+from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
+from flask.json import jsonify
+from app.util.verification import check_is_confirmed
 
 # @check_is_confirmed
 
@@ -160,19 +164,43 @@ def reset_activity():
     return ''
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
+    object_id_to_hash = id_mappings.object_id_to_hash
     login_form = login(request.form)
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
+
+        if user.is_account_locked:
+            flash("Account is locked. Please contact the administrator", "danger")
+            return(redirect(url_for('login_')))
+
         if not user:
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
+
         elif user:
             if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
                 session['user_id'] = user.id
                 session['last_activity'] = time.time()  # Reset last activity upon successful login
                 session.permanent = True
-                return redirect(url_for('fotp', id=user.id))
+
+                user.failed_login_attempts = 0
+                db.session.commit()
+                if isinstance(user, Members):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='member')))
+                elif isinstance(user, Organisations):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='organisation')))
+                elif isinstance(user, Admins):
+                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='admin')))
+
+            else:
+                user.failed_login_attempts += 1
+                db.session.commit()
+
+                if user.failed_login_attempts >= 3:
+                    user.is_account_locked = True
+                    db.session.commit()
+                    flash("Too many failed login attempts. Account is now locked.", "danger")
 
         flash("Invalid email or password", "danger")
 
@@ -213,18 +241,39 @@ def sendemail(user):
     '''
     mail.send(msg)
 
-@app.route('/otp/<id>', methods=['GET', 'POST'])
-def fotp(id):
-    # id = id_mappings.hash_to_object_id(hashedid)
+@app.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user = Users.verify_reset_token(token)
+    if not user:
+        flash('That is an invalid token.', "danger")
+        return redirect(url_for('login_'))
+    resetform = reset(request.form)
+    if request.method == "POST" and resetform.validate():
+        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
+        user.password = passwordd
+        db.session.commit()
+        db.session.close()
+        flash('Your password has been updated! You are now able to log in.','success')
+        return redirect(url_for('login_'))
+
+    return render_template('reset.html', form=resetform)
+
+
+@app.route('/otp/<hashedid>', methods=['GET', 'POST'])
+def fotp(hashedid):
+    id = id_mappings.hash_to_object_id(hashedid)
     form = getotp(request.form)
     user = Users.query.get(id)
     totp = pyotp.TOTP('base32secret3232')
     if request.method == "POST" and form.validate():
         stored_token = user.otp_token
-        if stored_token and stored_token == form.num.data:
+        if stored_token and stored_token == form.num.data and is_otp_token_valid(user):
             login_user(user)
             flash("Login Successful!", "success")
-            return redirect(url_for('userprofile'))
+            if isinstance(user, Members) or isinstance(user, Organisations):
+                return redirect(url_for('userprofile'))
+            elif isinstance(user, Admins):
+                return redirect(url_for('admin'))
         else:
             flash("Wrong OTP. Please try again", "warning")
 
@@ -259,26 +308,12 @@ def generate_otp_token(user, totp):
     db.session.commit()
     return token
 
-@app.route('/reset/<token>', methods=['GET', 'POST'])
-def reset_token(token):
-    user = Users.verify_reset_token(token)
-    if not user:
-        flash('That is an invalid token.', "danger")
-        return redirect(url_for('login_'))
-    resetform = reset(request.form)
-    if request.method == "POST" and resetform.validate():
-        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
-        user.password = passwordd
-        db.session.commit()
-        db.session.close()
-        flash('Your password has been updated! You are now able to log in.','success')
-        return redirect(url_for('login_'))
-
-    return render_template('reset.html', form=resetform)
-
 @app.route('/search')
 def search():
-    users = Users.query.all()
+    users = []
+    for i in Users.query.all():
+        if not isinstance(i, Admins):
+            users.append(i)
     return render_template('search.html', users=users)
 
 @app.route('/user/<username>')

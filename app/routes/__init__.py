@@ -7,7 +7,3 @@ from app.routes import feed, events, accounts, leaderboard, profile, helpers, at
 def home():
     return render_template('index.html')
 
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
-

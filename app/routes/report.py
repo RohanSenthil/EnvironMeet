@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app.forms.reportform import Report
 from app.util import id_mappings, helpers, validation, share
+from app.util.verification import admin_required
 import time
 
 @app.route('/report/post/<hashedid>', methods=["GET","POST"])
@@ -75,3 +76,10 @@ def reportuser(hashedid):
         return redirect(url_for('feed'))
 
     return render_template('reportuser.html', form=reportuser, currentuser=currentuser, get_user_from_id=id_mappings.get_user_from_id, user=user, posts=posts, followers=followers, following=following)
+
+@app.route('/report/all', methods=["GET","POST"])
+@admin_required
+def adminreport():
+    userreports = UserReport.query.all()
+    postreport = PostReport.query.all()
+    eventreport = EventReport.query.all()
