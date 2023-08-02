@@ -168,7 +168,7 @@ def unlockmember(id):
     member = Members.query.filter_by(id=id).first()
     if member:
         member.failed_login_attempts = 0
-        member.is_account_locked = 0
+        member.is_locked = 0
         db.session.commit()
     return redirect(url_for('members'))
 
@@ -348,7 +348,14 @@ def deleteorganisation(hashedid):
         id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('organisations'))
 
-
+@app.route('/organisations/unlock/<id>')
+def unlockorg(id):
+    org = Organisations.query.filter_by(id=id).first()
+    if org:
+        org.failed_login_attempts = 0
+        org.is_locked = 0
+        db.session.commit()
+    return redirect(url_for('organisations'))
 
 
 
@@ -420,7 +427,14 @@ def deleteadmin(hashedid):
         id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('admins'))
 
-
+@app.route('/admins/unlock/<id>')
+def unlockadmin(id):
+    admin = Admins.query.filter_by(id=id).first()
+    if admin:
+        admin.failed_login_attempts = 0
+        admin.is_locked = 0
+        db.session.commit()
+    return redirect(url_for('admins'))
 
 
 

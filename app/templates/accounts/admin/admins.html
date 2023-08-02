@@ -35,6 +35,7 @@
           <th>Email</th>
           <th>Gender</th>
           <th>Contact</th>
+          <th>Locked?</th>
           <th></th>
         </tr>
       </thead>
@@ -48,6 +49,7 @@
           <td>{{ admin.email }}</td>
           <td>{{ admin.gender }}</td>
           <td>{{ admin.contact }}</td>
+          <td>{{ admin.is_locked }}</td>
           <td>
             <a href="{{ url_for('updateadmin', hashedid=object_id_to_hash(object_id=admin.id, act='admin')) }}"> 
               <svg id="update" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
@@ -63,6 +65,11 @@
               </svg>
             </button>
 
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ admin.id }}-unlockadmin">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
+              </svg>
+            </button>
           </td>
         </tr>
         {% endfor %}
@@ -86,6 +93,26 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-danger"><a href="{{ url_for('deleteadmin', hashedid=object_id_to_hash(object_id=admin.id, act='admin')) }}" id="deletebtn" style="color: white !important;">Delete</a></button> 
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-{{ admin.id }}-unlockadmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabelz">Unlock Account</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to unlock this account?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <a href="{{ url_for('unlockadmin', id=admin.id) }}" class="btn btn-success" style="color: white !important;">Unlock Account</a>
       </div>
     </div>
   </div>

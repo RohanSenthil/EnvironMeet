@@ -7,10 +7,11 @@ from app import app, loginmanager, mail, imagekit
 from database.models import Members, Organisations, db, Users, followers, Posts, Admins
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
-import bcrypt, pyotp, time
+import bcrypt, pyotp, time, datetime
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os, datetime
+from datetime import datetime
 from app.util import share, validation, id_mappings, verification
 from datetime import timedelta
 from PIL import Image
@@ -163,6 +164,7 @@ def reset_activity():
     if 'user_id' in session:
         session['last_activity'] = time.time()
     return ''
+
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
     object_id_to_hash = id_mappings.object_id_to_hash
@@ -171,39 +173,56 @@ def login_():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
 
-        if user.is_account_locked:
-            flash("Account is locked. Please contact the administrator", "danger")
-            return(redirect(url_for('login_')))
-
         if not user:
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
 
-        elif user:
-            if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
-                session['user_id'] = user.id
-                session['last_activity'] = time.time()  # Reset last activity upon successful login
-                session.permanent = True
-
-                user.failed_login_attempts = 0
-                db.session.commit()
-                if isinstance(user, Members):
-                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='member')))
-                elif isinstance(user, Organisations):
-                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='organisation')))
-                elif isinstance(user, Admins):
-                    return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='admin')))
-
+        if user.is_locked:
+            elapsed_time = datetime.now() - user.last_failed_attempt
+            if elapsed_time < timedelta(minutes=10):
+                flash("Account is locked. Please try again later.", "danger")
+                return redirect(url_for('login_'))
             else:
-                user.failed_login_attempts += 1
+                # Reset failed login attempts after 10 minutes
+                user.failed_login_attempts = 0
+                user.last_failed_attempt = None
+                user.is_locked = False
                 db.session.commit()
 
-                if user.failed_login_attempts >= 3:
-                    user.is_account_locked = True
-                    db.session.commit()
-                    flash("Too many failed login attempts. Account is now locked.", "danger")
+        if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+            session['user_id'] = user.id
+            session['last_activity'] = time.time()  # Reset last activity upon successful login
+            session.permanent = True
 
-        flash("Invalid email or password", "danger")
+            # Reset failed login attempts on successful login
+            user.failed_login_attempts = 0
+            user.last_failed_attempt = None
+            user.is_locked = False
+            db.session.commit()
+
+            if isinstance(user, Members):
+                return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='member')))
+            elif isinstance(user, Organisations):
+                return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='organisation')))
+            elif isinstance(user, Admins):
+                return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='admin')))
+
+            return redirect(url_for('fotp', id=user.id))
+
+        else:
+            # Failed login attempt
+            user.failed_login_attempts += 1
+            user.last_failed_attempt = datetime.now()
+
+            # Check if the account should be locked
+            if user.failed_login_attempts >= 3:
+                flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
+                user.is_locked = True
+
+            db.session.commit()
+
+            flash("Invalid email or password", "danger")
+            return redirect(url_for('login_'))
 
     return render_template('login.html', form=login_form)
 
@@ -299,14 +318,14 @@ def send_otp_email(user, token):
 def is_otp_token_valid(user):
     # Check if the stored OTP token is still valid (within the expiration time)
     expiration_time = user.otp_token_expiration
-    current_time = datetime.datetime.now()
+    current_time = datetime.now()
     return expiration_time is not None and current_time <= expiration_time
 
 def generate_otp_token(user, totp):
     token = totp.now()  # Generate the OTP token
     # Store the token and its expiration time for the user
     user.otp_token = token
-    user.otp_token_expiration = datetime.datetime.now() + datetime.timedelta(minutes=5)  # Set expiration time to 5 minutes from now
+    user.otp_token_expiration = datetime.now() + timedelta(minutes=5)  # Set expiration time to 5 minutes from now
     db.session.commit()
     return token
 

@@ -94,7 +94,9 @@ class Users(db.Model, UserMixin):
     otp_token = db.Column(db.String(6))  # Column to store the OTP token
     otp_token_expiration = db.Column(db.DateTime)
     failed_login_attempts = db.Column(db.Integer, default=0)
-    is_account_locked = db.Column(db.Boolean, default=False)
+    last_failed_attempt = db.Column(db.DateTime)
+    is_locked = db.Column(db.Boolean, default=False)
+
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
