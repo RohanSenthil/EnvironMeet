@@ -154,7 +154,6 @@ def updatemember(hashedid):
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 
 @app.route('/members/delete/<hashedid>')
-# @privileged_route("admin")
 def deletemember(hashedid):
     memid = id_mappings.hash_to_object_id(hashedid)
     member = Members.query.filter_by(id=memid).first()
@@ -291,7 +290,6 @@ def createorganisations():
         organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
         db.session.add(organisation)
         db.session.commit()
-        db.session.close()
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
@@ -299,7 +297,7 @@ def createorganisations():
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
 
-@app.route('/orgnanisations/update/<hashedid>', methods=['GET','POST'])
+@app.route('/organisations/update/<hashedid>', methods=['GET','POST'])
 def updateorganisation(hashedid):
     orgid = id_mappings.hash_to_object_id(hashedid)
     updateform = updateo(request.form)
@@ -341,7 +339,6 @@ def updateorganisation(hashedid):
     return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
 
 @app.route('/organisations/delete/<hashedid>')
-# @privileged_route("admin")
 def deleteorganisation(hashedid):
     orgid = id_mappings.hash_to_object_id(hashedid)
     organisation = Organisations.query.filter_by(id=orgid).first()
@@ -414,7 +411,6 @@ def updateadmin(hashedid):
         return render_template('accounts/admin/updatea.html', form=updateform, oldadm=oldadm)
 
 @app.route('/admins/delete/<hashedid>')
-# @privileged_route("admin")
 def deleteadmin(hashedid):
     admid = id_mappings.hash_to_object_id(hashedid)
     admin = Admins.query.filter_by(id=admid).first()

@@ -18,9 +18,9 @@ from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 from app.util.verification import check_is_confirmed
 
-# @check_is_confirmed
 
 @app.route('/profile', methods=['GET', 'POST'])
+@login_required
 def userprofile():
     numposts = 0
     followers = 0
@@ -58,6 +58,7 @@ def userprofile():
     return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing)
 
 @app.route('/update', methods=['GET','POST'])
+@login_required
 def profileupdate():
     if not current_user.is_authenticated:
         loggedout = True
@@ -207,6 +208,7 @@ def login_():
     return render_template('login.html', form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])
+@login_required
 def logout_():
     logout_user()
     # revoke_login_token()
@@ -339,6 +341,7 @@ def othersprofile(username):
 
 
 @app.route('/follow/<username>')
+@login_required
 def follow(username):
     user = Users.query.filter_by(username=username).first()
     if user is None:
@@ -354,6 +357,7 @@ def follow(username):
     return redirect(url_for('othersprofile', username=username))
 
 @app.route('/unfollow/<username>')
+@login_required
 def unfollow(username):
     user = Users.query.filter_by(username=username).first()
     if user is None:
