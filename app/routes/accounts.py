@@ -31,7 +31,7 @@ def members():
 
 
 @app.route('/members/create', methods=['GET','POST'])
-@admin_required
+# @admin_required
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
@@ -184,9 +184,9 @@ def registermember():
         member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
-        sendverificationemail(member)
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        sendverificationemail(member)
         flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('login_'))
 
@@ -291,7 +291,6 @@ def createorganisations():
         organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
         db.session.add(organisation)
         db.session.commit()
-        db.session.close()
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
