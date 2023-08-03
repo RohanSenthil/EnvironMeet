@@ -58,7 +58,8 @@ def viewPost(encoded_hashedid):
 
 
 @app.route('/post/create', methods=['POST'])
-@limiter.limit('3/minute')
+@limiter.limit('2/minute')
+@limiter.limit('10/day')
 @login_required
 def createPost():
     newPostForm = PostForm()
@@ -72,7 +73,7 @@ def createPost():
 
         newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
 
-        if newPostForm.event.data != 'None':
+        if newPostForm.event.data != 'None' and newPostForm.event.data in attendedEvents:
             newPost.event = id_mappings.hash_to_object_id(newPostForm.event.data)
 
         # Handling file upload
@@ -82,7 +83,15 @@ def createPost():
         if uploaded_file is not None:
 
             if not validation.file_is_image(uploaded_file.stream):
+                app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
                 return jsonify({'error': 'File type not allowed'}, 415)
+            
+            # For Purpose of Eicar demo we will comment this out
+            # try:
+            #     og_image = Image.open(uploaded_file)
+            # except OSError as e:
+            #     app.logger.error(f'Possible attempt to upload manipulated image, Error: {e}', extra={'security_relevant': True, 'http_status_code': 415})
+            #     return jsonify({'error': 'Invalid image file'}, 415)
 
             filename = uploaded_file.filename
             secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
@@ -90,13 +99,15 @@ def createPost():
 
             if uploaded_file.content_length > max_content_length:
                 if uploaded_file.content_length > max_content_length * 2:
-                    return jsonify({'error': 'File size too big'}, 400)
+                    return jsonify({'error': 'File size too big'}, 413)
 
                 image = Image.open(uploaded_file)
                 image.thumbnail(max_content_length)
                 og_image = Image.open(image)
             else:
-                og_image = Image.open(uploaded_file)
+                # For Purpose of Eicar demo we will comment this out
+                # og_image = Image.open(image)
+                pass
 
     
             scan_result = validation.scan_file(uploaded_file.read())
@@ -141,6 +152,7 @@ def createPost():
 
 @app.route('/post/edit/<hashedid>', methods=['POST'])
 @limiter.limit('3/minute')
+@limiter.limit('10/day')
 @login_required
 def editPost(hashedid):
 
@@ -170,6 +182,7 @@ def editPost(hashedid):
 
 @app.route('/post/delete/<hashedid>', methods=['POST'])
 @limiter.limit('3/minute')
+@limiter.limit('10/day')
 @login_required
 def deletePost(hashedid):
 
@@ -238,6 +251,7 @@ def likePost(hashedid):
 
 @app.route('/post/comment/add/<hashedid>', methods=['POST'])
 @limiter.limit('10/minute')
+@limiter.limit('50/day')
 @login_required
 def addComment(hashedid):
 
@@ -268,6 +282,7 @@ def addComment(hashedid):
 
 @app.route('/post/comment/edit/<hashedid>', methods=['POST'])
 @limiter.limit('10/minute')
+@limiter.limit('50/day')
 @login_required
 def editComment(hashedid):
 
@@ -295,7 +310,8 @@ def editComment(hashedid):
 
 
 @app.route('/post/comment/delete/<hashedid>', methods=['POST'])
-@limiter.limit('25/minute')
+@limiter.limit('10/minute')
+@limiter.limit('25/day')
 @login_required
 def deleteComment(hashedid):
 
