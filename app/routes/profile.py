@@ -328,7 +328,7 @@ def fotp(hashedid):
     # send_otp_email(user, token)
 
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
-    return render_template('otp.html', form=form)
+    return render_template('otp.html', form=form, valid = 5)
 
 def send_otp_email(user, token):
     msg = Message()
