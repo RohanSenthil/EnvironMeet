@@ -11,6 +11,7 @@
 <h1 class="hiaa">Update Events</h1>
     <div class="stuff">
 <form method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     {{ form.csrf_token }}
  <div class="form-group col" id="remainings2">
      {{ render_field(form.name, class="form-control") }}

@@ -235,6 +235,20 @@ def login_():
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
 
+    # Check for elapsed time and reset failed_login_attempts after 10 minutes
+    if 'user_id' in session and 'last_activity' in session:
+        elapsed_time = time.time() - session['last_activity']
+        if elapsed_time > 600:
+            user = Users.query.filter_by(id=session['user_id']).first()
+            if user:
+                user.failed_login_attempts = 0
+                user.last_failed_attempt = None
+                user.is_locked = False
+                db.session.commit()
+
+    session['last_activity'] = time.time()
+    generate_csrf()  # Add CSRF token to the session
+
     return render_template('login.html', form=login_form)
 
 @app.route('/logout', methods=['GET', 'POST'])

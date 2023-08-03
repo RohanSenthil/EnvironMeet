@@ -25,13 +25,14 @@ def admin():
 
 #MEMBERS
 @app.route('/members', methods=['GET'])
+@admin_required
 def members():
     members = Members.query.all() 
     return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
 
 
 @app.route('/members/create', methods=['GET','POST'])
-# @admin_required
+@admin_required
 def createmember():
     createform = createm(request.form)
     if request.method == "POST" and createform.validate():
@@ -116,6 +117,7 @@ def createmember():
     return render_template('/accounts/member/createm.html', form=createform)
 
 @app.route('/members/update/<hashedid>', methods=['GET','POST'])
+@admin_required
 def updatemember(hashedid):
     memid = id_mappings.hash_to_object_id(hashedid)
     updateform = updatem(request.form)
@@ -154,6 +156,7 @@ def updatemember(hashedid):
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 
 @app.route('/members/delete/<hashedid>')
+@admin_required
 def deletemember(hashedid):
     memid = id_mappings.hash_to_object_id(hashedid)
     member = Members.query.filter_by(id=memid).first()
@@ -164,6 +167,7 @@ def deletemember(hashedid):
     return redirect(url_for('members'))
 
 @app.route('/members/unlock/<id>')
+@admin_required
 def unlockmember(id):
     member = Members.query.filter_by(id=id).first()
     if member:
@@ -173,6 +177,7 @@ def unlockmember(id):
     return redirect(url_for('members'))
 
 @app.route('/register', methods=['GET', 'POST'])
+@admin_required
 def registermember():
     registerform = createm(request.form)
     if request.method == "POST" and registerform.validate():
@@ -264,11 +269,13 @@ def sendverificationemail(user):
 
 #ORGANISATIONS
 @app.route('/organisations')
+@admin_required
 def organisations():
     organisations = Organisations.query.all()
     return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 @app.route('/organisations/create', methods=['GET','POST'])
+@admin_required
 def createorganisations():
     createform = createo(request.form)
     if request.method == "POST" and createform.validate():
@@ -298,6 +305,7 @@ def createorganisations():
     return render_template('/accounts/organisation/createo.html', form=createform)
 
 @app.route('/organisations/update/<hashedid>', methods=['GET','POST'])
+@admin_required
 def updateorganisation(hashedid):
     orgid = id_mappings.hash_to_object_id(hashedid)
     updateform = updateo(request.form)
@@ -339,6 +347,7 @@ def updateorganisation(hashedid):
     return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
 
 @app.route('/organisations/delete/<hashedid>')
+@admin_required
 def deleteorganisation(hashedid):
     orgid = id_mappings.hash_to_object_id(hashedid)
     organisation = Organisations.query.filter_by(id=orgid).first()
@@ -349,6 +358,7 @@ def deleteorganisation(hashedid):
     return redirect(url_for('organisations'))
 
 @app.route('/organisations/unlock/<id>')
+@admin_required
 def unlockorg(id):
     org = Organisations.query.filter_by(id=id).first()
     if org:
@@ -369,12 +379,14 @@ def unlockorg(id):
 
 #ADMINS
 @app.route('/admins', methods=['GET'])
+@admin_required
 def admins():
     admins = Admins.query.all() 
     return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
 
 
 @app.route('/admins/create', methods=['GET','POST'])
+@admin_required
 def createadmin():
     createform = createa(request.form)
     if request.method == "POST" and createform.validate():
@@ -393,6 +405,7 @@ def createadmin():
     return render_template('/accounts/admin/createa.html', form=createform)
 
 @app.route('/admins/update/<hashedid>', methods=['GET','POST'])
+@admin_required
 def updateadmin(hashedid):
     admid = id_mappings.hash_to_object_id(hashedid)
     updateform = updatea(request.form)
@@ -418,6 +431,7 @@ def updateadmin(hashedid):
         return render_template('accounts/admin/updatea.html', form=updateform, oldadm=oldadm)
 
 @app.route('/admins/delete/<hashedid>')
+@admin_required
 def deleteadmin(hashedid):
     admid = id_mappings.hash_to_object_id(hashedid)
     admin = Admins.query.filter_by(id=admid).first()
@@ -428,6 +442,7 @@ def deleteadmin(hashedid):
     return redirect(url_for('admins'))
 
 @app.route('/admins/unlock/<id>')
+@admin_required
 def unlockadmin(id):
     admin = Admins.query.filter_by(id=id).first()
     if admin:

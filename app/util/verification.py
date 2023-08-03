@@ -24,3 +24,13 @@ def admin_required(func):
             app.logger.warning('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
             return render_template('403.html')
     return decorated_function
+
+def org_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if isinstance(current_user, Organisations):
+            return func(*args, **kwargs)
+        else:
+            app.logger.warning('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
+            return render_template('403.html')
+    return decorated_function
