@@ -1,4 +1,5 @@
 from app import app
+from app.util.flask_connector import InputFlask, OutputFlask, Connector
 from database.models import Members, db,Leaderboard, Users, LeaderboardContent, Posts, PostReport, Events, EventReport, UserReport
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
@@ -6,7 +7,16 @@ from sqlalchemy import desc
 from app.forms.reportform import Report
 from app.util import id_mappings, helpers, validation, share
 from app.util.verification import admin_required
+import shadowd
 import time
+
+# @app.before_request
+# def before_req():
+#     input = InputFlask(request)
+#     output = OutputFlask()
+#
+#     Connector().start(input, output)
+
 
 @app.route('/report/post/<hashedid>', methods=["GET","POST"])
 @login_required
@@ -83,3 +93,5 @@ def adminreport():
     userreports = UserReport.query.all()
     postreport = PostReport.query.all()
     eventreport = EventReport.query.all()
+
+
