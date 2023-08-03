@@ -182,15 +182,27 @@ def deletemember(hashedid):
         id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('members'))
 
-@app.route('/members/unlock/<id>')
+@app.route('/user/unlock/<id>')
 @admin_required
-def unlockmember(id):
-    member = Members.query.filter_by(id=id).first()
-    if member:
-        member.failed_login_attempts = 0
-        member.is_locked = 0
-        db.session.commit()
-    return redirect(url_for('members'))
+def unlockuser(id):
+    user = Users.query.filter_by(id=id).first()
+    if user:
+        if isinstance(user, Members):
+            user.failed_login_attempts = 0
+            user.is_locked = 0
+            db.session.commit()
+            return redirect(url_for('members'))
+        if isinstance(user, Organisations):
+            user.failed_login_attempts = 0
+            user.is_locked = 0
+            db.session.commit()
+            return redirect(url_for('organisations'))
+        if isinstance(user, Admins):
+            user.failed_login_attempts = 0
+            user.is_locked = 0
+            db.session.commit()
+            return redirect(url_for('admins'))
+    return redirect(url_for('404.html'))
 
 @app.route('/register', methods=['GET', 'POST'])
 @admin_required
@@ -373,16 +385,6 @@ def deleteorganisation(hashedid):
         id_mappings.delete_id_mapping(hashedid)
     return redirect(url_for('organisations'))
 
-@app.route('/organisations/unlock/<id>')
-@admin_required
-def unlockorg(id):
-    org = Organisations.query.filter_by(id=id).first()
-    if org:
-        org.failed_login_attempts = 0
-        org.is_locked = 0
-        db.session.commit()
-    return redirect(url_for('organisations'))
-
 
 
 
@@ -455,16 +457,6 @@ def deleteadmin(hashedid):
         db.session.delete(admin)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
-    return redirect(url_for('admins'))
-
-@app.route('/admins/unlock/<id>')
-@admin_required
-def unlockadmin(id):
-    admin = Admins.query.filter_by(id=id).first()
-    if admin:
-        admin.failed_login_attempts = 0
-        admin.is_locked = 0
-        db.session.commit()
     return redirect(url_for('admins'))
 
 
