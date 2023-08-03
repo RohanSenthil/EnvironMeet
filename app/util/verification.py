@@ -3,6 +3,7 @@ from flask import request, render_template, redirect, url_for, flash
 from functools import wraps
 from flask.json import jsonify
 from database.models import Members, Organisations, db, Users, Admins
+from app import app
 
 def check_is_confirmed(func):
     @wraps(func)
@@ -20,5 +21,6 @@ def admin_required(func):
         if isinstance(current_user, Admins):
             return func(*args, **kwargs)
         else:
+            app.logger.error('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
             return render_template('403.html')
     return decorated_function
