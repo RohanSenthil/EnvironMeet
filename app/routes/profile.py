@@ -146,7 +146,7 @@ def profileupdate():
 def load_user(email):
     return Users.query.get(email)
 
-INACTIVITY_THRESHOLD = 60 * 5 #1 minute of inactivity
+INACTIVITY_THRESHOLD = 60*5 #1 minute of inactivity
 def check_user_activity():
     last_activity = session.get('last_activity')
     if last_activity:
@@ -167,12 +167,8 @@ def reset_activity():
 
         csrf_token = generate_csrf()
 
-        if request.headers.get('X-CSRFToken') == csrf_token:
-            session['last_activity'] = time.time()
-            flash("Session activitiy reset successfully.", "success")
-        else:
-            flash("Invalid CSRF Token. Please try again.", "danger")
-    return redirect(url_for('index'))
+        session['last_activity'] = time.time()
+    return ''
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
