@@ -69,7 +69,7 @@
               </svg>
             </button>
 
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ member.id }}-unlockmember">
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ member.id }}-unlockuser">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
                 <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
               </svg>
@@ -102,7 +102,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modal-{{ member.id }}-unlockmember" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-{{ member.id }}-unlockuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -116,7 +116,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <a href="{{ url_for('unlockmember', id=member.id) }}" class="btn btn-success" style="color: white !important;">Unlock Account</a>
+        <a href="{{ url_for('unlockuser', id=member.id) }}" class="btn btn-success" style="color: white !important;">Unlock Account</a>
       </div>
     </div>
   </div>
