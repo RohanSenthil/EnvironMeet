@@ -21,7 +21,16 @@ from flask.json import jsonify
 
 @app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    locked = []
+    recent = []
+    nologin = []
+    for i in Users.query.all():
+        if i.is_locked == True:
+            locked.append(i)
+    for i in Users.query.all():
+        if i.login_before == False:
+            nologin.append(i)
+    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin)
 
 #MEMBERS
 @app.route('/members', methods=['GET'])

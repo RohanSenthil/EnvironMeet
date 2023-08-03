@@ -1,0 +1,19 @@
+#locked, #recent, #nologin, .toprows{
+    margin: 20px;
+}
+.recent{
+    background-color: pink;
+    margin-bottom: 20px;
+}
+.locked{
+    background-color: lightgrey;
+    margin-bottom: 20px;
+}
+.nologin{
+    background-color: lightgoldenrodyellow;
+    margin-bottom: 20px;
+}
+.recent, .locked, .nologin, #box{
+    padding: 10px;
+    border-radius: 20px;
+}

@@ -21,15 +21,15 @@
     </div>
     {% endif %}
     {% endwith %}
-</div>
+
     <!-- Main content -->
-    <section>
+    <section class="toprows">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-info" id="box">
               <div class="inner">
                 <h3>150</h3>
 
@@ -44,7 +44,7 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-success">
+            <div class="small-box bg-success" id="box">
               <div class="inner">
                 <h3>53<sup style="font-size: 20px">%</sup></h3>
 
@@ -59,7 +59,7 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-warning">
+            <div class="small-box bg-warning" id="box">
               <div class="inner">
                 <h3>44</h3>
 
@@ -74,7 +74,7 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-danger">
+            <div class="small-box bg-danger" id="box">
               <div class="inner">
                 <h3>65</h3>
 
@@ -90,4 +90,113 @@
         </div>
         <!-- /.row -->
     </section>
+    <div class="recent">
+      <h3>Recent Logins</h3>
+      <h5>In the past 5 days</h5>
+      <div class="admintable">
+        <table class="table table-striped" id="recent">
+          <thead> 
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Username</th>
+              <th scope="col">Type</th>
+              <th scope="col">Last Login</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in recent %}
+            <tr>
+              <th scope="row">{{ user.id }}</th>
+              <td>{{ user.username }}</td>
+              <td>{{ user.discriminator }}</td>
+              <td>{{ user.last_login }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="locked">
+      <h3>Locked Accounts</h3>
+      <div class="admintable">
+        <table class="table table-striped" id="locked">
+          <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Username</th>
+              <th scope="col">Type</th>
+              <th scope="col">Failed Logins</th>
+              <th scope="col">Unlock</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in locked %}
+            <tr>
+              <th scope="row">{{ lock.id }}</th>
+              <td>{{ user.username }}</td>
+              <td>{{ user.discriminator }}</td>
+              <td>{{ user.failed_login_attempts }}</td>
+              <td>
+                <button type="button" class="btn">
+                  <!--  data-bs-toggle="modal" data-bs-target="#modal-((user.id))-unlockuser" -->
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                    <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
+                  </svg>
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="nologin">
+      <h3>Have not logged in</h3>
+      <div class="admintable">
+        <table class="table table-striped" id="nologin">
+          <thead> 
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in nologin %}
+            <tr>
+              <th scope="row">{{ user.id }}</th>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.discriminator }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- <div class="modal fade" id="modal-(( user.id ))-unlockuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabelz">Unlock Account</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to unlock this account?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <a href="(( url_for('unlockuser', id=user.id) ))" class="btn btn-success" style="color: white !important;">Unlock Account</a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
 {% endblock %}
