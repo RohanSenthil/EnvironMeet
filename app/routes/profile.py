@@ -19,6 +19,7 @@ from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 from app.util.verification import check_is_confirmed
 from flask_wtf.csrf import generate_csrf
+from app.util.rate_limiting import limiter
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -301,6 +302,7 @@ def fotp(hashedid):
         if stored_token and stored_token == form.num.data and is_otp_token_valid(user):
             login_user(user)
             flash("Login Successful!", "success")
+            user.login_before = True
             if isinstance(user, Members) or isinstance(user, Organisations):
                 return redirect(url_for('userprofile'))
             elif isinstance(user, Admins):
@@ -314,14 +316,15 @@ def fotp(hashedid):
     # send_otp_email(user, token)
 
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
-    return render_template('otp.html', form=form, valid = 5)
+    return render_template('otp.html', form=form, valid=5*60)
+# @limiter.limit('1 per 5 minutes')
 
 def send_otp_email(user, token):
     msg = Message()
     msg.subject = "Account Login"
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
-    msg.body = f'''Hello, {user.name}\nHere's your OTP: \n{token}
+    msg.body = f'''Hello, {user.name}\nHere's your OTP: \n{token}\nThe OTP will expire at {datetime.now() + timedelta(minutes = 5)}
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
