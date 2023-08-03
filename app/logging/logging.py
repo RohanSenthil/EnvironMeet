@@ -10,6 +10,7 @@ import re
 import hashlib
 import json
 from app.logging.logs_generator import generate_sample_logs
+from datetime import datetime
 # Example Usage
 # app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
 # Edit values to relevant values
@@ -86,7 +87,6 @@ class OpenSearchLogHandler(logging.Handler):
 with app.app_context():
 
     connected = log_client.ping()
-    # connected = False
 
     if connected:
 
@@ -95,7 +95,10 @@ with app.app_context():
         # For Dev purposes only
         # log_client.indices.delete(index='audit-logs')
 
-        index_name = 'audit-logs'
+        # Legacy Logs
+        # legacy_index_name = 'audit-logs'
+
+        index_name = 'security-logs' 
         index_exists = log_client.indices.exists(index=index_name)
 
 
@@ -107,6 +110,18 @@ with app.app_context():
             print('\nCreating index...')
         else:
             print('\nIndex exists...skipping creation...')
+
+        # Log Migration (For Dev purposes only)
+        # reindex_query = {
+        #     'source': {
+        #         'index': legacy_index_name
+        #     },
+        #     'dest': {
+        #         'index': index_name
+        #     },
+        # }
+        # response = log_client.reindex(body=reindex_query)
+        # print(response)
 
         app.logger.handlers = []
         log_handler = OpenSearchLogHandler()
@@ -125,6 +140,7 @@ with app.app_context():
 # @app.errorhandler(Exception)
 # def handle_global_exceptions(error):
 #     app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
+#     return jsonify({'error': error}, 500)
 
 
 # Handle CSRF Errors
