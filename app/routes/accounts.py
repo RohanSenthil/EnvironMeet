@@ -60,7 +60,6 @@ def createmember():
     all = lower + upper + num + symbols
     temp = random.sample(all, 10)
     password = "".join(temp)
-    passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     if request.method == "POST" and createform.validate():
         # print(request.files.get('profile_pic'))
         # if request.files.get('profile_pic').filename != '':
@@ -77,6 +76,7 @@ def createmember():
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
+        passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
         
         # Handling file upload
@@ -137,6 +137,7 @@ def createmember():
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         senddetails(member, password)
+        print("PASSWORD:",password)
         sendverificationemail(member)
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         return redirect(url_for('members'))
@@ -417,14 +418,14 @@ def deleteorganisation(hashedid):
 
 #ADMINS
 @app.route('/admins', methods=['GET'])
-@admin_required
+# @admin_required
 def admins():
     admins = Admins.query.all() 
     return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
 
 
 @app.route('/admins/create', methods=['GET','POST'])
-@admin_required
+# @admin_required
 def createadmin():
     createform = createa(request.form)
     if request.method == "POST" and createform.validate():

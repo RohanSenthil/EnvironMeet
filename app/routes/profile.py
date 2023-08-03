@@ -311,10 +311,13 @@ def fotp(hashedid):
         if stored_token and stored_token == form.num.data and is_otp_token_valid(user):
             login_user(user)
             flash("Login Successful!", "success")
+            temp = user.login_before
             user.login_before = True
             user.last_login = datetime.now()
             db.session.commit()
-            if isinstance(user, Members) or isinstance(user, Organisations):
+            if temp == False:
+                return redirect(url_for('firstreset'))
+            elif isinstance(user, Members) or isinstance(user, Organisations):
                 return redirect(url_for('userprofile'))
             elif isinstance(user, Admins):
                 return redirect(url_for('admin'))
@@ -329,6 +332,26 @@ def fotp(hashedid):
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
     return render_template('otp.html', form=form, valid=5*60)
 # @limiter.limit('1 per 5 minutes')
+
+@app.route('/firstreset', methods=['GET', 'POST'])
+@login_required
+def firstreset():
+    resetform = reset(request.form)
+    if current_user.reset_before:
+        flash('You have already done this first reset.', "info")
+        return redirect(url_for('userprofile'))
+    if request.method == "POST" and resetform.validate():
+        passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
+        current_user.password = passwordd
+        current_user.reset_before = True
+        db.session.commit()
+        db.session.close()
+        if isinstance(current_user, Admins):
+            return redirect(url_for('admin'))
+        else:
+            flash('Your password has been updated! You are now able to log in using the new password','success')
+            return redirect(url_for('userprofile'))
+    return render_template('reset.html', form=resetform)
 
 def send_otp_email(user, token):
     msg = Message()

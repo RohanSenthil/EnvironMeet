@@ -98,6 +98,7 @@ class Users(db.Model, UserMixin):
     is_locked = db.Column(db.Boolean, default=False)
     login_before = db.Column(db.Boolean, nullable=False, default=False)
     last_login = db.Column(db.DateTime)
+    reset_before = db.Column(db.Boolean, nullable=False, default=False)
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
