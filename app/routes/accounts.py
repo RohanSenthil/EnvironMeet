@@ -13,24 +13,31 @@ import uuid as uuid
 import os
 from app.util import share, validation, id_mappings
 from itsdangerous import URLSafeTimedSerializer
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.util.verification import check_is_confirmed, admin_required
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 
 @app.route('/admin')
+@admin_required
 def admin():
     locked = []
     recent = []
     nologin = []
+    unconfirmed = []
+    current_time = datetime.now()
+    time_threshold = current_time - timedelta(days=5)
     for i in Users.query.all():
-        if i.is_locked == True:
+        if i.is_locked:
             locked.append(i)
-    for i in Users.query.all():
-        if i.login_before == False:
+        if not i.login_before:
             nologin.append(i)
-    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin)
+        if not i.is_confirmed:
+            unconfirmed.append(i)
+        if i.last_login and i.last_login >= time_threshold:
+            recent.append(i)
+    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin, unconfirmed=unconfirmed)
 
 #MEMBERS
 @app.route('/members', methods=['GET'])

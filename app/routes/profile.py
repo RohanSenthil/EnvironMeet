@@ -11,9 +11,8 @@ import bcrypt, pyotp, time, datetime
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os, datetime
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.util import share, validation, id_mappings, verification
-from datetime import timedelta
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
@@ -313,6 +312,8 @@ def fotp(hashedid):
             login_user(user)
             flash("Login Successful!", "success")
             user.login_before = True
+            user.last_login = datetime.now()
+            db.session.commit()
             if isinstance(user, Members) or isinstance(user, Organisations):
                 return redirect(url_for('userprofile'))
             elif isinstance(user, Admins):
