@@ -73,7 +73,7 @@ def createPost():
 
         newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
 
-        if newPostForm.event.data != 'None':
+        if newPostForm.event.data != 'None' and newPostForm.event.data in attendedEvents:
             newPost.event = id_mappings.hash_to_object_id(newPostForm.event.data)
 
         # Handling file upload
@@ -83,6 +83,7 @@ def createPost():
         if uploaded_file is not None:
 
             if not validation.file_is_image(uploaded_file.stream):
+                app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
                 return jsonify({'error': 'File type not allowed'}, 415)
             
             # For Purpose of Eicar demo we will comment this out

@@ -180,6 +180,7 @@ def login_():
         if user.is_locked:
             elapsed_time = datetime.now() - user.last_failed_attempt
             if elapsed_time < timedelta(minutes=10):
+                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401})
                 flash("Account is locked. Please try again later.", "danger")
                 return redirect(url_for('login_'))
             else:
@@ -297,6 +298,7 @@ def fotp(hashedid):
             elif isinstance(user, Admins):
                 return redirect(url_for('admin'))
         else:
+            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401})
             flash("Wrong OTP. Please try again", "warning")
 
     token = generate_otp_token(user, totp)
