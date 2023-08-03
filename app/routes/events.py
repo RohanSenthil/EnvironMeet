@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import create_engine, text
 from flask_login import login_required, current_user
+from app.util.verification import check_is_confirmed, admin_required, org_required
 
 @app.route('/events')
 def events():
@@ -21,7 +22,7 @@ def events():
     return render_template('events.html', events=events, user=user, memberObj=Members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
 
 @app.route('/events/add', methods=["GET","POST"])
-@login_required
+@org_required
 def add_events():
 
     if not isinstance(current_user, Organisations):

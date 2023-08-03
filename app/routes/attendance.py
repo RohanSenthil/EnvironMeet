@@ -9,8 +9,10 @@ from datetime import datetime
 from flask.json import jsonify
 from werkzeug.utils import secure_filename
 import uuid
+from app.util.verification import check_is_confirmed, admin_required, org_required
 
 @app.route('/attendance')
+@login_required
 def display_attendance():
     eventsignups = SignUps.query.all()
 
@@ -28,6 +30,7 @@ def deleteattendance(id):
     return redirect(url_for('display_attendance'))
 
 @app.route('/attendance/checkorgs/delete/<id>')
+@org_required
 # @privileged_route("admin")
 def deleteevent(id):
     event = Events.query.filter_by(id=id).first()
@@ -37,6 +40,7 @@ def deleteevent(id):
     return redirect(url_for('manage_events'))
 
 @app.route('/events/manage')
+@org_required
 def manage_events():
     eventssignups = Events.query.all()
 
@@ -48,6 +52,7 @@ def manage_events():
 
 
 @app.route('/attendance/checkorgs/update/<id>', methods=['GET', 'POST'])
+@org_required
 def updateevents(id):
     updateform = eventsupdate(request.form)
     oldevents = Events.query.get(id)
@@ -88,6 +93,7 @@ def updateevents(id):
     return render_template('updateevent.html', form=updateform, oldevents=oldevents)
 
 @app.route('/attendance/checkorgs/attendees/<id>')
+@org_required
 def check_attendees(id):
     event = Events.query.get(id)
     if event is None:
@@ -100,6 +106,7 @@ def check_attendees(id):
     return render_template('checkattendees.html', event=event, attendees=attendees, user=user)
 
 @app.route('/attendance/checkorgs/attendees/delete/<id>')
+@org_required
 def deleteattendee(id):
     attendees = SignUps.query.filter_by(id=id).first()
     if attendees:
@@ -108,6 +115,7 @@ def deleteattendee(id):
     return redirect(url_for('check_attendees', id=attendees.eventid))
 
 @app.route('/attendance/checkorgs/attendees/markattendance/<int:id>')
+@org_required
 def markattendance(id):
     attendee = SignUps.query.get(id)
     if attendee:
