@@ -18,6 +18,7 @@ from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 from app.util.verification import check_is_confirmed
+from flask_wtf.csrf import generate_csrf
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -162,8 +163,15 @@ def before_request():
 @app.route('/reset_activity', methods=['POST'])
 def reset_activity():
     if 'user_id' in session:
-        session['last_activity'] = time.time()
-    return ''
+
+        csrf_token = generate_csrf()
+
+        if request.headers.get('X-CSRFToken') == csrf_token:
+            session['last_activity'] = time.time()
+            flash("Session activitiy reset successfully.", "success")
+        else:
+            flash("Invalid CSRF Token. Please try again.", "danger")
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
@@ -180,6 +188,7 @@ def login_():
         if user.is_locked:
             elapsed_time = datetime.now() - user.last_failed_attempt
             if elapsed_time < timedelta(minutes=10):
+                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401})
                 flash("Account is locked. Please try again later.", "danger")
                 return redirect(url_for('login_'))
             else:
@@ -216,6 +225,7 @@ def login_():
 
             # Check if the account should be locked
             if user.failed_login_attempts >= 3:
+                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401})
                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
                 user.is_locked = True
 
@@ -296,6 +306,7 @@ def fotp(hashedid):
             elif isinstance(user, Admins):
                 return redirect(url_for('admin'))
         else:
+            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401})
             flash("Wrong OTP. Please try again", "warning")
 
     token = generate_otp_token(user, totp)

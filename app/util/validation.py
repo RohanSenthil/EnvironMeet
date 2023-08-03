@@ -8,6 +8,7 @@ import os
 from app import app
 from flask import request, abort
 import time
+import json
 
 
 def scan_file(file_data):
@@ -29,28 +30,32 @@ def scan_file(file_data):
 
 def isFileMalicious(resource):
 
-    max_attempts = 5
-    poll_interval = 5
+    # Prevent exceeding rate limit
+    max_attempts = 3
+    poll_interval = 20
     
     for attempt in range(max_attempts):
 
-        url = 'https://www.virustotal.com/vtapi/v2/file/report'
-        params = {'apikey': os.environ.get('virustotal_api_key'), 'resource': resource}
+        try:
+            url = 'https://www.virustotal.com/vtapi/v2/file/report'
+            params = {'apikey': os.environ.get('virustotal_api_key'), 'resource': resource}
 
-        response = requests.get(url, params=params)
-        response_json = response.json()
+            response = requests.get(url, params=params)
+            response_json = json.loads(response.text)
 
-        if 'positives' in response_json:
-            positives = response_json['positives']
-            if positives > 0:
-                app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
-                return True
+            if 'positives' in response_json:
+                positives = response_json['positives']
+                if positives > 0:
+                    app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
+                    return True
+                else:
+                    return False
+            elif 'response_code' in response_json and response_json['response_code'] <= 1:
+                time.sleep(poll_interval)
             else:
-                return False
-        elif 'response_code' in response_json and response_json['response_code'] <= 1:
-            time.sleep(poll_interval)
-        else:
-            return 'Unable to retrieve scan results'
+                return 'Unable to retrieve scan results'
+        except Exception as e:
+            return f'Reached API Rate Limit, {e}'
         
     return 'Timeout: Analysis did not complete within the given number of attempts.'
 
