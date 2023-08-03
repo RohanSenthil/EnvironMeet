@@ -135,7 +135,7 @@ class SafeStringField(StringField):
         return encoded_string
 
 
-class createm(Form):
+class register(Form):
     name = SafeStringField('Name', validators=[DataRequired()])
     username = SafeStringField('Username', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
@@ -158,7 +158,25 @@ class createm(Form):
         unique = Users.query.filter_by(username=(username.data).lower()).first()
         if unique:
             raise ValidationError("Username already in database! Please enter a unique username.")
+
+class createm(Form):
+    name = SafeStringField('Name', validators=[DataRequired()])
+    username = SafeStringField('Username', validators=[DataRequired()])
+    email = SafeStringField('Email', validators=[DataRequired(), Email()])
+    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
+    contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
+    profile_pic = FileField('Profile Picture:', validators=[FileAllowed(['jpeg','jpg','png'], "File uploaded is not in accepted format.")])
+
+    def validate_email(self, email):
+        unique = Users.query.filter_by(email=(email.data).lower()).first()
+        if unique:
+            raise ValidationError("Email already in database! Please enter a new email.")
         
+    def validate_username(self, username):
+        unique = Users.query.filter_by(username=(username.data).lower()).first()
+        if unique:
+            raise ValidationError("Username already in database! Please enter a unique username.")
+
 class updatem(Form):
     name = SafeStringField('Name', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])

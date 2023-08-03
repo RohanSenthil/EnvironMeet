@@ -5,7 +5,7 @@ from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail, imagekit
 from database.models import Members, Organisations, db, Users, Admins
-from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea
+from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea, register
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
@@ -18,6 +18,8 @@ from app.util.verification import check_is_confirmed, admin_required
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
+import random
+import string
 
 @app.route('/admin')
 @admin_required
@@ -51,6 +53,14 @@ def members():
 @admin_required
 def createmember():
     createform = createm(request.form)
+    lower = string.ascii_lowercase
+    upper = string.ascii_uppercase
+    num = string.digits
+    symbols = string.punctuation
+    all = lower + upper + num + symbols
+    temp = random.sample(all, 10)
+    password = "".join(temp)
+    passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     if request.method == "POST" and createform.validate():
         # print(request.files.get('profile_pic'))
         # if request.files.get('profile_pic').filename != '':
@@ -67,7 +77,6 @@ def createmember():
         # Process the form data
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
-        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
         
         # Handling file upload
@@ -127,10 +136,21 @@ def createmember():
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
+        senddetails(member, password)
         sendverificationemail(member)
-        flash("Verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
+        flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         return redirect(url_for('members'))
-    return render_template('/accounts/member/createm.html', form=createform)
+    return render_template('/accounts/member/createm.html', form=createform, password=password)
+
+def senddetails(user, password):
+    msg = Message()
+    msg.subject = "Account Creation and Password"
+    msg.recipients = [user.email]
+    msg.sender = 'environmeet@outlook.com'
+    msg.body = f'''Hello, {user.name}\nHere are your account details:\nUsername: {user.username}\nPassword(for first time use): {password}
+    \nBest regards,\nThe Environmeet Team
+    '''
+    mail.send(msg)
 
 @app.route('/members/update/<hashedid>', methods=['GET','POST'])
 @admin_required
@@ -207,7 +227,7 @@ def unlockuser(id):
 @app.route('/register', methods=['GET', 'POST'])
 @admin_required
 def registermember():
-    registerform = createm(request.form)
+    registerform = register(request.form)
     if request.method == "POST" and registerform.validate():
         # Process the form data
         emaill = str(registerform.email.data).lower()
