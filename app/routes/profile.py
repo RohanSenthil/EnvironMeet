@@ -216,6 +216,7 @@ def login_():
 
             # Check if the account should be locked
             if user.failed_login_attempts >= 3:
+                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401})
                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
                 user.is_locked = True
 

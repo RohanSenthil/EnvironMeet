@@ -21,6 +21,6 @@ def admin_required(func):
         if isinstance(current_user, Admins):
             return func(*args, **kwargs)
         else:
-            app.logger.error('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
+            app.logger.warning('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
             return render_template('403.html')
     return decorated_function
