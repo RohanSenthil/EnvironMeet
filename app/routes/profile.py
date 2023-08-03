@@ -18,6 +18,7 @@ from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 from app.util.verification import check_is_confirmed
+from flask_wtf.csrf import generate_csrf
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -162,8 +163,15 @@ def before_request():
 @app.route('/reset_activity', methods=['POST'])
 def reset_activity():
     if 'user_id' in session:
-        session['last_activity'] = time.time()
-    return ''
+
+        csrf_token = generate_csrf()
+
+        if request.headers.get('X-CSRFToken') == csrf_token:
+            session['last_activity'] = time.time()
+            flash("Session activitiy reset successfully.", "success")
+        else:
+            flash("Invalid CSRF Token. Please try again.", "danger")
+    return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login_():
