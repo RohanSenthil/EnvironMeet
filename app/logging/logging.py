@@ -137,9 +137,9 @@ with app.app_context():
 
 
 # Handle global exceptions
-@app.errorhandler(Exception)
-def handle_global_exceptions(error):
-    app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
+# @app.errorhandler(Exception)
+# def handle_global_exceptions(error):
+#     app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
 
 
 # Handle CSRF Errors
