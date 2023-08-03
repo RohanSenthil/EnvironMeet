@@ -4,7 +4,30 @@ from flask_wtf.file import FileRequired , FileAllowed, FileField
 from wtforms.fields import DateField
 from database.models import Members, Organisations, Users
 from flask_wtf import RecaptchaField
+import re
 
+class PasswordValidator:
+    def __call__(self, form, field):
+        password = field.data
+        if len(password) < 10:
+            raise validators.ValidationError('Password must be at least 10 characters long.')
+
+        # Check for at least one uppercase letter
+        if not any(char.isupper() for char in password):
+            raise validators.ValidationError('Password must contain at least one uppercase letter.')
+
+        # Check for at least one lowercase letter
+        if not any(char.islower() for char in password):
+            raise validators.ValidationError('Password must contain at least one lowercase letter.')
+
+        # Check for at least one number
+        if not any(char.isdigit() for char in password):
+            raise validators.ValidationError('Password must contain at least one number.')
+
+        # Check for at least one special character (non-alphanumeric)
+        if not re.search(r'[!@#$%^&*(),.?":{}|]', password):
+            raise validators.ValidationError('Password must contain at least one special character.')
+        
 class SafeStringField(StringField):
     def process_formdata(self, valuelist):
         if valuelist:
@@ -117,7 +140,7 @@ class createm(Form):
     username = SafeStringField('Username', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
-        validators.Length(min=10),
+        PasswordValidator(),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
@@ -160,7 +183,7 @@ class forget(Form):
         
 class reset(Form):
     password = PasswordField('New Password:', [
-        validators.Length(min=10),
+        PasswordValidator(),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
@@ -173,7 +196,7 @@ class createo(Form):
     username = SafeStringField('Username', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
-        validators.Length(min=10),
+        PasswordValidator(),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
@@ -214,7 +237,7 @@ class createa(Form):
     name = SafeStringField('Name', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', [
-        validators.Length(min=10),
+        PasswordValidator(),
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
