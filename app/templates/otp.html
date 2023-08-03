@@ -21,6 +21,58 @@
   </div>
   {% endif %}
   {% endwith %}
+
+  <h3 class="heading">OTP Valid for:</h3>
+
+  <span class="timer" id="timer"></span>
+  <progress max="{{ valid }}" value="{{ valid }}" class="progress progress--valid" id="progressBar"></progress>
+  <input id="countdown" type="button" value="Resend OTP" onClick="window.location.reload(true)" style="visibility: hidden;">
+  
+  <script type="application/javascript">
+    var timeInSecs;
+    var ticker;
+
+    function startTimer(secs) {
+    timeInSecs = parseInt(secs);
+    ticker = setInterval("tick()", 1000); 
+    }
+
+    function tick( ) {
+    var secs = timeInSecs;
+    if (secs > 0) {
+    timeInSecs--; 
+    }
+    else {
+    clearInterval(ticker);
+    secs = document.getElementById("timer");
+    startTimer(secs);
+
+    var mins = Math.floor(secs/60);
+    secs %= 60;
+    var pretty = ( (mins < 10) ? "0" : "" ) + mins + ":" + ( (secs < 10) ? "0" : "" ) + secs;
+
+    document.getElementById("countdown").innerHTML = pretty;
+    }
+
+    startTimer(5*60); // 4 minutes in seconds
+//       const timerElement = document.getElementById("timer");
+//       const progressBar = document.getElementById("progressBar")
+
+//       var timerCounter = progressBar.max;
+
+//       const interval = setInterval(() => {
+//           if (timerCounter <= 1) {
+//               document.getElementById("resend").style.visibility = "visible";;
+//               clearInterval(interval);
+//           }
+
+//           timerCounter = timerCounter - 1;
+          
+//           timerElement.innerText = timerCounter + "s";
+//           progressBar.value = timerCounter;
+//       }, 1000);
+  </script>
+
 <form method="POST" action="">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <br>
