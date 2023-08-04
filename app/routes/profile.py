@@ -3,7 +3,7 @@ from flask_login import UserMixin, login_user, login_required, logout_user, curr
 from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
-from app import app, loginmanager, mail, imagekit
+from app import app, loginmanager, mail, imagekit, csrf
 from database.models import Members, Organisations, db, Users, followers, Posts, Admins
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
@@ -161,6 +161,7 @@ def before_request():
         session['last_activity'] = time.time()
 
 @app.route('/reset_activity', methods=['POST'])
+@csrf.exempt
 def reset_activity():
     if 'user_id' in session:
 
@@ -331,7 +332,6 @@ def fotp(hashedid):
 
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
     return render_template('otp.html', form=form, valid=5*60)
-# @limiter.limit('1 per 5 minutes')
 
 @app.route('/firstreset', methods=['GET', 'POST'])
 @login_required
