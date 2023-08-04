@@ -9,10 +9,13 @@ from app.util.id_mappings import get_user_from_id
 from app.util.rate_limiting import limiter
 import time
 
+def is_valid_leaderboard(leaderboardname):
+    leaderboard = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
+    return leaderboard is not None
+
 @app.route('/leaderboard/global')
 def leaderboardglobal():
     db.session()
-    print('aaa')
     pp = time.localtime()
     print(pp)
     print(time.asctime(pp))
@@ -56,6 +59,8 @@ def leaderboardinvite():
 @login_required
 
 def leaderboardshit(leaderboardname):
+    if not is_valid_leaderboard(leaderboardname):
+        return render_template('404.html')
     isinleaderboard = False
     user = current_user
     leaderboardin = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname)

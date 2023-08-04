@@ -1,4 +1,4 @@
-from app import app
+from app import app, csrf
 from app.util.flask_connector import InputFlask, OutputFlask, Connector
 from database.models import Members, db,Leaderboard, Users, LeaderboardContent, Posts, PostReport, Events, EventReport, UserReport
 from flask import render_template, request, redirect, url_for, flash
@@ -11,6 +11,7 @@ import shadowd
 import time
 
 # @app.before_request
+# @csrf.exempt
 # def before_req():
 #     input = InputFlask(request)
 #     output = OutputFlask()
