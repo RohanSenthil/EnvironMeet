@@ -16,7 +16,7 @@ from app.util import share, validation, id_mappings, verification
 from PIL import Image
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
-from app.util.verification import check_is_confirmed
+from app.util.verification import check_is_confirmed, reset_required
 from flask_wtf.csrf import generate_csrf
 from app.util.rate_limiting import limiter
 
@@ -440,5 +440,6 @@ def unfollow(username):
     return redirect(url_for('othersprofile', username=username))
 
 @app.route("/settings")
+@reset_required
 def settings():
     return render_template('settings.html')

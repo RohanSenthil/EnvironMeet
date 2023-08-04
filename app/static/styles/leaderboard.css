@@ -2,18 +2,6 @@
     outline: none;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  color: #141a39;
-  cursor: default;
-}
-
-tr {
-  transition: all 0.2s ease-in-out;
-  border-radius: 0.2rem;
-}
 
 /* tr:not(:first-child):hover {
   background-color: #fff;

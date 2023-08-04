@@ -27,7 +27,7 @@ import hashlib
 
 
 SHADOWD_CONNECTOR_VERSION        = '3.0.2-python'
-SHADOWD_CONNECTOR_CONFIG         = '/etc/shadowd/connectors.ini'
+SHADOWD_CONNECTOR_CONFIG         = '/app/util/connectors.ini'
 SHADOWD_CONNECTOR_CONFIG_SECTION = 'shadowd_python'
 STATUS_OK                        = 1
 STATUS_BAD_REQUEST               = 2

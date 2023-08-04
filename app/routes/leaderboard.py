@@ -6,12 +6,16 @@ from sqlalchemy import desc
 from app.forms.leaderboardform import InviteForm, LeaderboardJoin
 from app.util import id_mappings
 from app.util.id_mappings import get_user_from_id
+from app.util.rate_limiting import limiter
 import time
+
+def is_valid_leaderboard(leaderboardname):
+    leaderboard = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
+    return leaderboard is not None
 
 @app.route('/leaderboard/global')
 def leaderboardglobal():
     db.session()
-    print('aaa')
     pp = time.localtime()
     print(pp)
     print(time.asctime(pp))
@@ -28,6 +32,7 @@ def leaderboardglobal():
     return render_template('leaderboardglobal.html', members=members, yearlymembers=yearlymembers)
 
 @app.route('/leaderboard/invite', methods=["GET","POST"])
+@limiter.limit('3/second')
 @login_required
 def leaderboardinvite():
     leaderboards = Leaderboard.query.all()
@@ -50,17 +55,24 @@ def leaderboardinvite():
     return render_template('leaderboardinvite.html', user=user, form=createinv, leaderboards=leaderboards, leaderboardcontents=leaderboardcontents, get_leaderboard_from_id=id_mappings.get_leaderboard_from_id)
 
 @app.route('/leaderboard/invite/<leaderboardname>', methods=["GET","POST"])
+@limiter.limit('3/second')
 @login_required
+
 def leaderboardshit(leaderboardname):
+    if not is_valid_leaderboard(leaderboardname):
+        return render_template('404.html')
+    isinleaderboard = False
     user = current_user
     leaderboardin = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname)
     leaderboardaa = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
     form = LeaderboardJoin(request.form)
     print(leaderboardin)
-    for i in get_user_from_id(leaderboardin):
-        if current_user == i:
+    for i in LeaderboardContent.query.all():
+        if request.method == 'POST' and form.validate() and current_user.id == i.memberid and leaderboardname == i.leaderboardname:
+            isinleaderboard = True
+            flash("You cannot join a leaderboard you're in!", "danger")
             print('aaa')
-        elif request.method == 'POST' and form.validate():
+    if request.method == 'POST' and form.validate() and isinleaderboard == False:
             leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardaa.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardaa.owner, memberid=user.id, memberpoints=user.points)
             db.session.add(leaderboardjoin)
             db.session.commit()

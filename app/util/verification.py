@@ -34,3 +34,13 @@ def org_required(func):
             app.logger.warning('Attempt to access Unauthorised Page', extra={'security_relevant': True, 'http_status_code': 403})
             return render_template('403.html')
     return decorated_function
+
+def reset_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if not current_user.reset_before:
+            flash("Please reset your password first", "warning")
+            return redirect(url_for("firstreset"))
+        return func(*args, **kwargs)
+
+    return decorated_function
