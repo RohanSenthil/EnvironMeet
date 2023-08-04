@@ -5,6 +5,7 @@ import random
 from string import ascii_uppercase
 from flask_login import current_user, login_required
 from datetime import datetime
+from app.util import moderator
 
 
 rooms = {}
@@ -80,15 +81,17 @@ def message(data):
     if room not in rooms:
         return 
     
+    msg = moderator.moderate_msg(data['data'])
+    
     content = {
         "name": session.get("name"),
-        "message": data["data"],
+        "message": msg,
         "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
     }
 
     send(content, to=room)
     rooms[room]["messages"].append(content)
-    print(f"{session.get('name')} said: {data['data']}")
+    print(f"{session.get('name')} said: {msg}")
 
 
 @socketio.on("connect")
