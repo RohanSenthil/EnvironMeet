@@ -1,4 +1,4 @@
-#locked, #recent, #nologin, .toprows, #unconfirmed{
+#locked, #recent, #nologin, .toprows, #unconfirmed, #inactive{
     margin: 20px;
 }
 .recent{
@@ -12,12 +12,20 @@
 .nologin{
     background-color: rgb(213, 213, 164);
     margin-bottom: 20px;
+    float: left;
+    width: 49%;
 }
 .unconfirmed{
     background-color: rgb(159, 202, 229);
     margin-bottom: 20px;
 }
-.recent, .locked, .nologin, #box, .unconfirmed{
+.inactive{
+    background-color: rgb(229, 159, 159);
+    margin-bottom: 20px;
+    float: right;
+    width: 49%;
+}
+.recent, .locked, .nologin, #box, .unconfirmed, .inactive{
     padding: 10px;
     border-radius: 20px;
 }
@@ -27,4 +35,8 @@
 }
 strong{
     font-size: 850%;
+}
+.never{
+    display: flex;
+    justify-content: space-between;
 }

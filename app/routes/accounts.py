@@ -28,6 +28,8 @@ def admin():
     recent = []
     nologin = []
     unconfirmed = []
+    inactive = []
+    thirty_days_ago = datetime.now() - timedelta(minutes=10) #days=30
     current_time = datetime.now()
     time_threshold = current_time - timedelta(days=5)
     for i in Users.query.all():
@@ -39,7 +41,9 @@ def admin():
             unconfirmed.append(i)
         if i.last_login and i.last_login >= time_threshold:
             recent.append(i)
-    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin, unconfirmed=unconfirmed)
+        if i.last_login and i.last_login < thirty_days_ago:
+            inactive.append(i)
+    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin, unconfirmed=unconfirmed, inactive=inactive)
 
 #MEMBERS
 @app.route('/members', methods=['GET'])
@@ -53,95 +57,90 @@ def members():
 @admin_required
 def createmember():
     createform = createm(request.form)
-    lower = string.ascii_lowercase
-    upper = string.ascii_uppercase
-    num = string.digits
-    symbols = string.punctuation
-    all = lower + upper + num + symbols
-    temp = random.sample(all, 10)
-    password = "".join(temp)
     if request.method == "POST" and createform.validate():
-        # print(request.files.get('profile_pic'))
-        # if request.files.get('profile_pic').filename != '':
-        #     profile_pic = request.files.get('profile_pic')
-        #     print(profile_pic)
-        #     pic_filename = secure_filename(request.files.get('profile_pic').filename)
-        #     print("can file")
-        #     pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
-        #     profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
-        #     pic_name =  "static/uploads/" + pic_name1
-        # else:
-        #     pic_name = 'static\images\default_profile_pic.png'
+        print(request.files.get('profile_pic'))
+        if request.files.get('profile_pic').filename != '':
+            profile_pic = request.files.get('profile_pic')
+            print(profile_pic)
+            pic_filename = secure_filename(request.files.get('profile_pic').filename)
+            print("can file")
+            pic_name1 = str(uuid.uuid1()) + "_" + pic_filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
+            pic_name =  "static/uploads/" + pic_name1
+        else:
+            pic_name = 'static\images\default_profile_pic.png'
         
         # Process the form data
+        password = request.form.get('password')
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
+        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
         
         # Handling file upload
-        uploaded_file = createform.profile_pic.data 
-        max_content_length = 5 * 1024 * 1024
+        # uploaded_file = createform.profile_pic.data 
+        # max_content_length = 5 * 1024 * 1024
 
-        if uploaded_file is not None:
+        # if uploaded_file is not None:
 
-            if not validation.file_is_image(uploaded_file.stream):
-                return jsonify({'error': 'File type not allowed'}, 415)
+        #     if not validation.file_is_image(uploaded_file.stream):
+        #         return jsonify({'error': 'File type not allowed'}, 415)
 
-            filename = uploaded_file.filename
-            secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
-            image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
+        #     filename = uploaded_file.filename
+        #     secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
+        #     image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
 
-            if uploaded_file.content_length > max_content_length:
-                if uploaded_file.content_length > max_content_length * 2:
-                    return jsonify({'error': 'File size too big'}, 400)
+        #     if uploaded_file.content_length > max_content_length:
+        #         if uploaded_file.content_length > max_content_length * 2:
+        #             return jsonify({'error': 'File size too big'}, 400)
 
-                image = Image.open(uploaded_file)
-                image.thumbnail(max_content_length)
-                og_image = Image.open(image)
-            else:
-                og_image = Image.open(uploaded_file)
+        #         image = Image.open(uploaded_file)
+        #         image.thumbnail(max_content_length)
+        #         og_image = Image.open(image)
+        #     else:
+        #         og_image = Image.open(uploaded_file)
 
     
-            scan_result = validation.scan_file(uploaded_file.read())
+        #     scan_result = validation.scan_file(uploaded_file.read())
 
-            if scan_result == False:
+        #     if scan_result == False:
 
-                randomized_image = validation.randomize_image(og_image)
+        #         randomized_image = validation.randomize_image(og_image)
 
-                path_list = image_path.split('/')[1:]
-                new_path = '/'.join(path_list)
-                member.profile_pic = new_path
-                randomized_image.save('app/' + new_path)
+        #         path_list = image_path.split('/')[1:]
+        #         new_path = '/'.join(path_list)
+        #         member.profile_pic = new_path
+        #         randomized_image.save('app/' + new_path)
 
-                upload = imagekit.upload_file(
-                    file=open('app/' + new_path, 'rb'),
-                    file_name=secureFilename,
-                    options=UploadFileRequestOptions(
-                        folder='/Posts_Images',
-                    ),
-                )
+        #         upload = imagekit.upload_file(
+        #             file=open('app/' + new_path, 'rb'),
+        #             file_name=secureFilename,
+        #             options=UploadFileRequestOptions(
+        #                 folder='/Posts_Images',
+        #             ),
+        #         )
 
-                response = upload.response_metadata.raw
-                member.profile_pic = response['url']
-                member.profile_pic_id = upload.file_id
+        #         response = upload.response_metadata.raw
+        #         member.profile_pic = response['url']
+        #         member.profile_pic_id = upload.file_id
 
-                if os.path.exists('app/' + new_path):
-                    os.remove('app/' + new_path)
+        #         if os.path.exists('app/' + new_path):
+        #             os.remove('app/' + new_path)
 
-            else:
-                member.profile_pic = 'static\images\default_profile_pic.png'
+        #     else:
+        #         member.profile_pic = 'static\images\default_profile_pic.png'
 
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
-        senddetails(member, password)
         print("PASSWORD:",password)
+        senddetails(member, password)
         sendverificationemail(member)
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
+        app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('members'))
-    return render_template('/accounts/member/createm.html', form=createform, password=password)
+    return render_template('/accounts/member/createm.html', form=createform)
 
 def senddetails(user, password):
     msg = Message()
@@ -182,6 +181,7 @@ def updatemember(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Member updated with id={oldmem.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('members'))#, hashedid=hashedid
     else:
@@ -201,6 +201,7 @@ def deletemember(hashedid):
         db.session.delete(member)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Member deleted with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('members'))
 
 @app.route('/user/unlock/<id>')
@@ -223,7 +224,30 @@ def unlockuser(id):
             user.is_locked = 0
             db.session.commit()
             return redirect(url_for('admins'))
+        app.logger.info(f'Sensitive action performed: {user.discriminator} account unlocked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('404.html'))
+
+@app.route('/user/lock/<id>')
+@admin_required
+def lockuser(id):
+    user = Users.query.filter_by(id=id).first()
+    if user:
+        if isinstance(user, Members):
+            user.failed_login_attempts = 0
+            user.is_locked == 1
+            db.session.commit()
+            return redirect(url_for('members'))
+        if isinstance(user, Organisations):
+            user.failed_login_attempts = 0
+            user.is_locked == 1
+            db.session.commit()
+            return redirect(url_for('organisations'))
+        if isinstance(user, Admins):
+            user.failed_login_attempts = 0
+            user.is_locked = 1
+            db.session.commit()
+            return redirect(url_for('admins'))
+        app.logger.info(f'Sensitive action performed: {user.discriminator} account locked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
 @app.route('/register', methods=['GET', 'POST'])
 @admin_required
@@ -350,6 +374,7 @@ def createorganisations():
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
         flash("Verification email sent to inbox.", "primary")
+        app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
 
@@ -384,6 +409,7 @@ def updateorganisation(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Organisation updated with id={oldorg.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('organisations'))
     else:
@@ -404,6 +430,7 @@ def deleteorganisation(hashedid):
         db.session.delete(organisation)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Organisation deleted with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('organisations'))
 
 
@@ -440,6 +467,7 @@ def createadmin():
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
         # flash("Verification email sent to inbox.", "primary")
+        app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)
 
@@ -460,6 +488,7 @@ def updateadmin(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Admin updated with id={oldadm.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('admins'))#, hashedid=hashedid
     else:
@@ -478,6 +507,7 @@ def deleteadmin(hashedid):
         db.session.delete(admin)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Admin deleted with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('admins'))
 
 
