@@ -59,7 +59,7 @@ def viewPost(encoded_hashedid):
 
 @app.route('/post/create', methods=['POST'])
 @limiter.limit('2/minute')
-@limiter.limit('20/day')
+@limiter.limit('3/day')
 @login_required
 def createPost():
     newPostForm = PostForm()
