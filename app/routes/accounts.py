@@ -234,12 +234,12 @@ def lockuser(id):
     if user:
         if isinstance(user, Members):
             user.failed_login_attempts = 0
-            user.is_locked == 1
+            user.is_locked = 1
             db.session.commit()
             return redirect(url_for('members'))
         if isinstance(user, Organisations):
             user.failed_login_attempts = 0
-            user.is_locked == 1
+            user.is_locked = 1
             db.session.commit()
             return redirect(url_for('organisations'))
         if isinstance(user, Admins):
