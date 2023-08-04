@@ -5,6 +5,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import desc
 from app.forms.leaderboardform import InviteForm, LeaderboardJoin
 from app.util import id_mappings
+from app.util.id_mappings import get_user_from_id
 import time
 
 @app.route('/leaderboard/global')
@@ -56,10 +57,12 @@ def leaderboardshit(leaderboardname):
     leaderboardaa = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
     form = LeaderboardJoin(request.form)
     print(leaderboardin)
-
-    if request.method == 'POST' and form.validate():
-        leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardaa.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardaa.owner, memberid=user.id, memberpoints=user.points)
-        db.session.add(leaderboardjoin)
-        db.session.commit()
+    for i in get_user_from_id(leaderboardin):
+        if current_user == i:
+            print('aaa')
+        elif request.method == 'POST' and form.validate():
+            leaderboardjoin = LeaderboardContent(leaderboardid=leaderboardaa.leaderboardid, leaderboardname=leaderboardname, owner=leaderboardaa.owner, memberid=user.id, memberpoints=user.points)
+            db.session.add(leaderboardjoin)
+            db.session.commit()
 
     return render_template('leaderboarduser.html', leaderboardin=leaderboardin, get_user_from_id=id_mappings.get_user_from_id, form=form)
