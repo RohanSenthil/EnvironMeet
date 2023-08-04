@@ -134,6 +134,7 @@ def createmember():
         senddetails(member, password)
         sendverificationemail(member)
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
+        app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('members'))
     return render_template('/accounts/member/createm.html', form=createform)
 
@@ -176,6 +177,7 @@ def updatemember(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Member updated with id={oldmem.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('members'))#, hashedid=hashedid
     else:
@@ -195,6 +197,7 @@ def deletemember(hashedid):
         db.session.delete(member)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Member deleted with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('members'))
 
 @app.route('/user/unlock/<id>')
@@ -217,6 +220,7 @@ def unlockuser(id):
             user.is_locked = 0
             db.session.commit()
             return redirect(url_for('admins'))
+        app.logger.info(f'Sensitive action performed: {user.discriminator} account unlocked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('404.html'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -344,6 +348,7 @@ def createorganisations():
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
         flash("Verification email sent to inbox.", "primary")
+        app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
 
@@ -378,6 +383,7 @@ def updateorganisation(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Organisation updated with id={oldorg.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('organisations'))
     else:
@@ -398,6 +404,7 @@ def deleteorganisation(hashedid):
         db.session.delete(organisation)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Organisation deleted with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('organisations'))
 
 
@@ -434,6 +441,7 @@ def createadmin():
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
         # flash("Verification email sent to inbox.", "primary")
+        app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)
 
@@ -454,6 +462,7 @@ def updateadmin(hashedid):
 
         db.session.commit()
         db.session.close()
+        app.logger.info(f'Sensitive action performed: Admin updated with id={oldadm.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('admins'))#, hashedid=hashedid
     else:
@@ -472,6 +481,7 @@ def deleteadmin(hashedid):
         db.session.delete(admin)
         db.session.commit()
         id_mappings.delete_id_mapping(hashedid)
+        app.logger.info(f'Sensitive action performed: Admin deleted with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('admins'))
 
 
