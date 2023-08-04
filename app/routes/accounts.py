@@ -28,6 +28,8 @@ def admin():
     recent = []
     nologin = []
     unconfirmed = []
+    inactive = []
+    thirty_days_ago = datetime.now() - timedelta(days=30)
     current_time = datetime.now()
     time_threshold = current_time - timedelta(days=5)
     for i in Users.query.all():
@@ -39,7 +41,9 @@ def admin():
             unconfirmed.append(i)
         if i.last_login and i.last_login >= time_threshold:
             recent.append(i)
-    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin, unconfirmed=unconfirmed)
+        if i.last_login and i.last_login < thirty_days_ago:
+            inactive.append(i)
+    return render_template('admin.html', locked=locked, recent=recent, nologin=nologin, unconfirmed=unconfirmed, inactive=inactive)
 
 #MEMBERS
 @app.route('/members', methods=['GET'])
@@ -222,6 +226,28 @@ def unlockuser(id):
             return redirect(url_for('admins'))
         app.logger.info(f'Sensitive action performed: {user.discriminator} account unlocked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
     return redirect(url_for('404.html'))
+
+@app.route('/user/lock/<id>')
+@admin_required
+def lockuser(id):
+    user = Users.query.filter_by(id=id).first()
+    if user:
+        if isinstance(user, Members):
+            user.failed_login_attempts = 0
+            user.is_locked == True
+            db.session.commit()
+            return redirect(url_for('members'))
+        if isinstance(user, Organisations):
+            user.failed_login_attempts = 0
+            user.is_locked == True
+            db.session.commit()
+            return redirect(url_for('organisations'))
+        if isinstance(user, Admins):
+            user.failed_login_attempts = 0
+            user.is_locked = True
+            db.session.commit()
+            return redirect(url_for('admins'))
+        app.logger.info(f'Sensitive action performed: {user.discriminator} account locked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
 @app.route('/register', methods=['GET', 'POST'])
 @admin_required
