@@ -1,7 +1,7 @@
 from app import app, log_client
 import logging
 from datetime import datetime
-from flask import request
+from flask import request, render_template
 from app.logging.index_mappings import audit_logs_mapping
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
@@ -148,3 +148,8 @@ def handle_global_exceptions(error):
 def handle_csrf_error(e):
     app.logger.error(e, extra={'security_relevant': True, 'http_status_code': 400})
     return jsonify({'error': 'Invalid Request'}, 400)
+
+@app.errorhandler(404)
+def handle_error404(e):
+    app.logger.error(e, extra={'security_relevant': False, 'http_status_code': 404})
+    return render_template('404.html')
