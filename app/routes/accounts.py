@@ -29,7 +29,7 @@ def admin():
     nologin = []
     unconfirmed = []
     inactive = []
-    thirty_days_ago = datetime.now() - timedelta(days=30)
+    thirty_days_ago = datetime.now() - timedelta(minutes=10) #days=30
     current_time = datetime.now()
     time_threshold = current_time - timedelta(days=5)
     for i in Users.query.all():
