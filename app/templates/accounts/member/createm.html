@@ -32,7 +32,7 @@
       <h5>**Passwords must have a length of at least 10 characters, with requirements of at least one capital letter, one small letter, one special character, one integer.</h5>
       <div class="form-group p-1">
         <label for="disabledinput">Generated password:</label>
-        <input class="form-control" type="text" id="disabledinput" placeholder="{{ password }}" value="{{ password }}" readonly style="background-color: #f0ecec">
+        <input class="form-control" type="text" id="password" name="password" readonly style="background-color: #f0ecec">
       </div>
       <!-- <div class="tooltip"> -->
         <button type="button" onclick="myFunction()">
@@ -60,17 +60,55 @@
 </div>
 <script>
   function myFunction() {
-    var copyText = document.getElementById("disabledinput");
+    var copyText = document.getElementById("password");
     copyText.select();
     navigator.clipboard.writeText(copyText.value);
     
     // var tooltip = document.getElementById("myTooltip");
     // tooltip.innerHTML = "Copied!";
   }
-  
+
   function outFunc() {
     var tooltip = document.getElementById("myTooltip");
     tooltip.innerHTML = "Copy to clipboard";
   }
+
+  function genPassword() {
+      var uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      var lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+      var specialChars = "!@#$%^&*()";
+      var numericChars = "0123456789";
+
+      var requiredChars = [
+          uppercaseChars,
+          lowercaseChars,
+          specialChars,
+          numericChars
+      ];
+
+      var passwordLength = 10;
+      var password = "";
+
+      // Ensure at least one character from each requiredChars set
+      requiredChars.forEach(function (charSet) {
+          var randomNumber = Math.floor(Math.random() * charSet.length);
+          password += charSet.substring(randomNumber, randomNumber + 1);
+      });
+
+      // Fill the rest of the password with random characters
+      for (var i = password.length; i < passwordLength; i++) {
+          var randomNumber = Math.floor(Math.random() * requiredChars.length);
+          var randomCharSet = requiredChars[randomNumber];
+          var randomChar = randomCharSet[Math.floor(Math.random() * randomCharSet.length)];
+          password += randomChar;
+      }
+
+      document.getElementById("password").value = password;
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    // Call your function here
+    genPassword();
+  });
   </script>
 {% endblock %}

@@ -53,13 +53,6 @@ def members():
 @admin_required
 def createmember():
     createform = createm(request.form)
-    lower = string.ascii_lowercase
-    upper = string.ascii_uppercase
-    num = string.digits
-    symbols = string.punctuation
-    all = lower + upper + num + symbols
-    temp = random.sample(all, 10)
-    password = "".join(temp)
     if request.method == "POST" and createform.validate():
         # print(request.files.get('profile_pic'))
         # if request.files.get('profile_pic').filename != '':
@@ -74,6 +67,7 @@ def createmember():
         #     pic_name = 'static\images\default_profile_pic.png'
         
         # Process the form data
+        password = request.form.get('password')
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -136,12 +130,12 @@ def createmember():
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
-        senddetails(member, password)
         print("PASSWORD:",password)
+        senddetails(member, password)
         sendverificationemail(member)
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         return redirect(url_for('members'))
-    return render_template('/accounts/member/createm.html', form=createform, password=password)
+    return render_template('/accounts/member/createm.html', form=createform)
 
 def senddetails(user, password):
     msg = Message()
