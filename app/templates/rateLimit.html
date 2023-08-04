@@ -11,7 +11,15 @@
         <h4>You have reached the maximum requests of</h4>
         <h5>{{ requestLimit.limit }}</h5>
         <h6>Please try again later</h6>
+        <button onclick="history.back()">Go back</button>
     </div>
 </div>
+
+
+<script>
+function Previous() {
+    window.history.back()
+}
+</script>
 
 {% endblock %}

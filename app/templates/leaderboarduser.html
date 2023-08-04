@@ -3,6 +3,7 @@
 {% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Leaderboard {% endblock %}
 <link rel="stylesheet" href="../../static/styles/leaderboard.css">
+
 {% block head %}
 
 {% endblock %}
@@ -10,43 +11,64 @@
 {% block content %}
 
 <div class="content">
-  {% for people in leaderboardin %}
-    <table class="alltimeleaderboard">
-                <tbody>
-                    {% if loop.index == 1 %}
-                    <tr class="leaderboardfirst">
-                        <td>{{ loop.index }}</td>
-                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
-                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
-                    </tr>
-                    {% elif loop.index == 2 %}
-                    <tr class="leaderboardsecond">
-                        <td>{{ loop.index }}</td>
-                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
-                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
-                    </tr>
-                    {% elif loop.index == 3 %}
-                    <tr class="leaderboardthird">
-                        <td>{{ loop.index }}</td>
-                        <td class="membername">{{ get_user_from_id(people.memberid).username }}</td>
-                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td class="membername">{{ get_user_from_id(people.memberid).username }}}</td>
-                        <td>{{ get_user_from_id(people.memberid).points }} Points</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-  {% endfor %}
-    <br>
+<div id="Global" class="tabcontent">
+        <div id="AllTime" class="globalcontent">
+            <div class="alltimeleaderboard">
+                <div class="headingRow">
+                    <span class="indexHead">Ranking</span>
+                    <span class="nameHead">Name</span>
+                    <span class="pointsHead">Points</span>
+                </div>
+                <div class="line"></div>
+                <div class="leaderboard-content">
+                    {% for member in leaderboardin %}
+                    <div class="content-row">
+                        <span class="theIndex {{ 'first' if loop.index == 1 }}{{ 'second' if loop.index == 2 }}{{ 'third' if loop.index == 3 }}">{{ loop.index }}</span>
+                        <span class="theName">
+                            {% if get_user_from_id(member.memberid).profile_pic %}
+                            <img class="avatar" src="/{{ get_user_from_id(member.memberid).profile_pic }}"/>
+                            {% endif %}
+                            {{ get_user_from_id(member.memberid).username }}
+                        </span>
+                        <span class="thePoints"><strong>{{ get_user_from_id(member.memberid).points }}</strong></span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+<!--            <div class="alltimeleaderboard">-->
+<!--                <div class="headingRow">-->
+<!--                    <span class="indexHead">Ranking</span>-->
+<!--                    <span class="nameHead">Name</span>-->
+<!--                    <span class="pointsHead">Points</span>-->
+<!--                </div>-->
+<!--                <div class="line"></div>-->
+<!--                <div class="leaderboard-content">-->
+<!--                    {% for member in leaderboardin %}-->
+<!--                    <div class="content-row">-->
+<!--                        <span class="theIndex {{ 'first' if loop.index == 1 }}{{ 'second' if loop.index == 2 }}{{ 'third' if loop.index == 3 }}">{{ loop.index }}</span>-->
+<!--                        <span class="theName">-->
+<!--                            {% if get_user_from_id(member.memberid).profile_pic %}-->
+<!--                            <img class="avatar" src="/{{ get_user_from_id(member.memberid).profile_pic }}"/>-->
+<!--                            {% endif %}-->
+<!--                            {{ get_user_from_id(member.memberid).username }}-->
+<!--                        </span>-->
+<!--                        <span class="thePoints"><strong>{{ get_user_from_id(member.memberid).points }}</strong></span>-->
+<!--                    </div>-->
+<!--                    {% endfor %}-->
+<!--                </div>-->
+<!--            </div>-->
 
     <form method="post" action="">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="submit" class="btn btn-success" value="Join">
     </form>
 </div>
+
 
 {% endblock %}
