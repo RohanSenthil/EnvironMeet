@@ -7,7 +7,7 @@ from app.forms.feedForms import PostForm
 from werkzeug.utils import secure_filename
 import os
 from flask.json import jsonify
-from app.util import share, validation, id_mappings
+from app.util import share, validation, id_mappings, moderator
 from app.util.helpers import get_following
 import uuid
 from PIL import Image
@@ -59,7 +59,7 @@ def viewPost(encoded_hashedid):
 
 @app.route('/post/create', methods=['POST'])
 @limiter.limit('2/minute')
-@limiter.limit('10/day')
+@limiter.limit('20/day')
 @login_required
 def createPost():
     newPostForm = PostForm()
@@ -71,9 +71,13 @@ def createPost():
     
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
-        newPost = Posts(author=current_user.id ,desc=newPostForm.desc.data)
+        desc = moderator.moderate_msg(newPostForm.desc.data)
 
-        if newPostForm.event.data != 'None' and newPostForm.event.data in attendedEvents:
+        newPost = Posts(author=current_user.id ,desc=desc)
+
+        valid_events = [id_mappings.object_id_to_hash(i.eventid, act='event') for i in attendedEvents]
+
+        if newPostForm.event.data != 'None' and newPostForm.event.data in valid_events:
             newPost.event = id_mappings.hash_to_object_id(newPostForm.event.data)
 
         # Handling file upload
@@ -105,9 +109,9 @@ def createPost():
                 image.thumbnail(max_content_length)
                 og_image = Image.open(image)
             else:
-                # For Purpose of Eicar demo we will comment this out
-                # og_image = Image.open(image)
-                pass
+                # For Purpose of Eicar demo we will add this
+                if filename != 'eicar.png':
+                    og_image = Image.open(uploaded_file)
 
     
             scan_result = validation.scan_file(uploaded_file.read())

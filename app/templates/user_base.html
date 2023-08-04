@@ -36,13 +36,10 @@
             // Function to reset the inactivity timer
             function resetInactivityTimer() {
                 // Get the CSRF token from your session or meta tag, assuming you have it available
-                var csrfToken = csrf_token(); // Replace this with the actual CSRF token
+                // var csrfToken = csrf_token(); // Replace this with the actual CSRF token
 
                 fetch('/reset_activity', {
                     method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken // Include the CSRF token in the request header
-                    }
                 });
             }
 
