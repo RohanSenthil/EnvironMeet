@@ -9,8 +9,8 @@ import os
 def exceed_rate_responder(requestLimit = RequestLimit):
     # save_rate_limit_data(endpoint=endpoint, limit=requestLimit.limit, period=period)
     app.logger.warning(f'Exceeded Rate Limit: {requestLimit.limit}', extra={'security_relevant': True, 'http_status_code': 429})
-    return jsonify({'error': 'Rate Limit Exceeded'})
-    # return make_response(render_template('rateLimit.html', requestLimit=requestLimit), 429)
+    # return jsonify({'error': 'Rate Limit Exceeded'})
+    return make_response(render_template('rateLimit.html', requestLimit=requestLimit), 429)
 
 
 # Rate Limiting

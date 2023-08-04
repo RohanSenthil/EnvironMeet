@@ -25,3 +25,36 @@ window.onclick = function(event) {
 
     // Call the resetInactivityTimer function on page load to start the timer
     resetInactivityTimer();
+     // Function to convert a date string to a Date object
+  function parseDate(dateStr) {
+    const [year, month, day] = dateStr.split('-');
+    return new Date(year, month - 1, day);
+  }
+
+  // Function to compare two event cards based on their dates
+  function compareEventDates(eventCard1, eventCard2) {
+    const dateStr1 = eventCard1.querySelector('.card-meta--date').textContent.trim();
+    const dateStr2 = eventCard2.querySelector('.card-meta--date').textContent.trim();
+
+    const date1 = parseDate(dateStr1);
+    const date2 = parseDate(dateStr2);
+
+    return date1 - date2;
+  }
+
+  // Get the container that holds all event cards
+  const eventsContainer = document.querySelector('.EventsContainer1');
+
+  // Get all event cards within the container
+  const eventCards = Array.from(eventsContainer.querySelectorAll('.eventCard'));
+
+  // Sort the event cards based on their dates
+  eventCards.sort(compareEventDates);
+
+  // Clear the container
+  eventsContainer.innerHTML = '';
+
+  // Append the sorted event cards back to the container
+  eventCards.forEach((eventCard) => {
+    eventsContainer.appendChild(eventCard);
+  });
