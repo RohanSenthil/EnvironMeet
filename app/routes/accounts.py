@@ -250,7 +250,6 @@ def lockuser(id):
         app.logger.info(f'Sensitive action performed: {user.discriminator} account locked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
 @app.route('/register', methods=['GET', 'POST'])
-@admin_required
 def registermember():
     registerform = register(request.form)
     if request.method == "POST" and registerform.validate():
