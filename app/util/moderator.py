@@ -1,5 +1,6 @@
 import re
 import requests
+from app import app
 
 def moderate_msg(msg):
 
@@ -11,6 +12,7 @@ def moderate_msg(msg):
     for url in urls:
         
         if not url.startswith('http'):
+            app.logger.warning(f'Potential attemp to overload url moderator', extra={'security_relevant': True, 'http_status_code': 400})
             new_url = 'http://' + url
         
         response = requests.get(f'https://api.exerra.xyz/scam?url={new_url}')
@@ -18,7 +20,7 @@ def moderate_msg(msg):
         result = response_json['isScam']
 
         if result:
+            app.logger.warning(f'Potential malicious link sent', extra={'security_relevant': True, 'http_status_code': 400})
             msg = msg.replace(url, '[POTENTIALLY MALICIOUS LINK]')
-            print(msg)
-
+        
     return msg
