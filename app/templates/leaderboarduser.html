@@ -2,17 +2,28 @@
 {% set active_page = "leaderboard" %}
 {% from '_formhelpers.html' import render_field %}
 {% block title %} EnvironMeet - Leaderboard {% endblock %}
-<link rel="stylesheet" href="../../static/styles/leaderboard.css">
-
 {% block head %}
-
+<link rel="stylesheet" href="/static/styles/leaderboard.css">
 {% endblock %}
 
 {% block content %}
 
 <div class="content">
-<div id="Global" class="tabcontent">
-        <div id="AllTime" class="globalcontent">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class='flashes'>
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }} " id='alert'>
+  <span>{{ message }}</span>
+  <button type="button" style='float:right;' class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+
+  </div>
+
+  {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
             <div class="alltimeleaderboard">
                 <div class="headingRow">
                     <span class="indexHead">Ranking</span>
@@ -21,25 +32,28 @@
                 </div>
                 <div class="line"></div>
                 <div class="leaderboard-content">
-                    {% for member in leaderboardin %}
+
                     <div class="content-row">
+                        {% for member in leaderboardin %}
                         <span class="theIndex {{ 'first' if loop.index == 1 }}{{ 'second' if loop.index == 2 }}{{ 'third' if loop.index == 3 }}">{{ loop.index }}</span>
-                        <span class="theName">
-                            {% if get_user_from_id(member.memberid).profile_pic %}
-                            <img class="avatar" src="/{{ get_user_from_id(member.memberid).profile_pic }}"/>
-                            {% endif %}
-                            {{ get_user_from_id(member.memberid).username }}
-                        </span>
+                        {% if get_user_from_id(member.memberid).profile_pic %}
+                            <span class="theName">
+
+                                <img class="avatar" src="/{{ get_user_from_id(member.memberid).profile_pic }}"/>
+
+                                {{ get_user_from_id(member.memberid).username }}
+                            </span>
+                         {% endif %}
                         <span class="thePoints"><strong>{{ get_user_from_id(member.memberid).points }}</strong></span>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+
                 </div>
             </div>
 
 
+    <br>
 
-        </div>
-    </div>
 
 <!--            <div class="alltimeleaderboard">-->
 <!--                <div class="headingRow">-->
@@ -66,7 +80,7 @@
 
     <form method="post" action="">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <input type="submit" class="btn btn-success" value="Join">
+        <input type="submit" class="btn btn-success" value="Join" style='float:right;'>
     </form>
 </div>
 
