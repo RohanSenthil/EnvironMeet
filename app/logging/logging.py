@@ -153,3 +153,7 @@ def handle_csrf_error(e):
 def handle_error404(e):
     app.logger.error(e, extra={'security_relevant': False, 'http_status_code': 404})
     return render_template('404.html')
+
+@app.route('/get_server_time')
+def get_server_time():
+    return {'server_time': datetime.utcnow().timestamp()}

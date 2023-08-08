@@ -49,6 +49,30 @@
 
             // Call the resetInactivityTimer function on page load to start the timer
             resetInactivityTimer();
+
+        function fetchServerTime() {
+            return fetch('/get_server_time')
+                .then(response => response.json())
+                .then(data => data.server_time * 1000); //Convert to Milliseconds
+        }
+
+        // Synch client time with server time
+        async function syncTime() {
+            const serverTime = await fetchServerTime();
+            const clientTime = Date.now();
+            const timeDifference = serverTime - clientTime;
+
+            //Adjust client time by time diff
+            const adjustedClientTime = new Date(clientTime + timeDifference);
+            console.log('Server Time:', new Date(serverTime));
+            console.log('Adjusted Client Time:', adjustedClientTime);
+
+        }
+
+
+        syncTime();
+
+        setInterval(syncTime, 60000);
     </script>
 
     <!-- Navbar -->
