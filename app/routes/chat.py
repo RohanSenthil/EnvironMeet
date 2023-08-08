@@ -81,7 +81,7 @@ def message(data):
     if room not in rooms:
         return 
     
-    msg = moderator.moderate_msg(data['data'])
+    msg, flags = moderator.moderate_msg(data['data'])
     
     content = {
         "name": session.get("name"),
@@ -91,6 +91,9 @@ def message(data):
 
     send(content, to=room)
     rooms[room]["messages"].append(content)
+
+    if flags > 0:
+        send({"name": session.get("name"), "message": "was just flagged for suspicious input, we are watching.", "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'), "sysgen": True}, to=room)
 
 
 @socketio.on("connect")

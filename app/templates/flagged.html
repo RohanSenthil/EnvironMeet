@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARNING</title>
+    <link rel="stylesheet" href="/static/styles/base.css">
+    <link rel="stylesheet" href="/static/styles/flagged.css">
+</head>
+<body>
+    <div class="content">
+        <img src="/static/images/flagged.png" alt="">
+        <div class="text">
+            <h1>WARNING</h1>
+            <h4>WE ARE WATCHING</h4>
+            <h6>We have stripped potentially malicious input and will redirect you back in <span id="seconds"> 10 </span> seconds </h6>
+        </div>
+    </div>
+
+    <script>
+        let theTime = Number(document.getElementById('seconds').textContent);
+        setInterval(() => {
+            if (theTime > 0) {
+                theTime -= 1;
+                document.getElementById('seconds').textContent = theTime;
+            }
+        }, 1000)
+    </script>
+
+</body>
+</html>

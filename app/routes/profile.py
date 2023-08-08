@@ -162,6 +162,7 @@ def before_request():
 
 @app.route('/reset_activity', methods=['POST'])
 @csrf.exempt
+@limiter.exempt
 def reset_activity():
     if 'user_id' in session:
 

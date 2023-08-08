@@ -1,0 +1,43 @@
+.content {
+    margin: 0 auto;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: rgb(8, 7, 8);
+    background-size: cover;
+    width: 100%;
+    min-height:100vh;
+    color: #fff;
+}
+
+img {
+    max-width: 750px;
+    max-height: 400px;
+    margin: 0 auto;
+}
+
+.text {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+h1 {
+    color: red;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+h4 {
+    margin-bottom: 0.25rem;
+}
+
+h6 {
+    font-weight: 400;
+}
+
+h6 span {
+    color: aqua;
+}

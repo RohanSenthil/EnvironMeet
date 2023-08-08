@@ -71,7 +71,7 @@ def createPost():
     
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
-        desc = moderator.moderate_msg(newPostForm.desc.data)
+        desc, flags = moderator.moderate_msg(newPostForm.desc.data)
 
         newPost = Posts(author=current_user.id ,desc=desc)
 
@@ -141,6 +141,7 @@ def createPost():
                     os.remove('app/' + new_path)
 
             else:
+                flags += 1
                 newPost.image = None
 
         db.session.add(newPost)
@@ -148,6 +149,10 @@ def createPost():
 
         hashed_id = id_mappings.hash_object_id(object_id=newPost.id, act='post')
         id_mappings.store_id_mapping(object_id=newPost.id, hashed_value=hashed_id, act='post')
+
+        if flags > 0:
+            redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+            return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
         return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashed_id)))
     
@@ -171,9 +176,14 @@ def editPost(hashedid):
         # Authorisation Check
         if post.author == current_user.id:
             form = request.form
-            post.desc = form[f'desc_{hashedid}']
+            desc, flags = moderator.moderate_msg(form[f'desc_{hashedid}'])
+            post.desc = desc
 
             db.session.commit()
+
+            if flags > 0:
+                redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+                return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
         else:
             app.logger.warning('Unauthorized attempt to edit post', extra={'security_relevant': True, 'http_status_code': 401})
@@ -271,12 +281,17 @@ def addComment(hashedid):
     else:
         post = Posts.query.get(postid)
         if post:
+            comment, flags = moderator.moderate_msg(comment)
             newComment = Comments(author=current_user.id, text=comment, post_id=postid)
             db.session.add(newComment)
             db.session.commit()
 
             hashed_id = id_mappings.hash_object_id(object_id=newComment.id, act='comment')
             id_mappings.store_id_mapping(object_id=newComment.id, hashed_value=hashed_id, act='comment')
+
+            if flags > 0:
+                redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+                return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
     post = Posts.query.get(postid)
     hashed_id = id_mappings.object_id_to_hash(object_id=post.id, act='post')
@@ -304,8 +319,15 @@ def editComment(hashedid):
         app.logger.warning('Unauthorized attempt to edit comment', extra={'security_relevant': True, 'http_status_code': 401})
         return jsonify({'error': 'Unauthorized'}, 401)
     else:
+        
+        newComment, flags = moderator.moderate_msg(newComment)
+
         comment.text = newComment
         db.session.commit()
+
+        if flags > 0:
+            redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+            return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
     post_id = comment.post_id
     hashed_id = id_mappings.object_id_to_hash(object_id=post_id, act='post')

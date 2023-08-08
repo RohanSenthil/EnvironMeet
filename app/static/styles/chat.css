@@ -103,7 +103,6 @@ h1 {
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
 }
 
 .msg-input {
