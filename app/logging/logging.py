@@ -79,7 +79,9 @@ class OpenSearchLogHandler(logging.Handler):
         log_message['hash'] = hashlib.sha256(json.dumps(log_message).encode()).hexdigest()
 
         try:
-            log_client.index(index=index_name, body=log_message, refresh=True)
+            # Temp disable Log
+            print(log_message)
+            # log_client.index(index=index_name, body=log_message, refresh=True)
         except Exception as e:
             app.logger.error(f'Error logging message to OpenSearch: {e}', extra={'security_relevant': True, 'http_status_code': 500})
 
