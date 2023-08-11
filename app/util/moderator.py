@@ -69,8 +69,10 @@ def moderate_msg(msg):
 
     msg, flags = detect_phish(msg, flags)
     flags = detect_xss(msg, flags)
-    flags = detect_sql_injection(msg, flags)
-    flags = detect_command_injection(msg, flags)
+
+    # Comment out since will likley generate too much false positives and would require too much manual review to ascertain
+    # flags = detect_sql_injection(msg, flags)
+    # flags = detect_command_injection(msg, flags)
 
     msg = bleach.clean(msg)
         
