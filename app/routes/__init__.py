@@ -8,6 +8,10 @@ from flask.json import jsonify
 def home():
     return render_template('index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    return ''
+
 # Test Route
 @app.route('/critical')
 def raise_critical():
