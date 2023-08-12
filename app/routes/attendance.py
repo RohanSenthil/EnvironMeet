@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template, request, redirect, url_for, flash
-from database.models import  SignUps, Events, Users, db
+from database.models import  SignUps, Events, Users, Members, db
 from app.forms.eventsupdate import eventsupdate
 from app.util import id_mappings
 from flask_login import current_user, login_required
@@ -118,7 +118,14 @@ def deleteattendee(id):
 @org_required
 def markattendance(id):
     attendee = SignUps.query.get(id)
+    points = Members.query.get(attendee.user_id)
+    eventpoints = Events.query.get(attendee.eventid)
     if attendee:
-        attendee.attendance_marked = "Yes"
-        db.session.commit()
+        if attendee.attendance_marked == "Yes":
+            flash("Attendance has already been marked!")
+        else:
+            attendee.attendance_marked = "Yes"
+            points.points += eventpoints.points
+            points.yearlypoints += eventpoints.points
+            db.session.commit()
     return redirect(url_for('check_attendees', id=attendee.eventid))
