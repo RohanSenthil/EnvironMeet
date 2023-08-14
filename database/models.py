@@ -101,6 +101,8 @@ class Users(db.Model, UserMixin):
     reset_before = db.Column(db.Boolean, nullable=False, default=False)
     is_active = db.Column(db.Boolean, nullable=False, default=False)
 
+    def set_inactive(self):
+        self.is_active = False
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)

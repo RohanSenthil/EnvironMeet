@@ -256,7 +256,11 @@ def login_():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout_():
+    user = current_user
+    user.set_inactive()
+    db.session.commit()
     logout_user()
+
     # revoke_login_token()
     session.pop('user_id', None)
     session.pop('last_activity', None)
