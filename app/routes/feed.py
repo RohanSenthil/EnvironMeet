@@ -71,6 +71,10 @@ def createPost():
     
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
+        if len(newPostForm.desc.data) > 500:
+            app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
+            return jsonify({'error': 'Exceeded word limit'}, 400)
+
         desc, flags = moderator.moderate_msg(newPostForm.desc.data)
 
         newPost = Posts(author=current_user.id ,desc=desc)
