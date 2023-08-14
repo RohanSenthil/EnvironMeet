@@ -4,11 +4,12 @@ from app import app
 from flask_limiter.util import get_remote_address
 from flask.json import jsonify
 import os
+from flask_login import current_user
 
 
 def exceed_rate_responder(requestLimit = RequestLimit):
     # save_rate_limit_data(endpoint=endpoint, limit=requestLimit.limit, period=period)
-    app.logger.warning(f'Exceeded Rate Limit: {requestLimit.limit}', extra={'security_relevant': True, 'http_status_code': 429})
+    app.logger.warning(f'Exceeded Rate Limit: {requestLimit.limit}', extra={'security_relevant': True, 'http_status_code': 429, 'flagged': True})
     # return jsonify({'error': 'Rate Limit Exceeded'})
     return make_response(render_template('rateLimit.html', requestLimit=requestLimit), 429)
 

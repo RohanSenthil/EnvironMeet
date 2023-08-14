@@ -11,6 +11,7 @@ import hashlib
 import json
 from app.logging.logs_generator import generate_sample_logs
 from datetime import datetime
+from app.util.flagged import flag_user
 # Example Usage
 # app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
 # Edit values to relevant values
@@ -50,6 +51,11 @@ class OpenSearchLogHandler(logging.Handler):
         except AttributeError:
             http_status_code = 500
 
+        try:
+            flagged = record.flagged
+        except AttributeError:
+            flagged = False
+
         log_message = {
             'when': {
                 'timestamp': datetime.utcnow().isoformat(),
@@ -77,6 +83,24 @@ class OpenSearchLogHandler(logging.Handler):
         }
 
         log_message['hash'] = hashlib.sha256(json.dumps(log_message).encode()).hexdigest()
+
+        if flagged:
+
+            flag_user(get_current_user_id())
+
+            flagged_message = {
+                'timestamp': datetime.utcnow().isoformat(),
+                'user_identity': get_current_user_id(),
+                'message': self.sanitize_input(self.format(record)),
+            }
+
+            try:
+                # Temp disable Log
+                print(flagged_message)
+                # log_client.index(index='flagged_users', body=flagged_message, refresh=True)
+            except Exception as e:
+                app.logger.error(f'Error logging message to OpenSearch: {e}', extra={'security_relevant': True, 'http_status_code': 500})
+
 
         try:
             # Temp disable Log
@@ -134,8 +158,26 @@ with app.app_context():
         # gen_result = generate_sample_logs(50)
         # print(gen_result)
 
-    else:
-        print('\nFailed to connect to OpenSearch')
+        flag_index_name = 'flagged_users' 
+        flag_index_exists = log_client.indices.exists(index=flag_index_name)
+
+
+        if not flag_index_exists:
+
+            flag_body = {
+                'mappings': {
+                    'properties': {
+                        'timestamp': { 'type' : 'date' },
+                        'user_identity': { 'type' : 'keyword' },
+                        'message': { 'type' : 'text' },
+                    }
+                }
+            }
+
+            log_client.indices.create(flag_index_name, body=flag_body)
+            print('\nCreating index...')
+        else:
+            print('\nIndex exists...skipping creation...')
 
 
 # Handle global exceptions

@@ -1,6 +1,6 @@
 from app import app, socketio
 from flask import render_template, session, request, redirect, url_for
-from flask_socketio import send, join_room, leave_room
+from flask_socketio import send, join_room, leave_room, emit
 import random
 from string import ascii_uppercase
 from flask_login import current_user, login_required
@@ -94,7 +94,9 @@ def message(data):
 
     if flags > 0:
         send({"name": session.get("name"), "message": "was just flagged for suspicious input, we are watching.", "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'), "sysgen": True}, to=room)
-
+        user = current_user
+        if user.flags > 3:
+            emit('flag')
 
 @socketio.on("connect")
 def connect(auth):

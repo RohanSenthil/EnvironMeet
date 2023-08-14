@@ -101,6 +101,7 @@ class Users(db.Model, UserMixin):
     reset_before = db.Column(db.Boolean, nullable=False, default=False)
     confirm_sent = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, nullable=False, default=False)
+    flags = db.Column(db.Integer, default=0)
 
     def set_inactive(self):
         self.is_active = False

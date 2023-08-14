@@ -160,16 +160,19 @@ def unlockuser(id):
         if isinstance(user, Members):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('members'))
         if isinstance(user, Organisations):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('organisations'))
         if isinstance(user, Admins):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('admins'))
         app.logger.info(f'Sensitive action performed: {user.discriminator} account unlocked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})

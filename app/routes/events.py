@@ -27,7 +27,7 @@ def events():
 def add_events():
 
     if not isinstance(current_user, Organisations):
-        app.logger.warning('Unauthorized attempt to add events', extra={'security_relevant': True, 'http_status_code': 401})
+        app.logger.warning('Unauthorized attempt to add events', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
         return jsonify({'error': 'Unauthorized'}, 401)
 
     form = FormEvents(request.form)
@@ -36,7 +36,7 @@ def add_events():
     if request.method == "POST" and form.validate():
 
         if form.organiser.data != current_user.name:
-            app.logger.warning('Unauthorized attempt to modify read only fields', extra={'security_relevant': True, 'http_status_code': 401})
+            app.logger.warning('Unauthorized attempt to modify read only fields', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 401)
 
         event = Events(organiser=current_user.id, name=form.name.data, eventdesc=form.eventdesc.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
@@ -56,7 +56,7 @@ def add_events():
         if uploaded_file.filename != '':
 
             if not validation.file_is_image(uploaded_file.stream):
-                app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
+                app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400, 'flagged': True})
                 return jsonify({'error': 'File type not allowed'}, 400)
 
             og_image = Image.open(uploaded_file)
@@ -123,7 +123,7 @@ def signup_events(hashedEventid):
     if request.method == "POST" and signup.validate():
 
         if signup.name.data != user.name and signup.email.data != user.email and signup.eventid.data != event.name:
-            app.logger.warning('Unauthorized attempt to modify read only fields', extra={'security_relevant': True, 'http_status_code': 401})
+            app.logger.warning('Unauthorized attempt to modify read only fields', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 401)
 
         signup = SignUps(user_id=user.id, name=signup.name.data, email=signup.email.data, eventid=eventid, attendance_marked='no')
