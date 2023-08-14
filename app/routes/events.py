@@ -6,6 +6,7 @@ from app.forms.eventssignup import SignUp
 from app.util import validation, id_mappings
 from PIL import Image
 import os
+from datetime import datetime
 from flask.json import jsonify
 from werkzeug.utils import secure_filename
 import uuid
@@ -40,6 +41,14 @@ def add_events():
 
         event = Events(organiser=current_user.id, name=form.name.data, eventdesc=form.eventdesc.data, date=form.date.data, time=form.time.data, price=form.price.data, points=form.points.data)
 
+        event_date = datetime.combine(form.date.data, datetime.min.time())
+
+        if event_date <= datetime.now():
+            return jsonify({'error': 'Unable to add since date entered has already passed'}, 400)
+        def is_landscape_image(image):
+            width, height = image.size
+            return width > height
+
         uploaded_file = request.files['image']
         #Upload images to uploads folder
         max_content_length = 5 * 1024 * 1024
@@ -49,6 +58,11 @@ def add_events():
             if not validation.file_is_image(uploaded_file.stream):
                 app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
                 return jsonify({'error': 'File type not allowed'}, 400)
+
+            og_image = Image.open(uploaded_file)
+
+            if not is_landscape_image(og_image):
+                return jsonify({'error': 'Only landscape images are allowed'}, 400)
 
             filename = uploaded_file.filename
             secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
