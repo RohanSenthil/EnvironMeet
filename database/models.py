@@ -100,6 +100,10 @@ class Users(db.Model, UserMixin):
     last_login = db.Column(db.DateTime)
     reset_before = db.Column(db.Boolean, nullable=False, default=False)
     confirm_sent = db.Column(db.DateTime)
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
+
+    def set_inactive(self):
+        self.is_active = False
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
