@@ -313,7 +313,8 @@
               <th scope="col">Username</th>
               <th scope="col">Email</th>
               <th scope="col">Type</th>
-              <th scope="col">Confirmation Sent</th>
+              <th scope="col">Last Email Sent</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -324,6 +325,9 @@
               <td>{{ user.email }}</td>
               <td>{{ user.discriminator }}</td>
               <td>{{ user.confirm_sent }}</td>
+              <td>
+                <a href="{{ url_for('resendverification', id=user.id) }}" class="btn btn-primary" style="color: white !important;">Resend</a>
+              </td>
             </tr>
             {% endfor %}
           </tbody>

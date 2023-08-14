@@ -83,8 +83,6 @@ def createmember():
         print("PASSWORD:",password)
         senddetails(member, password)
         sendverificationemail(member)
-        member.confirm_sent = datetime.now()
-        db.session.commit()
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('members'))
@@ -200,6 +198,13 @@ def lockuser(id):
             return redirect(url_for('admins'))
         app.logger.info(f'Sensitive action performed: {user.discriminator} account locked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
+@app.route("/resendverification/<id>", methods=['GET'])
+def resendverification(id):
+    user = Users.query.get_or_404(id)
+    sendverificationemail(user)
+    flash("Verification email has been resent.", "success")
+    return redirect(url_for('admin'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def registermember():
     registerform = register(request.form)
@@ -214,8 +219,6 @@ def registermember():
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         sendverificationemail(member)
-        member.confirm_sent = datetime.now()
-        db.session.commit()
         flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('login_'))
 
@@ -267,7 +270,8 @@ def sendverificationemail(user):
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
-
+    user.confirm_sent = datetime.now()
+    db.session.commit()
 
 
 
@@ -324,8 +328,6 @@ def createorganisations():
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
-        organisation.confirm_sent = datetime.now()
-        db.session.commit()
         flash("Verification email sent to inbox.", "primary")
         app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('organisations'))
@@ -420,8 +422,6 @@ def createadmin():
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
         # flash("Verification email sent to inbox.", "primary")
-        # admin.confirm_sent = datetime.now()
-        # db.session.commit()
         app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)
