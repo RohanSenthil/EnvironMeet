@@ -58,3 +58,39 @@ window.onclick = function(event) {
   eventCards.forEach((eventCard) => {
     eventsContainer.appendChild(eventCard);
   });
+
+//const searchBar = document.getElementbyId('searchBar');
+//const eventCards = document.querySelectorAll('.eventCard');
+//
+//searchBar.addEventListener('keyup', event => {
+//    const searchTerm = searchBar.value.toLowerCase();
+//
+//    eventCards.forEach(card => {
+//        const eventName = card.querySelector('.card-header h3').textContent.toLowerCase();
+//
+//        if (eventName.includes(searchTerm)) {
+//            card.style.display = 'block';
+//        } else {
+//            card.style.display = 'none';
+//        }
+//    });
+//});
+
+function search() {
+  // Declare variables
+  var input, filter;
+  input = document.getElementById("dainput");
+  filter = input.value.toUpperCase();
+  cards = document.getElementsByClassName("eventCard")
+  names = document.getElementsByClassName("card-header");
+
+  // Loop through all list items, and hide those who don't match the search query
+  for (i = 0; i < cards.length; i++) {
+    a = names[i];
+    if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+      cards[i].style.display = "";
+    } else {
+      cards[i].style.display = "none";
+    }
+  }
+}
