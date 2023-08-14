@@ -76,60 +76,6 @@ def createmember():
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
-        
-        # Handling file upload
-        # uploaded_file = createform.profile_pic.data 
-        # max_content_length = 5 * 1024 * 1024
-
-        # if uploaded_file is not None:
-
-        #     if not validation.file_is_image(uploaded_file.stream):
-        #         return jsonify({'error': 'File type not allowed'}, 415)
-
-        #     filename = uploaded_file.filename
-        #     secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
-        #     image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
-
-        #     if uploaded_file.content_length > max_content_length:
-        #         if uploaded_file.content_length > max_content_length * 2:
-        #             return jsonify({'error': 'File size too big'}, 400)
-
-        #         image = Image.open(uploaded_file)
-        #         image.thumbnail(max_content_length)
-        #         og_image = Image.open(image)
-        #     else:
-        #         og_image = Image.open(uploaded_file)
-
-    
-        #     scan_result = validation.scan_file(uploaded_file.read())
-
-        #     if scan_result == False:
-
-        #         randomized_image = validation.randomize_image(og_image)
-
-        #         path_list = image_path.split('/')[1:]
-        #         new_path = '/'.join(path_list)
-        #         member.profile_pic = new_path
-        #         randomized_image.save('app/' + new_path)
-
-        #         upload = imagekit.upload_file(
-        #             file=open('app/' + new_path, 'rb'),
-        #             file_name=secureFilename,
-        #             options=UploadFileRequestOptions(
-        #                 folder='/Posts_Images',
-        #             ),
-        #         )
-
-        #         response = upload.response_metadata.raw
-        #         member.profile_pic = response['url']
-        #         member.profile_pic_id = upload.file_id
-
-        #         if os.path.exists('app/' + new_path):
-        #             os.remove('app/' + new_path)
-
-        #     else:
-        #         member.profile_pic = 'static\images\default_profile_pic.png'
-
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
@@ -137,6 +83,8 @@ def createmember():
         print("PASSWORD:",password)
         senddetails(member, password)
         sendverificationemail(member)
+        member.confirm_sent = datetime.now()
+        db.session.commit()
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
         app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('members'))
@@ -263,6 +211,8 @@ def registermember():
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         sendverificationemail(member)
+        member.confirm_sent = datetime.now()
+        db.session.commit()
         flash("Verification email sent to inbox.", "primary")
         return redirect(url_for('login_'))
 
@@ -281,7 +231,6 @@ def confirm_email(token):
     if user.email == email:
         user.is_confirmed = True
         user.confirmed_on = datetime.now()
-        db.session.add(user)
         db.session.commit()
         flash("You have confirmed your account. Thanks!", "success")
     else:
@@ -372,6 +321,8 @@ def createorganisations():
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
         sendverificationemail(organisation)
+        organisation.confirm_sent = datetime.now()
+        db.session.commit()
         flash("Verification email sent to inbox.", "primary")
         app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('organisations'))
@@ -466,6 +417,8 @@ def createadmin():
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
         # flash("Verification email sent to inbox.", "primary")
+        # admin.confirm_sent = datetime.now()
+        # db.session.commit()
         app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)

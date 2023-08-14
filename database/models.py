@@ -99,6 +99,7 @@ class Users(db.Model, UserMixin):
     login_before = db.Column(db.Boolean, nullable=False, default=False)
     last_login = db.Column(db.DateTime)
     reset_before = db.Column(db.Boolean, nullable=False, default=False)
+    confirm_sent = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, nullable=False, default=False)
 
     def set_inactive(self):
