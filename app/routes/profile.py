@@ -197,6 +197,11 @@ def login_():
                 db.session.commit()
 
         if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+            if user.is_active:
+                flash("Unable to login as another user is logged in on this account")
+                return redirect(url_for('login_'))
+
+            user.is_active = True
             session['user_id'] = user.id
             session['last_activity'] = time.time()  # Reset last activity upon successful login
             session.permanent = True
