@@ -268,6 +268,7 @@
               <th scope="col">Username</th>
               <th scope="col">Email</th>
               <th scope="col">Type</th>
+              <th scope="col">Confirmation Sent</th>
             </tr>
           </thead>
           <tbody>
@@ -277,6 +278,7 @@
               <td>{{ user.username }}</td>
               <td>{{ user.email }}</td>
               <td>{{ user.discriminator }}</td>
+              <td>{{ user.confirm_sent }}</td>
             </tr>
             {% endfor %}
           </tbody>
