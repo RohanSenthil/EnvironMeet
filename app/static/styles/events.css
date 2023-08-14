@@ -21,11 +21,11 @@
   padding-right: 3%;
 }
 #tsm img{
-    max-height:10%;
-    max-width:10%;
+    max-height:100%;
+    max-width:100%;
 }
 #tsm{
-
+    width:10%;
 }
 .egioesigseions{
     color: #fff !important;
@@ -353,7 +353,16 @@ table{
 .eventCard:hover, .eventCard:focus-within {
     transform: translatey(-5px);
 }
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Adjust padding, margin, etc. as needed */
+}
 
+.button-group button {
+    margin-right: 10px; /* Adjust spacing between buttons */
+}
 .card-image {
 	overflow: hidden;
     width: 100%;

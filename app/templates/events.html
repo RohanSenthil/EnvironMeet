@@ -30,6 +30,7 @@
     <div class="Guolai">
     <div class="EventsContainer1">
         {% for event in events %}
+        {% if event.is_closed == False %}
         <div class="eventCard">
             {% if event.image is not none %}
             <figure class="card-image">
@@ -86,6 +87,7 @@
             {# endif #} -->
         <!-- </div>
         </a> -->
+        {% endif %}
         {% endfor %} 
     </div>
 </div>

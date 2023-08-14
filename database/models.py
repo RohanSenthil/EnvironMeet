@@ -231,6 +231,7 @@ class Events(db.Model):
     points = db.Column(db.Integer)
     image = db.Column(db.String(140))
     attendees = db.relationship('SignUps', backref='event')
+    is_closed = db.Column(db.Boolean, nullable=False, default=False)
     # price = db.Column(db.Price)
     # image
     # associated event
