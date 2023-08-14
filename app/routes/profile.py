@@ -38,12 +38,8 @@ def userprofile():
         loggedout = False
 
         if isinstance(current_user, Members):
-            # User is a member
-            # Perform the necessary actions for a member
             member = True
         elif isinstance(current_user, Organisations):
-            # User is not a member
-            # Perform actions for non-members
             organisation = True
 
         for i in Posts.query.filter_by(author=current_user.id):
