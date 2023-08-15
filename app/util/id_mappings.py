@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-from database.models import Id_Hash_Mappings, Users, Events, SignUps, Leaderboard, LeaderboardContent
+from database.models import Id_Hash_Mappings, Users, Events, SignUps, Leaderboard, LeaderboardContent, AllowedCountries
 from app import db
 
 
@@ -8,6 +8,11 @@ from app import db
 def get_user_from_id(user_id):
     user = Users.query.get(user_id)
     return user
+
+
+def get_country_from_id(userid):
+    country = AllowedCountries.query.get(userid)
+    return country
 
 
 def get_event_from_id(event_id):

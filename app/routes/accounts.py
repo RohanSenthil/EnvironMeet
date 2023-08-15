@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail, imagekit
-from database.models import Members, Organisations, db, Users, Admins, UserIP
+from database.models import Members, Organisations, db, Users, Admins, UserIP, AllowedCountries
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
@@ -260,14 +260,14 @@ def registermember():
             # print(response.content)
             data = response.json()
             ipaddress = data['ip_address']
-            countrycode = data['country_code']
+            country = data['country']
             latitude = str(data['latitude'])
             longitude = str(data['longitude'])
             location = str(data['latitude']) + ', ' + str(data['longitude'])
-            print(countrycode)
+            print(country)
             print(ipaddress)
             print(location)
-            userinfo = UserIP(user=user.id, countrycode=countrycode, location=location, ipaddress=ipaddress)
+            userinfo = AllowedCountries(user=user.id, country=country)
             db.session.add(userinfo)
             db.session.commit()
 
@@ -479,6 +479,37 @@ def createadmin():
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
         # flash("Verification email sent to inbox.", "primary")
+
+        # unhighlight when @admin_required is there
+        # api_url = os.environ.get('geolocation_url')
+        # api_key = os.environ.get('geolocation_key')
+        #
+        # params = {
+        #     'api_key': api_key,
+        #     # 'ip_address': validated_ip_address
+        # }
+
+        # try:
+        #     response = requests.get(api_url, params=params)
+        #     # print(response.content)
+        #     data = response.json()
+        #     ipaddress = data['ip_address']
+        #     country = data['country']
+        #     latitude = str(data['latitude'])
+        #     longitude = str(data['longitude'])
+        #     location = str(data['latitude']) + ', ' + str(data['longitude'])
+        #     print(country)
+        #     print(ipaddress)
+        #     print(location)
+        #     userinfo = AllowedCountries(user=current_user.id, country=country)
+        #     db.session.add(userinfo)
+        #     db.session.commit()
+        #
+        # except requests.exceptions.RequestException as api_error:
+        #     print(f"There was an error contacting the Geolocation API: {api_error}")
+        #     raise SystemExit(api_error)
+
+
         app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)

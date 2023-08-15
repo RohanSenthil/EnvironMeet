@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
 from app import app, loginmanager, mail, imagekit, csrf
-from database.models import Members, Organisations, db, Users, followers, Posts, Admins
+from database.models import Members, Organisations, db, Users, followers, Posts, Admins, AllowedCountries
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt, pyotp, time, datetime
@@ -19,6 +19,7 @@ from flask.json import jsonify
 from app.util.verification import check_is_confirmed, reset_required
 from flask_wtf.csrf import generate_csrf
 from app.util.rate_limiting import limiter
+import requests
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -171,6 +172,38 @@ def reset_activity():
 def login_():
     object_id_to_hash = id_mappings.object_id_to_hash
     login_form = login(request.form)
+    inallowedcountry = False
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+        # 'ip_address': validated_ip_address
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        country = data['country']
+        city = data['city']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(country)
+        print(city)
+        print(ipaddress)
+        print(location)
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
+
+    for i in AllowedCountries.query.all():
+        if i.country == country:
+            inallowedcountry = True
+
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
@@ -184,9 +217,10 @@ def login_():
                 elapsed_time = datetime.now() - user.last_failed_attempt
             else:
                 elapsed_time = timedelta(minutes=1)
-                
+
             if elapsed_time < timedelta(minutes=10):
-                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+                app.logger.warning('Attempt to login during account lockout',
+                                   extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Account is locked. Please try again later.", "danger")
                 return redirect(url_for('login_'))
             else:
@@ -196,7 +230,7 @@ def login_():
                 user.is_locked = False
                 db.session.commit()
 
-        if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+        if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')) and inallowedcountry == True:
             if user.is_active:
                 flash("Unable to login as another user is logged in on this account")
                 return redirect(url_for('login_'))
@@ -221,6 +255,12 @@ def login_():
 
             return redirect(url_for('fotp', id=user.id))
 
+        if inallowedcountry == False:
+            print('not in correct country')
+            flash('You are logging in from a country that is not allowed on this account', 'danger')
+            app.logger.warning("Logging in from an unregistered country on User's account", extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+            return redirect(url_for('login_'))
+
         else:
             # Failed login attempt
             user.failed_login_attempts += 1
@@ -228,7 +268,8 @@ def login_():
 
             # Check if the account should be locked
             if user.failed_login_attempts >= 3:
-                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+                app.logger.warning('Too many failed login attempts',
+                                   extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
                 user.is_locked = True
 
