@@ -18,7 +18,7 @@ limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=['1 per second'],
-    # storage_uri=f'redis://{os.environ.get("redis_user")}:{os.environ.get("redis_password")}@redis-15175.c252.ap-southeast-1-1.ec2.cloud.redislabs.com:15175',
+    storage_uri=f'redis://{os.environ.get("redis_user")}:{os.environ.get("redis_password")}@redis-15175.c252.ap-southeast-1-1.ec2.cloud.redislabs.com:15175',
     # storage_uri='memory://', # For testing only change to db 
     on_breach=exceed_rate_responder,
 )
