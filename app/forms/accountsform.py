@@ -5,7 +5,7 @@ from wtforms.fields import DateField
 from database.models import Members, Organisations, Users
 from flask_wtf import RecaptchaField
 import re
-from app.routes.accounts import decrypt, encrypt
+# from app.routes.accounts import decrypt, encrypt
 
 class PasswordValidator:
     def __call__(self, form, field):

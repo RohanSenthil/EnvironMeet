@@ -377,7 +377,8 @@
                 {% endfor %}
         </div>
         {% endif %}
-
+        </div>
+        
         <div class="tab-group" id="explore-tab" style="{{ 'display: none;' if user.is_authenticated }}">
             <div class="postsContainer">
                 {% for post in posts|reverse %}
