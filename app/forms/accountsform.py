@@ -213,12 +213,6 @@ class createo(Form):
     name = SafeStringField('Name', validators=[DataRequired()])
     username = SafeStringField('Username', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password:', [
-        PasswordValidator(),
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     address = SafeStringField('Address')
     description = TextAreaField('Description:')
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
@@ -254,12 +248,6 @@ class getotp(Form):
 class createa(Form):
     name = SafeStringField('Name', validators=[DataRequired()])
     email = SafeStringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password:', [
-        PasswordValidator(),
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], validators=[DataRequired()])
     contact = StringField('Contact Number', validators=[DataRequired(), Regexp('^\d{8}$', message="Contact must be 8 integer digits.")])
 

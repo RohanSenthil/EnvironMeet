@@ -74,7 +74,12 @@ def admin():
 @admin_required
 def members():
     members = Members.query.all() 
-    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
+    names = []
+    contacts = []
+    for i in members:
+        names.append(decrypt(i.name))
+        contacts.append(decrypt(i.contact))
+    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
 
 
 @app.route('/members/create', methods=['GET','POST'])
@@ -99,7 +104,7 @@ def createmember():
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
+        member = Members(name=encrypt(createform.name.data), email=emaill, username=usernamee, password=encrypt(passwordd), gender=createform.gender.data, contact=encrypt(createform.contact.data), points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
@@ -108,7 +113,10 @@ def createmember():
         senddetails(member, password)
         sendverificationemail(member)
         flash("Creation and verification email sent to inbox.", "primary") #comment if u dont want to send email on creation
-        app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        try:
+            app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        except:
+            app.logger.info(f'Sensitive action performed: Member created with id={member.id} by Admin (not logged in)', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('members'))
     return render_template('/accounts/member/createm.html', form=createform)
 
@@ -117,7 +125,7 @@ def senddetails(user, password):
     msg.subject = "Account Creation and Password"
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
-    msg.body = f'''Hello, {user.name}\nHere are your account details:\nUsername: {user.username}\nPassword(for first time use): {password}
+    msg.body = f'''Hello, {decrypt(user.name)}\nHere are your account details:\nUsername: {user.username}\nPassword(for first time use): {password}
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
@@ -144,20 +152,20 @@ def updatemember(hashedid):
             pic_name =  "static/uploads/" + pic_name1
             oldmem.profile_pic = pic_name
 
-        oldmem.name = name
+        oldmem.name = encrypt(name)
         oldmem.username = username
         oldmem.gender = gender
-        oldmem.contact = contact
+        oldmem.contact = encrypt(contact)
 
         db.session.commit()
         app.logger.info(f'Sensitive action performed: Member updated with id={oldmem.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('members'))#, hashedid=hashedid
     else:
-        updateform.name.data = oldmem.name
+        updateform.name.data = decrypt(oldmem.name)
         updateform.username.data = oldmem.username
         updateform.gender.data = oldmem.gender
-        updateform.contact.data = oldmem.contact
+        updateform.contact.data = decrypt(oldmem.contact)
 
         return render_template('accounts/member/updatem.html', form=updateform, oldmem=oldmem)
 
@@ -236,7 +244,7 @@ def registermember():
         emaill = str(registerform.email.data).lower()
         usernamee = str(registerform.username.data).lower()
         passwordd = bcrypt.hashpw(registerform.password.data.encode('utf-8'), bcrypt.gensalt())
-        member = Members(name=registerform.name.data, email=emaill, username=usernamee, password=passwordd, gender=registerform.gender.data, contact=registerform.contact.data, points=0, yearlypoints = 0, is_confirmed=False)
+        member = Members(name=encrypt(registerform.name.data), email=emaill, username=usernamee, password=encrypt(passwordd), gender=registerform.gender.data, contact=encrypt(registerform.contact.data), points=0, yearlypoints = 0, is_confirmed=False)
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
@@ -324,7 +332,7 @@ def sendverificationemail(user):
     msg.subject = "Verify Account"
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
-    msg.body = f'''Hello, {user.name}\nVerify the email for your Environmeet account by clicking the link: \n{url_for('confirm_email', token=token, _external=True)}
+    msg.body = f'''Hello, {decrypt(user.name)}\nVerify the email for your Environmeet account by clicking the link: \n{url_for('confirm_email', token=token, _external=True)}
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
@@ -358,7 +366,12 @@ def sendverificationemail(user):
 @admin_required
 def organisations():
     organisations = Organisations.query.all()
-    return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)
+    names = []
+    contacts = []
+    for i in organisations:
+        names.append(decrypt(i.name))
+        contacts.append(decrypt(i.contact))
+    return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
 
 @app.route('/organisations/create', methods=['GET','POST'])
 @admin_required
@@ -377,17 +390,23 @@ def createorganisations():
         else:
             pic_name = 'static\images\default_profile_pic.png'
         # Process the form data
+        password = request.form.get('password')
         emaill = str(createform.email.data).lower()
         usernamee = str(createform.username.data).lower()
-        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        organisation = Organisations(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, address=createform.address.data, description=createform.description.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
+        passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        organisation = Organisations(name=encrypt(createform.name.data), email=emaill, username=usernamee, password=encrypt(passwordd), address=encrypt(createform.address.data), description=createform.description.data, contact=encrypt(createform.contact.data), profile_pic=pic_name, is_confirmed=False)
         db.session.add(organisation)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
+        print("PASSWORD:",password)
+        senddetails(organisation, password)
         sendverificationemail(organisation)
-        flash("Verification email sent to inbox.", "primary")
-        app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        flash("Creation and verification email sent to inbox.", "primary")
+        try:
+            app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        except:
+            app.logger.info(f'Sensitive action performed: Organisation created with id={organisation.id} by Admin (not logged in)', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('organisations'))
     return render_template('/accounts/organisation/createo.html', form=createform)
 
@@ -414,22 +433,22 @@ def updateorganisation(hashedid):
             pic_name =  "static/uploads/" + pic_name1
             oldorg.profile_pic = pic_name
 
-        oldorg.name = name
+        oldorg.name = encrypt(name)
         oldorg.username = username
         oldorg.description = description
-        oldorg.address = address
-        oldorg.contact = contact
+        oldorg.address = encrypt(address)
+        oldorg.contact = encrypt(contact)
 
         db.session.commit()
         app.logger.info(f'Sensitive action performed: Organisation updated with id={oldorg.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('organisations'))
     else:
-        updateform.name.data = oldorg.name
+        updateform.name.data = decrypt(oldorg.name)
         updateform.username.data = oldorg.username
         updateform.description.data = oldorg.description
-        updateform.address.data = oldorg.address
-        updateform.contact.data = oldorg.contact
+        updateform.address.data = decrypt(oldorg.address)
+        updateform.contact.data = decrypt(oldorg.contact)
 
     return render_template('accounts/organisation/updateo.html', form=updateform, oldorg=oldorg)
 
@@ -459,8 +478,13 @@ def deleteorganisation(hashedid):
 @app.route('/admins', methods=['GET'])
 # @admin_required
 def admins():
-    admins = Admins.query.all() 
-    return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id)#, object_id_to_hash=id_mappings.object_id_to_hash
+    admins = Admins.query.all()
+    names = []
+    contacts = []
+    for i in admins:
+        names.append(decrypt(i.name))
+        contacts.append(decrypt(i.contact))
+    return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
 
 
 @app.route('/admins/create', methods=['GET','POST'])
@@ -470,15 +494,18 @@ def createadmin():
     if request.method == "POST" and createform.validate():
         pic_name = 'static\images\default_profile_pic.png'
         # Process the form data
+        password = request.form.get('password')
         emaill = str(createform.email.data).lower()
-        passwordd = bcrypt.hashpw(createform.password.data.encode('utf-8'), bcrypt.gensalt())
-        admin = Admins(name=createform.name.data, email=emaill, username="", password=passwordd, gender=createform.gender.data, contact=createform.contact.data, profile_pic=pic_name, is_confirmed=False)
+        passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        admin = Admins(name=encrypt(createform.name.data), email=emaill, username="", password=encrypt(passwordd), gender=createform.gender.data, contact=encrypt(createform.contact.data), profile_pic=pic_name, is_confirmed=False)
         db.session.add(admin)
         db.session.commit()
-        # sendverificationemail(admin)
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
-        # flash("Verification email sent to inbox.", "primary")
+        print("PASSWORD:",password)
+        senddetails(admin, password)
+        sendverificationemail(admin)
+        flash("Creation and verification email sent to inbox.", "primary")
 
         # unhighlight when @admin_required is there
         # api_url = os.environ.get('geolocation_url')
@@ -509,8 +536,10 @@ def createadmin():
         #     print(f"There was an error contacting the Geolocation API: {api_error}")
         #     raise SystemExit(api_error)
 
-
-        app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        try:
+            app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
+        except:
+            app.logger.info(f'Sensitive action performed: Admin created with id={admin.id} by Admin (not logged in)', extra={'security_relevant': False, 'http_status_code': 200})
         return redirect(url_for('admins'))
     return render_template('/accounts/admin/createa.html', form=createform)
 
@@ -525,18 +554,18 @@ def updateadmin(hashedid):
         gender = request.form['gender']
         contact = request.form['contact']
     
-        oldadm.name = name
+        oldadm.name = encrypt(name)
         oldadm.gender = gender
-        oldadm.contact = contact
+        oldadm.contact = encrypt(contact)
 
         db.session.commit()
         app.logger.info(f'Sensitive action performed: Admin updated with id={oldadm.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('admins'))#, hashedid=hashedid
     else:
-        updateform.name.data = oldadm.name
+        updateform.name.data = decrypt(oldadm.name)
         updateform.gender.data = oldadm.gender
-        updateform.contact.data = oldadm.contact
+        updateform.contact.data = decrypt(oldadm.contact)
 
         return render_template('accounts/admin/updatea.html', form=updateform, oldadm=oldadm)
 

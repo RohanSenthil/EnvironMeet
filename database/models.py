@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template
 from sqlalchemy.orm import backref
 from flask_login import UserMixin
-from sqlalchemy import Enum
+from sqlalchemy import Enum, LargeBinary
 from app import app
 import datetime
 from sqlalchemy.ext.declarative import declarative_base
@@ -77,11 +77,11 @@ class Users(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
-    username = db.Column(db.String(100), unique=True)
+    username = db.Column(db.String(100))
     email = db.Column(db.String(100), unique=True, default='mail@example.com')
-    password = db.Column(db.String(10000))
-    name = db.Column(db.String(100))
-    contact = db.Column(db.Integer)
+    password = db.Column(LargeBinary)
+    name = db.Column(LargeBinary)
+    contact = db.Column(LargeBinary)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     profile_pic = db.Column(db.String(1000), nullable=True)
     profile_pic_id = db.Column(db.String(100))
@@ -193,7 +193,7 @@ class Organisations(Users):
 
     id = db.Column(db.Integer, primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    address = db.Column(db.String(100))
+    address = db.Column(LargeBinary)
     description = db.Column(db.Text)
     # events
 
