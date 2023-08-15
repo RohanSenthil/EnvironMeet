@@ -1,4 +1,4 @@
-let socketio = io();
+// let socketio = io();
       
 const messages = document.getElementById("messages");
 
@@ -65,6 +65,6 @@ sendBtn.addEventListener('click', () => {
     sendMessage()
 })
 
-socketio.on("flag", () => {
-    window.location.href= '/login'
-})
+// socketio.on("flag", () => {
+//     window.location.href= '/login'
+// })

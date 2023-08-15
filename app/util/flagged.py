@@ -29,5 +29,6 @@ def flag_user(user_id):
                 flash('Account locked due to suspicious activity')
                 try:
                     emit('flag')
-                except:
+                except Exception as e:
+                    print(e)
                     return redirect(url_for('login_'))

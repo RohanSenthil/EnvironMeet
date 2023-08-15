@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db, imagekit
+from app import app, db, imagekit, csrf
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for
 from database.models import Posts, Likes, Comments, SignUps
@@ -289,6 +289,12 @@ def addComment(hashedid):
         post = Posts.query.get(postid)
         if post:
             comment, flags = moderator.moderate_msg(comment)
+
+            if flags > 0:
+                return jsonify({'success': False, 'postid': None})
+                # redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+                # return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
+
             newComment = Comments(author=current_user.id, text=comment, post_id=postid)
             db.session.add(newComment)
             db.session.commit()
@@ -296,9 +302,6 @@ def addComment(hashedid):
             hashed_id = id_mappings.hash_object_id(object_id=newComment.id, act='comment')
             id_mappings.store_id_mapping(object_id=newComment.id, hashed_value=hashed_id, act='comment')
 
-            if flags > 0:
-                redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
-                return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
     post = Posts.query.get(postid)
     hashed_id = id_mappings.object_id_to_hash(object_id=post.id, act='post')
@@ -307,6 +310,7 @@ def addComment(hashedid):
 
 
 @app.route('/post/comment/edit/<hashedid>', methods=['POST'])
+@csrf.exempt
 @limiter.limit('10/minute')
 @limiter.limit('50/day')
 @login_required
@@ -329,12 +333,13 @@ def editComment(hashedid):
         
         newComment, flags = moderator.moderate_msg(newComment)
 
+        if flags > 0:
+            return jsonify({'success': False, 'postid': None})
+            # redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+            # return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
+
         comment.text = newComment
         db.session.commit()
-
-        if flags > 0:
-            redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
-            return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
     post_id = comment.post_id
     hashed_id = id_mappings.object_id_to_hash(object_id=post_id, act='post')
@@ -343,6 +348,7 @@ def editComment(hashedid):
 
 
 @app.route('/post/comment/delete/<hashedid>', methods=['POST'])
+@csrf.exempt
 @limiter.limit('10/minute')
 @limiter.limit('25/day')
 @login_required
