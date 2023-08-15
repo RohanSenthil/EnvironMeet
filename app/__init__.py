@@ -112,11 +112,13 @@ csp = {
         '\'unsafe-inline\''
     ],
     'font-src': [
-        'https://fonts.googleapis.com'
+        '\'self\'',
+        'https://fonts.googleapis.com/'
     ],
     'img-src': [
         '\'self\'',
-        'data:'
+        'data:',
+        'https://maps.googleapis.com/maps/api/'
     ]
 }
 talisman = Talisman(
