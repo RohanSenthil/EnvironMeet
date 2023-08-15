@@ -64,3 +64,7 @@ const sendBtn = document.getElementById('send-btn');
 sendBtn.addEventListener('click', () => {
     sendMessage()
 })
+
+socketio.on("flag", () => {
+    window.location.href= '/login'
+})

@@ -12,7 +12,7 @@
     <div class="SearchEventContainer">
         <div class="SearchEventBox" id="searchInput">
             <div class="left">
-                <input class="textInput" type="text" placeholder="Search">
+                <input class="textInput" onkeyup="search()" id="dainput" type="text" placeholder="Search">
                     </div>
             </div>
         </div>
@@ -30,6 +30,7 @@
     <div class="Guolai">
     <div class="EventsContainer1">
         {% for event in events %}
+        {% if event.is_closed == False %}
         <div class="eventCard">
             {% if event.image is not none %}
             <figure class="card-image">
@@ -86,6 +87,7 @@
             {# endif #} -->
         <!-- </div>
         </a> -->
+        {% endif %}
         {% endfor %} 
     </div>
 </div>
@@ -93,5 +95,25 @@
 </div>
 
 <script src="../static/scripts/events.js"></script>
+    <script>
+        const searchBar = document.getElementById('searchBar');
+        const eventCards = document.querySelectorAll('.eventCard');
+
+        searchBar.addEventListener('keyup', event => {
+            if (event.key === ' ') { // Check if space bar is pressed
+                const searchTerm = searchBar.value.toLowerCase();
+
+                eventCards.forEach(card => {
+                    const eventName = card.querySelector('.card-header h3').textContent.toLowerCase();
+
+                    if (eventName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
 
 {% endblock %}

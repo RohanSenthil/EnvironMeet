@@ -38,12 +38,8 @@ def userprofile():
         loggedout = False
 
         if isinstance(current_user, Members):
-            # User is a member
-            # Perform the necessary actions for a member
             member = True
         elif isinstance(current_user, Organisations):
-            # User is not a member
-            # Perform actions for non-members
             organisation = True
 
         for i in Posts.query.filter_by(author=current_user.id):
@@ -184,9 +180,13 @@ def login_():
             return redirect(url_for('login_'))
 
         if user.is_locked:
-            elapsed_time = datetime.now() - user.last_failed_attempt
+            if user.last_failed_attempt is not None:
+                elapsed_time = datetime.now() - user.last_failed_attempt
+            else:
+                elapsed_time = timedelta(minutes=1)
+                
             if elapsed_time < timedelta(minutes=10):
-                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401})
+                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Account is locked. Please try again later.", "danger")
                 return redirect(url_for('login_'))
             else:
@@ -197,6 +197,11 @@ def login_():
                 db.session.commit()
 
         if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+            if user.is_active:
+                flash("Unable to login as another user is logged in on this account")
+                return redirect(url_for('login_'))
+
+            user.is_active = True
             session['user_id'] = user.id
             session['last_activity'] = time.time()  # Reset last activity upon successful login
             session.permanent = True
@@ -223,7 +228,7 @@ def login_():
 
             # Check if the account should be locked
             if user.failed_login_attempts >= 3:
-                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401})
+                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
                 user.is_locked = True
 
@@ -251,7 +256,11 @@ def login_():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout_():
+    user = current_user
+    user.set_inactive()
+    db.session.commit()
     logout_user()
+
     # revoke_login_token()
     session.pop('user_id', None)
     session.pop('last_activity', None)
@@ -324,7 +333,7 @@ def fotp(hashedid):
             elif isinstance(user, Admins):
                 return redirect(url_for('admin'))
         else:
-            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401})
+            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             flash("Wrong OTP. Please try again", "warning")
 
     token = generate_otp_token(user, totp)

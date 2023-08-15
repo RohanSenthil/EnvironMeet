@@ -71,6 +71,14 @@ def createPost():
     
     if request.method == 'POST' and newPostForm.validate_on_submit():
 
+        if current_user is None:
+            return redirect(url_for('login_'))
+
+        if len(newPostForm.desc.data) > 500:
+
+            app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400, 'flagged': True})
+            return jsonify({'error': 'Exceeded word limit'}, 400)
+
         desc, flags = moderator.moderate_msg(newPostForm.desc.data)
 
         newPost = Posts(author=current_user.id ,desc=desc)
@@ -87,7 +95,6 @@ def createPost():
         if uploaded_file is not None:
 
             if not validation.file_is_image(uploaded_file.stream):
-                app.logger.warning('Attempt to bypass client side validation', extra={'security_relevant': True, 'http_status_code': 400})
                 return jsonify({'error': 'File type not allowed'}, 415)
             
             # For Purpose of Eicar demo we will comment this out
@@ -182,11 +189,11 @@ def editPost(hashedid):
             db.session.commit()
 
             if flags > 0:
-                redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+                redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashedid))
                 return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
         else:
-            app.logger.warning('Unauthorized attempt to edit post', extra={'security_relevant': True, 'http_status_code': 401})
+            app.logger.warning('Unauthorized attempt to edit post', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             return jsonify({'error': 'Unauthorized'}, 401)
     else:
         return jsonify({'error': 'Post doesn\'t exist'}, 400)
@@ -229,7 +236,7 @@ def deletePost(hashedid):
             id_mappings.delete_id_mapping(hashedid)
 
         else:
-            app.logger.warning('Unauthorized attempt to delete post', extra={'security_relevant': True, 'http_status_code': 401})
+            app.logger.warning('Unauthorized attempt to delete post', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             return jsonify({'error': 'Unauthorized'}, 401)
 
     return redirect(url_for('feed'))
@@ -316,7 +323,7 @@ def editComment(hashedid):
     if not newComment or len(newComment) <= 0:
         return jsonify({'error': 'Comment cannot be blank'}, 400)
     elif current_user.id != comment.author:
-        app.logger.warning('Unauthorized attempt to edit comment', extra={'security_relevant': True, 'http_status_code': 401})
+        app.logger.warning('Unauthorized attempt to edit comment', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
         return jsonify({'error': 'Unauthorized'}, 401)
     else:
         
@@ -351,7 +358,7 @@ def deleteComment(hashedid):
     if not comment:
         return jsonify({'error': 'Comment does not exists'}, 400)
     elif current_user.id != comment.author:
-        app.logger.warning('Unauthorized attempt to delete comment', extra={'security_relevant': True, 'http_status_code': 401})
+        app.logger.warning('Unauthorized attempt to delete comment', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
         return jsonify({'error': 'Unauthorized'}, 401)
     else:
         db.session.delete(comment)

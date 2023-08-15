@@ -15,10 +15,12 @@ if (newPostInput) {
     newPostInput.style.height = `height: ${newPostInput.scrollHeight}`;
 }
 
-const charLimit = (limitField, limitNum, counter) => {
+const charLimit = (limitField, limitNum, counter=null) => {
     if (limitField.value.length > limitNum) {
         limitField.value = limitField.value.substring(0, limitNum)
-        counter.textContent = 0;
+        if (counter) {
+            counter.textContent = 0;
+        }
     }
 }
 
@@ -86,7 +88,6 @@ for (let i = 0; i < commentInputs.length; i++) {
     commentInputs[i].addEventListener('input', (e) => {
 
         maxChars = 250;
-
         charLimit(e.target, maxChars);
     })
 }

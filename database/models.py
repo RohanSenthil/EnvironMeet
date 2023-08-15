@@ -99,6 +99,12 @@ class Users(db.Model, UserMixin):
     login_before = db.Column(db.Boolean, nullable=False, default=False)
     last_login = db.Column(db.DateTime)
     reset_before = db.Column(db.Boolean, nullable=False, default=False)
+    confirm_sent = db.Column(db.DateTime)
+    is_active = db.Column(db.Boolean, nullable=False, default=False)
+    flags = db.Column(db.Integer, default=0)
+
+    def set_inactive(self):
+        self.is_active = False
     def follow(self, user):
         if not self.is_following(user):
             self.followed.append(user)
@@ -227,6 +233,7 @@ class Events(db.Model):
     points = db.Column(db.Integer)
     image = db.Column(db.String(140))
     attendees = db.relationship('SignUps', backref='event')
+    is_closed = db.Column(db.Boolean, nullable=False, default=False)
     # price = db.Column(db.Price)
     # image
     # associated event
@@ -357,6 +364,21 @@ class EventReport(db.Model):
         self.comment = comment
         self.reporter = reporter
         self.discriminator = discriminator
+
+class UserIP(db.Model):
+    __tablename__ = 'userip'
+
+    id = db.Column(db.Integer, db.Sequence('userip_id_seq'), primary_key=True)
+    user = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    countrycode = db.Column(db.String(2))
+    location = db.Column(db.String(20))
+    ipaddress = db.Column(db.String(15))
+
+    def __init__(self, user, countrycode, location, ipaddress):
+        self.user = user
+        self.countrycode = countrycode
+        self.location = location
+        self.ipaddress = ipaddress
 
 
 class Id_Hash_Mappings(db.Model):

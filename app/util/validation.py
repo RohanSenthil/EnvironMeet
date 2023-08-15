@@ -46,7 +46,7 @@ def isFileMalicious(resource):
             if 'positives' in response_json:
                 positives = response_json['positives']
                 if positives > 0:
-                    app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415})
+                    app.logger.warning('Possible attempt to upload a malicious file', extra={'security_relevant': True, 'http_status_code': 415, 'flagged': True})
                     return True
                 else:
                     return False
@@ -66,11 +66,11 @@ def file_is_image(stream):
     format = imghdr.what(None, header)
 
     if not format:
-        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
+        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415, 'flagged': True})
         return False
     
     if format not in ['jpeg', 'jpg', 'png']:
-        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415})
+        app.logger.warning('Possible client side validation bypass', extra={'security_relevant': True, 'http_status_code': 415, 'flagged': True})
         return False
     
     return ('.' + (format if format != 'jpeg' else 'jpg')) in ['.jpg', '.png']

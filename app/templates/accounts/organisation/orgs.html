@@ -57,11 +57,53 @@
               </svg>
             </button>
 
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ organisation.id }}-unlockuser">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
-                <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/>
-              </svg>
-            </button>
+            {% if organisation.is_locked == False %}
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{organisation.id}}-lockuser">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3a5 5 0 0 1 5 5v2.005c.77.015 1.246.07 1.635.268a2.5 2.5 0 0 1 1.092 1.092C20 11.9 20 12.6 20 14v3c0 1.4 0 2.1-.273 2.635a2.5 2.5 0 0 1-1.092 1.092C18.1 21 17.4 21 16 21H8c-1.4 0-2.1 0-2.635-.273a2.5 2.5 0 0 1-1.093-1.092C4 19.1 4 18.4 4 17v-3c0-1.4 0-2.1.272-2.635a2.5 2.5 0 0 1 1.093-1.092c.389-.199.865-.253 1.635-.268V8a5 5 0 0 1 5-5zm3 5v2H9V8a3 3 0 1 1 6 0z" fill="#000000"/></svg>
+                </button>
+                <div class="modal fade" id="modal-{{ organisation.id }}-lockuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Lock Account</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to lock this account?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="{{ url_for('lockuser', id=organisation.id) }}" class="btn btn-success" style="color: white !important;">Lock Account</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% else %}
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{organisation.id}}-unlockuser">
+                  <svg fill="#000000" width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="unlock" class="icon glyph"><path d="M18,8H9V7a3,3,0,0,1,5.6-1.5,1,1,0,1,0,1.73-1A5,5,0,0,0,7,7V8H6a2,2,0,0,0-2,2V20a2,2,0,0,0,2,2H18a2,2,0,0,0,2-2V10A2,2,0,0,0,18,8Z"></path></svg>
+                </button>
+                <div class="modal fade" id="modal-{{ organisation.id }}-unlockuser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Unlock Account</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to unlock this account?
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="{{ url_for('unlockuser', id=organisation.id) }}" class="btn btn-success" style="color: white !important;">Unlock Account</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
           </td>
         </tr>
         {% endfor %}

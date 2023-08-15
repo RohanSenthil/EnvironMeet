@@ -4,12 +4,13 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail, imagekit
-from database.models import Members, Organisations, db, Users, Admins
+from database.models import Members, Organisations, db, Users, Admins, UserIP
 from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea, register
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
 import uuid as uuid
+import requests
 import os
 from app.util import share, validation, id_mappings
 from itsdangerous import URLSafeTimedSerializer
@@ -76,60 +77,6 @@ def createmember():
         usernamee = str(createform.username.data).lower()
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=createform.name.data, email=emaill, username=usernamee, password=passwordd, gender=createform.gender.data, contact=createform.contact.data, points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
-        
-        # Handling file upload
-        # uploaded_file = createform.profile_pic.data 
-        # max_content_length = 5 * 1024 * 1024
-
-        # if uploaded_file is not None:
-
-        #     if not validation.file_is_image(uploaded_file.stream):
-        #         return jsonify({'error': 'File type not allowed'}, 415)
-
-        #     filename = uploaded_file.filename
-        #     secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
-        #     image_path = os.path.join(app.config['UPLOAD_PATH'], secureFilename)
-
-        #     if uploaded_file.content_length > max_content_length:
-        #         if uploaded_file.content_length > max_content_length * 2:
-        #             return jsonify({'error': 'File size too big'}, 400)
-
-        #         image = Image.open(uploaded_file)
-        #         image.thumbnail(max_content_length)
-        #         og_image = Image.open(image)
-        #     else:
-        #         og_image = Image.open(uploaded_file)
-
-    
-        #     scan_result = validation.scan_file(uploaded_file.read())
-
-        #     if scan_result == False:
-
-        #         randomized_image = validation.randomize_image(og_image)
-
-        #         path_list = image_path.split('/')[1:]
-        #         new_path = '/'.join(path_list)
-        #         member.profile_pic = new_path
-        #         randomized_image.save('app/' + new_path)
-
-        #         upload = imagekit.upload_file(
-        #             file=open('app/' + new_path, 'rb'),
-        #             file_name=secureFilename,
-        #             options=UploadFileRequestOptions(
-        #                 folder='/Posts_Images',
-        #             ),
-        #         )
-
-        #         response = upload.response_metadata.raw
-        #         member.profile_pic = response['url']
-        #         member.profile_pic_id = upload.file_id
-
-        #         if os.path.exists('app/' + new_path):
-        #             os.remove('app/' + new_path)
-
-        #     else:
-        #         member.profile_pic = 'static\images\default_profile_pic.png'
-
         db.session.add(member)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
@@ -212,16 +159,19 @@ def unlockuser(id):
         if isinstance(user, Members):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('members'))
         if isinstance(user, Organisations):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('organisations'))
         if isinstance(user, Admins):
             user.failed_login_attempts = 0
             user.is_locked = 0
+            user.flags = 0
             db.session.commit()
             return redirect(url_for('admins'))
         app.logger.info(f'Sensitive action performed: {user.discriminator} account unlocked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
@@ -249,6 +199,13 @@ def lockuser(id):
             return redirect(url_for('admins'))
         app.logger.info(f'Sensitive action performed: {user.discriminator} account locked with id={user.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
+@app.route("/resendverification/<id>", methods=['GET'])
+def resendverification(id):
+    user = Users.query.get_or_404(id)
+    sendverificationemail(user)
+    flash("Verification email has been resent.", "success")
+    return redirect(url_for('admin'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def registermember():
     registerform = register(request.form)
@@ -264,7 +221,42 @@ def registermember():
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         sendverificationemail(member)
         flash("Verification email sent to inbox.", "primary")
+
+
+        # store user ip address at account creation
+        user = current_user
+        api_url = os.environ.get('geolocation_url')
+        api_key = os.environ.get('geolocation_key')
+
+        params = {
+            'api_key': api_key,
+            # 'ip_address': validated_ip_address
+        }
+
+        try:
+            response = requests.get(api_url, params=params)
+            # print(response.content)
+            data = response.json()
+            ipaddress = data['ip_address']
+            countrycode = data['country_code']
+            latitude = str(data['latitude'])
+            longitude = str(data['longitude'])
+            location = str(data['latitude']) + ', ' + str(data['longitude'])
+            print(countrycode)
+            print(ipaddress)
+            print(location)
+            userinfo = UserIP(user=user.id, countrycode=countrycode, location=location, ipaddress=ipaddress)
+            db.session.add(userinfo)
+            db.session.commit()
+
+
+        except requests.exceptions.RequestException as api_error:
+            print(f"There was an error contacting the Geolocation API: {api_error}")
+            raise SystemExit(api_error)
+
+
         return redirect(url_for('login_'))
+
 
     return render_template('register.html', form=registerform)
 
@@ -281,7 +273,6 @@ def confirm_email(token):
     if user.email == email:
         user.is_confirmed = True
         user.confirmed_on = datetime.now()
-        db.session.add(user)
         db.session.commit()
         flash("You have confirmed your account. Thanks!", "success")
     else:
@@ -315,7 +306,8 @@ def sendverificationemail(user):
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
-
+    user.confirm_sent = datetime.now()
+    db.session.commit()
 
 
 

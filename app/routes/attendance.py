@@ -50,6 +50,14 @@ def manage_events():
 
     return render_template('checkattendance.html', get_event_from_id=id_mappings.get_event_from_id, get_signups_from_id=id_mappings.get_signups_from_id, records=eventssignups, names=names, user=user)
 
+@app.route('/attendance/checkorgs/close/<id>', methods=['GET', 'POST'])
+@org_required
+def closeevent(id):
+    event = Events.query.filter_by(id=id).first()
+    if event:
+        event.is_closed = True
+        db.session.commit()
+    return redirect(url_for('manage_events'))
 
 @app.route('/attendance/checkorgs/update/<id>', methods=['GET', 'POST'])
 @org_required
