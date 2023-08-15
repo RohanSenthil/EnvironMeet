@@ -1,5 +1,4 @@
 from app import app, csrf
-from app.util.flask_connector import InputFlask, OutputFlask, Connector
 from database.models import Members, db,Leaderboard, Users, LeaderboardContent, Posts, PostReport, Events, EventReport, UserReport
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
@@ -7,16 +6,9 @@ from sqlalchemy import desc
 from app.forms.reportform import Report
 from app.util import id_mappings, helpers, validation, share
 from app.util.verification import admin_required
-import shadowd
+import socket
 import time
 
-# @app.before_request
-# @csrf.exempt
-# def before_req():
-#     input = InputFlask(request)
-#     output = OutputFlask()
-#
-#     Connector().start(input, output)
 
 
 @app.route('/report/post/<hashedid>', methods=["GET","POST"])
@@ -42,20 +34,28 @@ def reportpost(hashedid):
 @app.route('/report/event/<hashedid>', methods=["GET","POST"])
 @login_required
 def reportevent(hashedid):
-    eventid = id_mappings.hash_to_object_id(hashedid)
-    event = Events.query.get(eventid)
-    user = current_user
-    reportevent = Report(request.form)
-    if request.method == 'POST' and reportevent.validate():
-        print('war')
-        eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, comment=reportevent.comment.data, reporter=user.id)
-        db.session.add(eventreport)
-        db.session.commit()
-        hashed_id = id_mappings.hash_object_id(object_id=eventreport.id, act='reportevent')
-        id_mappings.store_id_mapping(object_id=eventreport.id, hashed_value=hashed_id, act='reportevent')
-        return redirect(url_for('events'))
+    try:
+        eventid = id_mappings.hash_to_object_id(hashedid)
+        event = Events.query.get(eventid)
+        user = current_user
+        reportevent = Report(request.form)
+        if request.method == 'POST' and reportevent.validate():
+            arr = [1, 2]
 
-    return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id, event=event)
+            # Runtime Error
+            # Array Index out of Bounds
+            print(arr[2])
+            eventreport = EventReport(eventreported=event.id, organiser=event.organiser, reason=reportevent.reason.data, comment=reportevent.comment.data, reporter=user.id)
+            db.session.add(eventreport)
+            db.session.commit()
+            hashed_id = id_mappings.hash_object_id(object_id=eventreport.id, act='reportevent')
+            id_mappings.store_id_mapping(object_id=eventreport.id, hashed_value=hashed_id, act='reportevent')
+            return redirect(url_for('events'))
+
+        return render_template('reportevent.html', form=reportevent, user=user, get_user_from_id=id_mappings.get_user_from_id, event=event)
+
+    except RuntimeError:
+        return render_template('runtimeerror.html')
 
 @app.route('/report/user/<hashedid>', methods=["GET","POST"])
 @login_required

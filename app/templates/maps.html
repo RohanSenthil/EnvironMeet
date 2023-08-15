@@ -1,0 +1,17 @@
+{% extends "admin_base.html" %}
+{% set active_page = "leaderboard" %}
+{% from '_formhelpers.html' import render_field %}
+{% block title %} EnvironMeet - Leaderboard {% endblock %}
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center=1.292%2C+103.8547&zoom=11&scale=2&size=600x300&maptype=roadmap&format=png&key=AIzaSyDBgogdayxPGrvpirHufoJSP3upFEr_-Jo" alt="">
+    <img src="https://maps.googleapis.com/maps/api/staticmap?center={{ latitude }}%2C+{{ longitude }}&zoom=12&scale=2&size=600x300&maptype=roadmap&format=png&key=AIzaSyDBgogdayxPGrvpirHufoJSP3upFEr_-Jo&markers=size:mid%7Ccolor:0xff0000%7Clabel:%7C1.2929%2C%20103.8547" alt="Google map of 1.2929, 103.8547" />
+</div>
+
+
+{% endblock %}

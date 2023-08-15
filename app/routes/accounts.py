@@ -4,12 +4,13 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail, imagekit
-from database.models import Members, Organisations, db, Users, Admins
+from database.models import Members, Organisations, db, Users, Admins, UserIP
 from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea, register
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
 import uuid as uuid
+import requests
 import os
 from app.util import share, validation, id_mappings
 from itsdangerous import URLSafeTimedSerializer
@@ -220,7 +221,42 @@ def registermember():
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
         sendverificationemail(member)
         flash("Verification email sent to inbox.", "primary")
+
+
+        # store user ip address at account creation
+        user = current_user
+        api_url = os.environ.get('geolocation_url')
+        api_key = os.environ.get('geolocation_key')
+
+        params = {
+            'api_key': api_key,
+            # 'ip_address': validated_ip_address
+        }
+
+        try:
+            response = requests.get(api_url, params=params)
+            # print(response.content)
+            data = response.json()
+            ipaddress = data['ip_address']
+            countrycode = data['country_code']
+            latitude = str(data['latitude'])
+            longitude = str(data['longitude'])
+            location = str(data['latitude']) + ', ' + str(data['longitude'])
+            print(countrycode)
+            print(ipaddress)
+            print(location)
+            userinfo = UserIP(user=user.id, countrycode=countrycode, location=location, ipaddress=ipaddress)
+            db.session.add(userinfo)
+            db.session.commit()
+
+
+        except requests.exceptions.RequestException as api_error:
+            print(f"There was an error contacting the Geolocation API: {api_error}")
+            raise SystemExit(api_error)
+
+
         return redirect(url_for('login_'))
+
 
     return render_template('register.html', form=registerform)
 
