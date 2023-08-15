@@ -183,7 +183,7 @@ def login_():
             if user.last_failed_attempt is not None:
                 elapsed_time = datetime.now() - user.last_failed_attempt
             else:
-                elapsed_time = 0
+                elapsed_time = timedelta(minutes=1)
                 
             if elapsed_time < timedelta(minutes=10):
                 app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})

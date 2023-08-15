@@ -13,6 +13,7 @@ from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
 import boto3
 from flask_socketio import SocketIO
+from flask_talisman import Talisman, DEFAULT_CSP_POLICY
 
 
 app = Flask(__name__)
@@ -87,6 +88,46 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
 
+# Talisman (CSP)
+csp = {
+    'default-src': [
+        '\'self\'',
+        'https://www.google.com'
+    ],
+    'script-src': [
+        '\'self\'',
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js',
+        'https://code.jquery.com/jquery-3.6.0.min.js',
+        'https://www.google.com/recaptcha/api.js',
+        'https://www.gstatic.com',
+        '\'unsafe-inline\''
+    ],
+    'style-src': [
+        '\'self\'',
+        'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
+        'https://fonts.googleapis.com/',
+        'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css',
+        'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css',
+        'http://www.w3.org/',
+        '\'unsafe-inline\''
+    ],
+    'font-src': [
+        'https://fonts.googleapis.com'
+    ],
+    'img-src': [
+        '\'self\'',
+        'data:'
+    ]
+}
+talisman = Talisman(
+    app, 
+    content_security_policy = csp,
+    force_https = True,
+    strict_transport_security = True,
+    referrer_policy = 'strict-origin-when-cross-origin',
+    session_cookie_secure = True,
+    session_cookie_http_only = True
+    )
 
 # Temp Media Storage
 UPLOAD_FOLDER = 'app/static/uploads/'
