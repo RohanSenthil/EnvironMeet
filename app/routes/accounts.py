@@ -5,7 +5,6 @@ from threading import Thread
 from flask import request, render_template, redirect, url_for, flash
 from app import app, loginmanager, mail, imagekit
 from database.models import Members, Organisations, db, Users, Admins, UserIP
-from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea, register
 from app.routes.helpers import provide_new_login_token, privileged_route
 import bcrypt, pyotp, time
 from werkzeug.utils import secure_filename
@@ -21,6 +20,30 @@ from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from flask.json import jsonify
 import random
 import string
+from cryptography.fernet import Fernet
+
+def encrypt(data):
+    if type(data) != type(b'hello'):
+        inbytes = bytes(data, 'utf-8')
+    else:
+        inbytes = data
+    key = os.environ.get('DB_DECRYPT').encode('utf-8')
+    fernet = Fernet(key)
+    encrypted = fernet.encrypt(inbytes)
+    return encrypted
+
+def decrypt(data):
+    if type(data) != type(b'hello'):
+        inbytes = bytes(data, 'utf-8')
+    else:
+        inbytes = data
+    key = os.environ.get('DB_DECRYPT').encode('utf-8')
+    fernet = Fernet(key)
+    decrypted = fernet.decrypt(inbytes)
+    instring = decrypted.decode('utf-8')
+    return instring
+
+from app.forms.accountsform import createm, updatem, login, createo, updateo , createa, updatea, register
 
 @app.route('/admin')
 @admin_required
