@@ -365,6 +365,21 @@ class EventReport(db.Model):
         self.reporter = reporter
         self.discriminator = discriminator
 
+class UserIP(db.Model):
+    __tablename__ = 'userip'
+
+    id = db.Column(db.Integer, db.Sequence('userip_id_seq'), primary_key=True)
+    user = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    countrycode = db.Column(db.String(2))
+    location = db.Column(db.String(20))
+    ipaddress = db.Column(db.String(15))
+
+    def __init__(self, user, countrycode, location, ipaddress):
+        self.user = user
+        self.countrycode = countrycode
+        self.location = location
+        self.ipaddress = ipaddress
+
 
 class Id_Hash_Mappings(db.Model):
 

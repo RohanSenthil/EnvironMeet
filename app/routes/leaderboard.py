@@ -1,13 +1,21 @@
-from app import app
-from database.models import Members, db,Leaderboard, Users, LeaderboardContent
+from bs4 import BeautifulSoup
+
+from app import app, mail
+from database.models import Members, db,Leaderboard, Users, LeaderboardContent, UserIP
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from sqlalchemy import desc
+from app.routes.accounts import generate_token
 from app.forms.leaderboardform import InviteForm, LeaderboardJoin
 from app.util import id_mappings
 from app.util.id_mappings import get_user_from_id
 from app.util.rate_limiting import limiter
+from flask_mail import Message
+
+import requests
+import socket
 import time
+import os
 
 def is_valid_leaderboard(leaderboardname):
     leaderboard = LeaderboardContent.query.filter_by(leaderboardname=leaderboardname).first()
@@ -15,6 +23,9 @@ def is_valid_leaderboard(leaderboardname):
 
 @app.route('/leaderboard/global')
 def leaderboardglobal():
+    hostname = socket.gethostname()
+    ipaddr = socket.gethostbyname(hostname)
+    print(ipaddr)
     db.session()
     pp = time.localtime()
     print(pp)
@@ -78,3 +89,69 @@ def leaderboardshit(leaderboardname):
             db.session.commit()
 
     return render_template('leaderboarduser.html', leaderboardin=leaderboardin, get_user_from_id=id_mappings.get_user_from_id, form=form)
+
+
+
+#
+# google map api AIzaSyDBgogdayxPGrvpirHufoJSP3upFEr_-Jo
+@app.route('/maps')
+@limiter.limit('3/second')
+def maps():
+
+
+    user = current_user
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+         # 'ip_address': validated_ip_address
+    }
+
+
+    try:
+        response = requests.get(api_url, params=params)
+        # print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        countrycode = data['country_code']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(countrycode)
+        print(ipaddress)
+        print(location)
+        # readgooglemapsimage()
+        # sendverificationemail(user)
+
+
+
+        # userinfo = UserIP(user=user.id, countrycode=countrycode, location=location, ipaddress=ipaddress)
+        # db.session.add(userinfo)
+        # db.session.commit()
+
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
+
+    return render_template('maps.html', location=location, user=user, latitude=latitude, longitude=longitude)
+
+# def readgooglemapsimage():
+#     r = requests.get('http://127.0.0.1:5000/maps')
+#     content = r.content
+#     soup = BeautifulSoup(content, "html.parser")
+#
+#     images = soup.findAll('img')[0]
+#     print(images.get("src"))
+#
+# def sendgeolocationemail(user):
+#         token = generate_token(user.email)
+#         msg = Message()
+#         msg.subject = "Verify Account"
+#         msg.recipients = [user.email]
+#         msg.sender = 'environmeet@outlook.com'
+#         msg.body = f'''Hello, {user.name}\n
+#
+#         '''
+#         mail.send(msg)
