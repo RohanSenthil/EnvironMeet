@@ -127,7 +127,6 @@ def updatemember(hashedid):
         oldmem.contact = contact
 
         db.session.commit()
-        db.session.close()
         app.logger.info(f'Sensitive action performed: Member updated with id={oldmem.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('members'))#, hashedid=hashedid
@@ -399,7 +398,6 @@ def updateorganisation(hashedid):
         oldorg.contact = contact
 
         db.session.commit()
-        db.session.close()
         app.logger.info(f'Sensitive action performed: Organisation updated with id={oldorg.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('organisations'))
@@ -478,7 +476,6 @@ def updateadmin(hashedid):
         oldadm.contact = contact
 
         db.session.commit()
-        db.session.close()
         app.logger.info(f'Sensitive action performed: Admin updated with id={oldadm.id} by Admin id={current_user.id}', extra={'security_relevant': False, 'http_status_code': 200})
 
         return redirect(url_for('admins'))#, hashedid=hashedid
