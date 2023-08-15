@@ -5,7 +5,7 @@ import random
 from string import ascii_uppercase
 from flask_login import current_user, login_required
 from datetime import datetime
-from app.util import moderator
+from app.util import moderator, id_mappings
 
 
 rooms = {}
@@ -89,14 +89,14 @@ def message(data):
         "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'),
     }
 
-    send(content, to=room)
-    rooms[room]["messages"].append(content)
+    try:
+        send(content, to=room)
+        rooms[room]["messages"].append(content)
 
-    if flags > 0:
-        send({"name": session.get("name"), "message": "was just flagged for suspicious input, we are watching.", "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'), "sysgen": True}, to=room)
-        user = current_user
-        if user.flags > 3:
-            emit('flag')
+        if flags > 0:
+            send({"name": session.get("name"), "message": "was just flagged for suspicious input, we are watching.", "timestamp": datetime.now().strftime('%d/%m/%Y %H:%M:%S'), "sysgen": True}, to=room)
+    except:
+        return
 
 @socketio.on("connect")
 def connect(auth):

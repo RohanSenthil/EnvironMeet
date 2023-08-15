@@ -2,6 +2,7 @@ from database.models import db, Users
 from flask import redirect, url_for, flash, session
 from flask_login import logout_user
 import app
+from flask_socketio import emit
 
 
 def flag_user(user_id):
@@ -16,7 +17,7 @@ def flag_user(user_id):
             user.flags = times_flagged
             db.session.commit()
 
-            if times_flagged > 3:
+            if times_flagged >= 3:
                 user.is_locked = True
                 user.set_inactive()
                 db.session.commit()
@@ -26,4 +27,7 @@ def flag_user(user_id):
                 session.pop('user_id', None)
                 session.pop('last_activity', None)
                 flash('Account locked due to suspicious activity')
-                return redirect(url_for('login_'))
+                try:
+                    emit('flag')
+                except:
+                    return redirect(url_for('login_'))
