@@ -95,17 +95,15 @@ class OpenSearchLogHandler(logging.Handler):
             }
 
             try:
-                # Temp disable Log
                 print(flagged_message)
-                # log_client.index(index='flagged_users', body=flagged_message, refresh=True)
+                log_client.index(index='flagged_users', body=flagged_message, refresh=True)
             except Exception as e:
                 app.logger.error(f'Error logging message to OpenSearch: {e}', extra={'security_relevant': True, 'http_status_code': 500})
 
 
         try:
-            # Temp disable Log
             print(log_message)
-            # log_client.index(index=index_name, body=log_message, refresh=True)
+            log_client.index(index=index_name, body=log_message, refresh=True)
         except Exception as e:
             app.logger.error(f'Error logging message to OpenSearch: {e}', extra={'security_relevant': True, 'http_status_code': 500})
 
