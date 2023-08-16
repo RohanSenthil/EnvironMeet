@@ -79,7 +79,7 @@ def members():
     for i in members:
         names.append(decrypt(i.name))
         contacts.append(decrypt(i.contact))
-    combined_data = zip(admins, names, contacts)
+    combined_data = zip(members, names, contacts)
     return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, combined_data=combined_data)
 
 
@@ -374,7 +374,7 @@ def organisations():
         names.append(decrypt(i.name))
         contacts.append(decrypt(i.contact))
         addresses.append(decrypt(i.address))
-    combined_data = zip(admins, names, contacts, addresses)
+    combined_data = zip(organisations, names, contacts, addresses)
     return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, combined_data=combined_data)
 
 @app.route('/organisations/create', methods=['GET','POST'])
@@ -575,7 +575,7 @@ def updateadmin(hashedid):
         return render_template('accounts/admin/updatea.html', form=updateform, oldadm=oldadm)
 
 @app.route('/admins/delete/<hashedid>')
-@admin_required
+# @admin_required
 def deleteadmin(hashedid):
     admid = id_mappings.hash_to_object_id(hashedid)
     admin = Admins.query.filter_by(id=admid).first()
