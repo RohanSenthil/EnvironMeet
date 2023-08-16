@@ -1,5 +1,5 @@
 from flask_login import login_required, current_user
-from app import app, db, imagekit, csrf
+from app import app, db, imagekit
 from app.util.rate_limiting import limiter
 from flask import render_template, request, redirect, url_for
 from database.models import Posts, Likes, Comments, SignUps
@@ -59,7 +59,7 @@ def viewPost(encoded_hashedid):
 
 @app.route('/post/create', methods=['POST'])
 @limiter.limit('2/minute')
-@limiter.limit('3/day')
+@limiter.limit('10/day')
 @login_required
 def createPost():
     newPostForm = PostForm()
@@ -159,6 +159,8 @@ def createPost():
 
         if flags > 0:
             redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashed_id))
+            if not current_user.is_authenticated:
+                redirect_url = url_for('login_')
             return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
         return redirect(url_for('viewPost', encoded_hashedid=share.encode_url(hashed_id)))
@@ -190,6 +192,8 @@ def editPost(hashedid):
 
             if flags > 0:
                 redirect_url = url_for("viewPost", encoded_hashedid=share.encode_url(hashedid))
+                if not current_user.is_authenticated:
+                    redirect_url = url_for('login_')
                 return render_template('flagged.html'), {'Refresh': f'10; url={redirect_url}'}
 
         else:
@@ -310,7 +314,6 @@ def addComment(hashedid):
 
 
 @app.route('/post/comment/edit/<hashedid>', methods=['POST'])
-@csrf.exempt
 @limiter.limit('10/minute')
 @limiter.limit('50/day')
 @login_required
@@ -348,7 +351,6 @@ def editComment(hashedid):
 
 
 @app.route('/post/comment/delete/<hashedid>', methods=['POST'])
-@csrf.exempt
 @limiter.limit('10/minute')
 @limiter.limit('25/day')
 @login_required

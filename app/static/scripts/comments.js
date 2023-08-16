@@ -51,6 +51,8 @@ const addComment = (postid) => {
             const commentDiv = document.getElementById(`form-reload-${data['postid']}`);
 
             $(commentDiv).load(document.URL + ' ' + `#form-reload-${data['postid']}`);
+        } else {
+            window.location.href = '/flagged'
         }
 
     })
@@ -84,6 +86,8 @@ const editComment = (commentid) => {
             const commentDiv = document.getElementById(`form-reload-${data['postid']}`);
 
             $(commentDiv).load(document.URL + ' ' + `#form-reload-${data['postid']}`);
+        } else {
+            window.location.href = '/flagged'
         }
 
     })
