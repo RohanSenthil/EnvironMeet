@@ -26,7 +26,7 @@ def flag_user(user_id):
                 # revoke_login_token()
                 session.pop('user_id', None)
                 session.pop('last_activity', None)
-                flash('Account locked due to suspicious activity')
+                flash('Account locked due to suspicious activity', 'danger')
                 try:
                     emit('flag')
                 except Exception as e:
