@@ -42,7 +42,9 @@ def userprofile():
             member = True
         elif isinstance(current_user, Organisations):
             organisation = True
-
+            address = decrypt(current_user.address)
+        name = decrypt(current_user.name)
+        contact = decrypt(current_user.contact)
         for i in Posts.query.filter_by(author=current_user.id):
             numposts += 1
             posts.append(i)
@@ -54,7 +56,7 @@ def userprofile():
                 numfollowing += 1
         following = [user.id for user in current_user.followed.all()]
         profile_pic = current_user.profile_pic
-    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing, get_event_from_id=id_mappings.get_event_from_id)
+    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing, get_event_from_id=id_mappings.get_event_from_id, name=name, contact=contact, address=address)
 
 @app.route('/update', methods=['GET','POST'])
 @login_required
