@@ -238,6 +238,7 @@ def login_():
                 flash("Unable to login as another user is logged in on this account")
                 return redirect(url_for('login_'))
 
+            user.is_active = True
             session['user_id'] = user.id
             session['last_activity'] = time.time()  # Reset last activity upon successful login
             session.permanent = True
@@ -367,7 +368,6 @@ def fotp(hashedid):
             flash("Login Successful!", "success")
             temp = user.login_before
             user.login_before = True
-            user.is_active = True
             user.last_login = datetime.now()
             db.session.commit()
             if temp == False:

@@ -113,7 +113,7 @@ def signup_events(hashedEventid):
     user = current_user
 
     signup = SignUp(request.form)
-    signup.name.data = user.name
+    signup.name.data = decrypt(user.name)
     signup.email.data = user.email
     signup.eventid.data = event.name
 

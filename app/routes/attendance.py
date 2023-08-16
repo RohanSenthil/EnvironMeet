@@ -16,9 +16,11 @@ from app.util.verification import check_is_confirmed, admin_required, org_requir
 def display_attendance():
     eventsignups = SignUps.query.all()
 
+    eventz = Events.query.all()
+
     user = current_user
 
-    return render_template('attendance.html', get_event_from_id=id_mappings.get_event_from_id, records=eventsignups, user=user)
+    return render_template('attendance.html', get_event_from_id=id_mappings.get_event_from_id, records=eventsignups, user=user, eventz=eventz)
 
 @app.route('/attendance/delete/<id>')
 # @privileged_route("admin")

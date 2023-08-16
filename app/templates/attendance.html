@@ -25,6 +25,8 @@
           <th>Image</th>
           <th>Date</th>
           <th>Time</th>
+          <th>Points</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +41,14 @@
             <td id="tsm"><img src="/{{ get_event_from_id(record.eventid).image }}"></td>
           <td>{{ get_event_from_id(record.eventid).date }}</td>
           <td>{{ get_event_from_id(record.eventid).time }}</td>
+          <td>{{ get_event_from_id(record.eventid).points }}</td>
+          <td>
+            {% if get_event_from_id(record.eventid).is_closed == False %}
+              Upcoming
+            {% else %}
+              Concluded
+            {% endif %}
+          </td>
           <td>
             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#modal-{{ record.id }}">
               <svg id="delete" xmlns="http://www.w3.org/2000/svg" width="18.669" height="24.003" viewBox="0 0 18.669 24.003">
@@ -75,4 +85,33 @@
   </div>
 </div>
 {% endfor %}
+
+<script>
+  function compareEventDates(row1, row2) {
+    const dateStr1 = row1.querySelector('td:nth-child(3)').textContent.trim();
+    const dateStr2 = row2.querySelector('td:nth-child(3)').textContent.trim();
+
+    const date1 = new Date(dateStr1);
+    const date2 = new Date(dateStr2);
+
+    return date1 - date2;
+}
+
+// Get the table body element that holds all rows
+const tableBody = document.querySelector('#myTable tbody');
+
+// Get all rows within the table body
+const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+// Sort the rows based on the dates
+rows.sort(compareEventDates);
+
+// Clear the table body
+tableBody.innerHTML = '';
+
+// Append the sorted rows back to the table body
+rows.forEach((row) => {
+    tableBody.appendChild(row);
+});
+</script>
 {% endblock %}
