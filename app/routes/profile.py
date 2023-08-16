@@ -37,7 +37,7 @@ def userprofile():
         loggedout = True
     else:
         loggedout = False
-
+        address = None
         if isinstance(current_user, Members):
             member = True
         elif isinstance(current_user, Organisations):
@@ -144,7 +144,7 @@ def profileupdate():
 def load_user(email):
     return Users.query.get(email)
 
-INACTIVITY_THRESHOLD = 60 * 60 #1 minute of inactivity
+INACTIVITY_THRESHOLD = 60*60 #1 minute of inactivity
 def check_user_activity():
     last_activity = session.get('last_activity')
     if last_activity:
@@ -221,7 +221,7 @@ def login_():
             else:
                 elapsed_time = timedelta(minutes=1)
 
-            if elapsed_time < timedelta(minutes=10):
+            if elapsed_time < timedelta(minutes=1):
                 app.logger.warning('Attempt to login during account lockout',
                                    extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Account is locked. Please try again later.", "danger")
@@ -238,7 +238,6 @@ def login_():
                 flash("Unable to login as another user is logged in on this account")
                 return redirect(url_for('login_'))
 
-            user.is_active = True
             session['user_id'] = user.id
             session['last_activity'] = time.time()  # Reset last activity upon successful login
             session.permanent = True
@@ -368,6 +367,7 @@ def fotp(hashedid):
             flash("Login Successful!", "success")
             temp = user.login_before
             user.login_before = True
+            user.is_active = True
             user.last_login = datetime.now()
             db.session.commit()
             if temp == False:

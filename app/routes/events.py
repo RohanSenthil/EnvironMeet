@@ -14,6 +14,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, text
 from flask_login import login_required, current_user
 from app.util.verification import check_is_confirmed, admin_required, org_required
+from app.routes.accounts import decrypt, encrypt
 
 @app.route('/events')
 def events():
@@ -31,11 +32,11 @@ def add_events():
         return jsonify({'error': 'Unauthorized'}, 401)
 
     form = FormEvents(request.form)
-    form.organiser.data = current_user.name
+    form.organiser.data = decrypt(current_user.name)
 
     if request.method == "POST" and form.validate():
 
-        if form.organiser.data != current_user.name:
+        if form.organiser.data != decrypt(current_user.name):
             app.logger.warning('Unauthorized attempt to modify read only fields', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             return jsonify({'error', 'Unauthorized attempt to modify read only fields'}, 401)
 
@@ -151,7 +152,9 @@ def view_event(hashedid):
     
     event = Events.query.get(eventid)
 
-    return render_template('viewevent.html', event=event, get_user_from_id=id_mappings.get_user_from_id, object_id_to_hash=id_mappings.object_id_to_hash , user=current_user, memberObj=Members)
+    name = decrypt(id_mappings.get_user_from_id(event.organiser).name)
+
+    return render_template('viewevent.html', event=event, get_user_from_id=id_mappings.get_user_from_id, object_id_to_hash=id_mappings.object_id_to_hash , user=current_user, memberObj=Members, name=name)
 
 # @app.route('/transfer', methods=['GET', 'POST'])
 # def transfer_column():

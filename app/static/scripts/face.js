@@ -1,5 +1,5 @@
 const video = document.getElementById("video");
-
+startWebcam()
 Promise.all([
   faceapi.nets.ssdMobilenetv1.loadFromUri("../models/ssdMobilenetv1"),
   faceapi.nets.faceRecognitionNet.loadFromUri("../models/face_recognition"),

@@ -17,7 +17,7 @@
         </a>
         <div class="event-title">
             <h1>{{ event.name }}</h1>
-            <span>Organised by: <a href="/user/{{ get_user_from_id(event.organiser).username }}">{{ get_user_from_id(event.organiser).name }}</a> </span>
+            <span>Organised by: <a href="/user/{{ get_user_from_id(event.organiser).username }}">{{ name }}</a> </span>
         </div>
         <div class="img-container">
             <img src="/{{event.image}}" alt="">
