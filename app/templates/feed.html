@@ -306,6 +306,7 @@
             
                                         <!-- Edit Modal -->
                                         <div class="modal fade" id="editCommentModal_{{ object_id_to_hash(object_id=comment.id, act='comment') }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -325,6 +326,7 @@
             
                                         <!-- Delete Modal -->
                                         <div class="modal fade deleteModal" id="deleteCommentModal_{{ object_id_to_hash(object_id=comment.id, act='comment')  }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
