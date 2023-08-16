@@ -494,3 +494,9 @@ def unfollow(username):
 @reset_required
 def settings():
     return render_template('settings.html')
+
+
+# facial recognition for admins
+@app.route("/face")
+def facial_recog():
+    return render_template('facial_recog.html')
