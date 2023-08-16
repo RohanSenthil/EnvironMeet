@@ -79,7 +79,8 @@ def members():
     for i in members:
         names.append(decrypt(i.name))
         contacts.append(decrypt(i.contact))
-    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
+    combined_data = zip(admins, names, contacts)
+    return render_template('/accounts/member/members.html', members=members, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, combined_data=combined_data)
 
 
 @app.route('/members/create', methods=['GET','POST'])
@@ -368,10 +369,13 @@ def organisations():
     organisations = Organisations.query.all()
     names = []
     contacts = []
+    addresses = []
     for i in organisations:
         names.append(decrypt(i.name))
         contacts.append(decrypt(i.contact))
-    return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
+        addresses.append(decrypt(i.address))
+    combined_data = zip(admins, names, contacts, addresses)
+    return render_template('/accounts/organisation/orgs.html', organisations=organisations, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, combined_data=combined_data)
 
 @app.route('/organisations/create', methods=['GET','POST'])
 @admin_required
@@ -484,7 +488,8 @@ def admins():
     for i in admins:
         names.append(decrypt(i.name))
         contacts.append(decrypt(i.contact))
-    return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, names=names, contacts=contacts)
+    combined_data = zip(admins, names, contacts)
+    return render_template('/accounts/admin/admins.html', admins=admins, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, combined_data=combined_data)
 
 
 @app.route('/admins/create', methods=['GET','POST'])

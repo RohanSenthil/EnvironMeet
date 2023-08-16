@@ -33,13 +33,13 @@
         <!-- <tr>
           <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
         </tr> -->
-        {% for organisation in organisations %}
+        {% for organisation, name, contact, address in combined_data %}
         <tr>
           <td>{{ organisation.username }}</td>
           <td>{{ organisation.email }}</td>
-          <td>{{ organisation.name }}</td>
-          <td>{{ organisation.contact }}</td>
-          <td>{{ organisation.address}}</td>
+          <td>{{ name }}</td>
+          <td>{{ contact }}</td>
+          <td>{{ address}}</td>
           <td>{{ organisation.description }}</td>
           <td>{{ organisation.is_locked }}</td>
           <td>

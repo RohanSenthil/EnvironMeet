@@ -45,13 +45,13 @@
         <!-- <tr>
           <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
         </tr> -->
-        {% for member in members %}
+        {% for member, name, contact in combined_data %}
         <tr>
           <td>{{ member.username }}</td>
           <td>{{ member.email }}</td>
-          <td>{{ member.name }}</td>
+          <td>{{ name }}</td>
           <td>{{ member.gender }}</td>
-          <td>{{ member.contact }}</td>
+          <td>{{ contact }}</td>
           <td>{{ member.points }}</td>
           <td>{{ member.is_locked }}</td>
           <td>
