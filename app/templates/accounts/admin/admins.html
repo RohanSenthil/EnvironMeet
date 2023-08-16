@@ -43,12 +43,12 @@
         <!-- <tr>
           <td colspan="7" style="text-align: center;">There are currently 0 entries.</td>
         </tr> -->
-        {% for admin in admins %}
+        {% for admin, name, contact in combined_data %}
         <tr>
-          <td>{{ admin.name }}</td>
+          <td>{{ name }}</td>
           <td>{{ admin.email }}</td>
           <td>{{ admin.gender }}</td>
-          <td>{{ admin.contact }}</td>
+          <td>{{ contact }}</td>
           <td>{{ admin.is_locked }}</td>
           <td>
             <a href="{{ url_for('updateadmin', hashedid=object_id_to_hash(object_id=admin.id, act='admin')) }}"> 

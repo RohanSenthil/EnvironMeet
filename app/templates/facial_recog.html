@@ -1,0 +1,30 @@
+{% extends "user_base.html" %}
+{% set active_page = "profile" %}
+{% from '_formhelpers.html' import render_field %}
+{% block title %}EnvironMeet - Login{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/accounts.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename = 'styles/face.css')}}">
+{% endblock %}
+{% block content %}
+<div class="content">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class='flashes'>
+  {% for category, message in messages %}
+  <div class="alert alert-{{ category }} " id='alert'>
+  <span>{{ message }}</span>
+  <button type="button" style='float:right;'class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+
+  </div>
+
+  {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <h3 class="heading">Facial Recognition</h3>
+  <video id="video" width="600" height="450" autoplay></video>
+  <script src="{{url_for('static', filename='scripts/face-api.min.js')}}"></script>
+  <script src="{{url_for('static', filename='scripts/face.js')}}"></script>
+{% endblock %}

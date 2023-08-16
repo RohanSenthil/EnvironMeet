@@ -25,7 +25,7 @@
         {% if member == True %}
         <div class="main">
             <h1>Dashboard</h1>
-            <h2>{{ current_user.name }}</h2>
+            <h2>{{ name }}</h2>
             {% if current_user.profile_pic %}
                 <div class="profile_pic">
                     <img src="{{ current_user.profile_pic }}" alt="">
@@ -678,7 +678,7 @@
         {% elif organisation == True %}
         <div class="main">
             <h1>Organisation Dashboard</h1>
-            <h2>{{ current_user.name }}</h2>
+            <h2>{{ name }}</h2>
             {% if current_user.profile_pic %}
                 <div class="banner_pic">
                     <img src="{{ current_user.profile_pic }}" alt="" class="img-fluid">
@@ -1329,9 +1329,9 @@
             </div>
             <div class="contact">
                 <h3>Contact us</h3>
-                <span>{{ current_user.contact }}</span>
+                <span>{{ contact }}</span>
                 <h3>Find us</h3>
-                <span>{{ current_user.address }}</span>
+                <span>{{ address }}</span>
             </div>
         {% endif %}
     {% endif %}

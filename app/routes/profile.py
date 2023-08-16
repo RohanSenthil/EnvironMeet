@@ -4,7 +4,7 @@ from flask_mail import Message
 from threading import Thread
 from flask import request, render_template, redirect, url_for, flash, Flask, session
 from app import app, loginmanager, mail, imagekit, csrf
-from database.models import Members, Organisations, db, Users, followers, Posts, Admins
+from database.models import Members, Organisations, db, Users, followers, Posts, Admins, AllowedCountries
 from app.forms.accountsform import createm, updatem, login, forget, reset, createo, updateo, getotp
 from app.routes.helpers import revoke_login_token, provide_new_login_token
 import bcrypt, pyotp, time, datetime
@@ -19,7 +19,8 @@ from flask.json import jsonify
 from app.util.verification import check_is_confirmed, reset_required
 from flask_wtf.csrf import generate_csrf
 from app.util.rate_limiting import limiter
-
+import requests
+from app.routes.accounts import encrypt, decrypt
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -41,7 +42,9 @@ def userprofile():
             member = True
         elif isinstance(current_user, Organisations):
             organisation = True
-
+            address = decrypt(current_user.address)
+        name = decrypt(current_user.name)
+        contact = decrypt(current_user.contact)
         for i in Posts.query.filter_by(author=current_user.id):
             numposts += 1
             posts.append(i)
@@ -53,7 +56,7 @@ def userprofile():
                 numfollowing += 1
         following = [user.id for user in current_user.followed.all()]
         profile_pic = current_user.profile_pic
-    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing, get_event_from_id=id_mappings.get_event_from_id)
+    return render_template('userprofile.html', current_user=current_user, loggedout=loggedout, numposts=numposts, followers=followers, following=following, profile_pic=profile_pic, member=member, organisation=organisation, posts=posts, object_id_to_hash=id_mappings.object_id_to_hash, get_user_from_id=id_mappings.get_user_from_id, numfollowing=numfollowing, get_event_from_id=id_mappings.get_event_from_id, name=name, contact=contact, address=address)
 
 @app.route('/update', methods=['GET','POST'])
 @login_required
@@ -82,20 +85,20 @@ def profileupdate():
                     profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name1))
                     pic_name =  "static/uploads/" + pic_name1
                     olduser.profile_pic = pic_name
-                olduser.name = name
+                olduser.name = encrypt(name)
                 olduser.username = username
                 olduser.gender = gender
-                olduser.contact = contact
+                olduser.contact = encrypt(contact)
 
                 db.session.commit()
                 db.session.close()
 
                 return redirect(url_for('userprofile'))
             else:
-                updateform.name.data = olduser.name
+                updateform.name.data = decrypt(olduser.name)
                 updateform.username.data = olduser.username
                 updateform.gender.data = olduser.gender
-                updateform.contact.data = olduser.contact
+                updateform.contact.data = decrypt(olduser.contact)
 
             return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user, member=member)
         elif isinstance(current_user, Organisations):
@@ -118,22 +121,22 @@ def profileupdate():
                     pic_name =  "static/uploads/" + pic_name1
                     olduser.profile_pic = pic_name
 
-                olduser.name = name
+                olduser.name = encrypt(name)
                 olduser.username = username
                 olduser.description = description
-                olduser.address = address
-                olduser.contact = contact
+                olduser.address = encrypt(address)
+                olduser.contact = encrypt(contact)
 
                 db.session.commit()
                 db.session.close()
 
                 return redirect(url_for('userprofile'))
             else:
-                updateform.name.data = olduser.name
+                updateform.name.data = decrypt(olduser.name)
                 updateform.username.data = olduser.username
                 updateform.description.data = olduser.description
-                updateform.address.data = olduser.address
-                updateform.contact.data = olduser.contact
+                updateform.address.data = decrypt(olduser.address)
+                updateform.contact.data = decrypt(olduser.contact)
 
             return render_template('userprofile_update.html', form=updateform, olduser=olduser, loggedout=loggedout, current_user=current_user, organisation=organisation)
 
@@ -172,6 +175,38 @@ def reset_activity():
 def login_():
     object_id_to_hash = id_mappings.object_id_to_hash
     login_form = login(request.form)
+    inallowedcountry = False
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+        # 'ip_address': validated_ip_address
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        country = data['country']
+        city = data['city']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(country)
+        print(city)
+        print(ipaddress)
+        print(location)
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
+
+    for i in AllowedCountries.query.all():
+        if i.country == country:
+            inallowedcountry = True
+
     if request.method == "POST" and login_form.validate():
         loginemail = str(login_form.email.data).lower()
         user = Users.query.filter_by(email=loginemail).first()
@@ -185,9 +220,10 @@ def login_():
                 elapsed_time = datetime.now() - user.last_failed_attempt
             else:
                 elapsed_time = timedelta(minutes=1)
-                
+
             if elapsed_time < timedelta(minutes=10):
-                app.logger.warning('Attempt to login during account lockout', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+                app.logger.warning('Attempt to login during account lockout',
+                                   extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Account is locked. Please try again later.", "danger")
                 return redirect(url_for('login_'))
             else:
@@ -197,7 +233,7 @@ def login_():
                 user.is_locked = False
                 db.session.commit()
 
-        if bcrypt.checkpw(login_form.password.data.encode('utf-8'), user.password.encode('utf-8')):
+        if bcrypt.checkpw(login_form.password.data.encode('utf-8'), decrypt(user.password).encode('utf-8')) and inallowedcountry == True:
             if user.is_active:
                 flash("Unable to login as another user is logged in on this account")
                 return redirect(url_for('login_'))
@@ -222,6 +258,12 @@ def login_():
 
             return redirect(url_for('fotp', id=user.id))
 
+        if inallowedcountry == False:
+            print('not in correct country')
+            flash('You are logging in from a country that is not allowed on this account', 'danger')
+            app.logger.warning("Logging in from an unregistered country on User's account", extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+            return redirect(url_for('login_'))
+
         else:
             # Failed login attempt
             user.failed_login_attempts += 1
@@ -229,7 +271,8 @@ def login_():
 
             # Check if the account should be locked
             if user.failed_login_attempts >= 3:
-                app.logger.warning('Too many failed login attempts', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
+                app.logger.warning('Too many failed login attempts',
+                                   extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
                 user.is_locked = True
 
@@ -274,20 +317,20 @@ def forgetpw():
         forgetemail = str(forget_form.email.data).lower()
         user = Users.query.filter_by(email=forgetemail).first()
         if user:
-            sendemail(user)
+            sendforgetemail(user)
             flash("Email has been sent! Please check your inbox and junk folder for the reset link.", "success")
         else:
             flash("No account with that email exists. Please try again.", "warning")
             return redirect(url_for('forgetpw'))
     return render_template('forgotpassword.html', form=forget_form)
 
-def sendemail(user):
+def sendforgetemail(user):
     token = user.get_reset_token()
     msg = Message()
     msg.subject = "Password Reset"
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
-    msg.body = f'''Hello, {user.name}\nWe've received a request to reset your password for your Environmeet Account. 
+    msg.body = f'''Hello, {decrypt(user.name)}\nWe've received a request to reset your password for your Environmeet Account. 
     \nYou can reset the password by clicking the link: \n{url_for('reset_token', token=token, _external=True)}
     \nIf you did not request this password reset, please let us know immediately.
     \nBest regards,\nThe Environmeet Team
@@ -303,7 +346,7 @@ def reset_token(token):
     resetform = reset(request.form)
     if request.method == "POST" and resetform.validate():
         passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
-        user.password = passwordd
+        user.password = encrypt(passwordd)
         db.session.commit()
         db.session.close()
         flash('Your password has been updated! You are now able to log in.','success')
@@ -334,12 +377,12 @@ def fotp(hashedid):
             elif isinstance(user, Admins):
                 return redirect(url_for('admin'))
         else:
-            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
             flash("Wrong OTP. Please try again", "warning")
+            app.logger.warning('Wrong OTP given', extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
 
     token = generate_otp_token(user, totp)
     print(token)
-    # send_otp_email(user, token)
+    send_otp_email(user, token)
 
     flash("OTP has been sent to your email! Please check your inbox and junk folder for the OTP.", "primary")
     return render_template('otp.html', form=form, valid=5*60)
@@ -353,7 +396,7 @@ def firstreset():
         return redirect(url_for('userprofile'))
     if request.method == "POST" and resetform.validate():
         passwordd = bcrypt.hashpw(resetform.password.data.encode('utf-8'), bcrypt.gensalt())
-        current_user.password = passwordd
+        current_user.password = encrypt(passwordd)
         current_user.reset_before = True
         db.session.commit()
         db.session.close()
@@ -369,7 +412,7 @@ def send_otp_email(user, token):
     msg.subject = "Account Login"
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
-    msg.body = f'''Hello, {user.name}\nHere's your OTP: \n{token}\nThe OTP will expire at {datetime.now() + timedelta(minutes = 5)}
+    msg.body = f'''Hello, {decrypt(user.name)}\nHere's your OTP: \n{token}\nThe OTP will expire at {datetime.now() + timedelta(minutes = 5)}
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
@@ -454,3 +497,9 @@ def unfollow(username):
 @reset_required
 def settings():
     return render_template('settings.html')
+
+
+# facial recognition for admins
+@app.route("/face")
+def facial_recog():
+    return render_template('facial_recog.html')
