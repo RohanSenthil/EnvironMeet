@@ -17,7 +17,7 @@ def flag_user(user_id):
             user.flags = times_flagged
             db.session.commit()
 
-            if times_flagged >= 3:
+            if times_flagged >= 5:
                 user.is_locked = True
                 user.set_inactive()
                 db.session.commit()
