@@ -37,7 +37,7 @@ def userprofile():
         loggedout = True
     else:
         loggedout = False
-
+        address = None
         if isinstance(current_user, Members):
             member = True
         elif isinstance(current_user, Organisations):
