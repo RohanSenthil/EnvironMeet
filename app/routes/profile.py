@@ -168,6 +168,7 @@ def reset_activity():
     return ''
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit('5/second')
 def login_():
     object_id_to_hash = id_mappings.object_id_to_hash
     login_form = login(request.form)
