@@ -96,8 +96,10 @@ def leaderboardshit(leaderboardname):
 @limiter.limit('3/second')
 @login_required
 def maps():
+    inlist = True
     form = AllowedCountriesForm(request.form)
     googlekey = os.environ.get('googlemaps_key')
+    deleteform = LeaderboardJoin(request.form)
 
 
     user = current_user
@@ -124,6 +126,7 @@ def maps():
         print(city)
         print(ipaddress)
         print(location)
+
         # readgooglemapsimage()
         # sendverificationemail(user)
 
@@ -138,146 +141,36 @@ def maps():
         print(f"There was an error contacting the Geolocation API: {api_error}")
         raise SystemExit(api_error)
 
-    if request.method == 'POST' and form.validate():
+    listofallowedcountries = AllowedCountries.query.all()
+    for i in listofallowedcountries:
+        if i.country == form.country.data and i.user == user.id:
+            inlist = False
+
+    if request.method == 'POST' and form.validate() and inlist == True:
         allowedcountry = AllowedCountries(user=user.id, country=form.country.data)
         db.session.add(allowedcountry)
         db.session.commit()
 
+    if inlist == False:
+        flash('The Country is already in the list!', 'danger')
 
-    return render_template('maps.html', location=location, user=user, latitude=latitude, longitude=longitude, googlekey=googlekey, form=form)
 
-#
-# def sendgeolocationemail(user):
-#         token = generate_token(user.email)
-#         msg = Message()
-#         msg.subject = "Verify Account"
-#         msg.recipients = [user.email]
-#         msg.sender = 'environmeet@outlook.com'
-#         msg.body = f'''Hello, {user.name}\n
-#
-#         '''
-#         mail.send(msg)
-# def login_():
-#     object_id_to_hash = id_mappings.object_id_to_hash
-#     login_form = login(request.form)
-#     inallowedcountry = False
-#     api_url = os.environ.get('geolocation_url')
-#     api_key = os.environ.get('geolocation_key')
-#
-#     params = {
-#         'api_key': api_key,
-#         # 'ip_address': validated_ip_address
-#     }
-#
-#     try:
-#         response = requests.get(api_url, params=params)
-#         print(response.content)
-#         data = response.json()
-#         ipaddress = data['ip_address']
-#         country = data['country']
-#         city = data['city']
-#         latitude = str(data['latitude'])
-#         longitude = str(data['longitude'])
-#         location = str(data['latitude']) + ', ' + str(data['longitude'])
-#         print(country)
-#         print(city)
-#         print(ipaddress)
-#         print(location)
-#
-#     except requests.exceptions.RequestException as api_error:
-#         print(f"There was an error contacting the Geolocation API: {api_error}")
-#         raise SystemExit(api_error)
-#
-#     for i in AllowedCountries.query.all():
-#         if i.country == country:
-#             inallowedcountry = True
-#
-#     if request.method == "POST" and login_form.validate():
-#         loginemail = str(login_form.email.data).lower()
-#         user = Users.query.filter_by(email=loginemail).first()
-#
-#         if not user:
-#             flash("Invalid email or password", "danger")
-#             return redirect(url_for('login_'))
-#
-#         if user.is_locked:
-#             if user.last_failed_attempt is not None:
-#                 elapsed_time = datetime.now() - user.last_failed_attempt
-#             else:
-#                 elapsed_time = timedelta(minutes=1)
-#
-#             if elapsed_time < timedelta(minutes=10):
-#                 app.logger.warning('Attempt to login during account lockout',
-#                                    extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
-#                 flash("Account is locked. Please try again later.", "danger")
-#                 return redirect(url_for('login_'))
-#             else:
-#                 # Reset failed login attempts after 10 minutes
-#                 user.failed_login_attempts = 0
-#                 user.last_failed_attempt = None
-#                 user.is_locked = False
-#                 db.session.commit()
-#
-#         if bcrypt.checkpw(login_form.password.data.encode('utf-8'),
-#                           user.password.encode('utf-8')) and inallowedcountry == True:
-#             if user.is_active:
-#                 flash("Unable to login as another user is logged in on this account")
-#                 return redirect(url_for('login_'))
-#
-#             user.is_active = True
-#             session['user_id'] = user.id
-#             session['last_activity'] = time.time()  # Reset last activity upon successful login
-#             session.permanent = True
-#
-#             # Reset failed login attempts on successful login
-#             user.failed_login_attempts = 0
-#             user.last_failed_attempt = None
-#             user.is_locked = False
-#             db.session.commit()
-#
-#             if isinstance(user, Members):
-#                 return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='member')))
-#             elif isinstance(user, Organisations):
-#                 return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='organisation')))
-#             elif isinstance(user, Admins):
-#                 return redirect(url_for('fotp', hashedid=object_id_to_hash(object_id=user.id, act='admin')))
-#
-#             return redirect(url_for('fotp', id=user.id))
-#
-#         if inallowedcountry == False:
-#             print('not in correct country')
-#             flash('You are logging in from a country that is not allowed on this account', 'danger')
-#             return redirect(url_for('login_'))
-#
-#         else:
-#             # Failed login attempt
-#             user.failed_login_attempts += 1
-#             user.last_failed_attempt = datetime.now()
-#
-#             # Check if the account should be locked
-#             if user.failed_login_attempts >= 3:
-#                 app.logger.warning('Too many failed login attempts',
-#                                    extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
-#                 flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
-#                 user.is_locked = True
-#
-#             db.session.commit()
-#
-#             flash("Invalid email or password", "danger")
-#             return redirect(url_for('login_'))
-#
-#     # Check for elapsed time and reset failed_login_attempts after 10 minutes
-#     if 'user_id' in session and 'last_activity' in session:
-#         elapsed_time = time.time() - session['last_activity']
-#         if elapsed_time > 600:
-#             user = Users.query.filter_by(id=session['user_id']).first()
-#             if user:
-#                 user.failed_login_attempts = 0
-#                 user.last_failed_attempt = None
-#                 user.is_locked = False
-#                 db.session.commit()
-#
-#     session['last_activity'] = time.time()
-#     generate_csrf()  # Add CSRF token to the session
-#
-#     return render_template('login.html', form=login_form)
+
+
+
+    return render_template('maps.html', location=location, user=user, latitude=latitude, longitude=longitude, googlekey=googlekey, form=form, listofallowedcountries=listofallowedcountries, deleteform=deleteform)
+
+
+@app.route('/allowcountry/delete/<country>',  methods=["GET","POST"])
+@limiter.limit('3/second')
+@login_required
+
+def deletecountry(country):
+    user = current_user
+    country = AllowedCountries.query.filter_by(country=country).first()
+    if country and user.id == country.user:
+        db.session.delete(country)
+        db.session.commit()
+        flash(f'You have deleted {country.country} from the list', 'success')
+
+    return redirect(url_for('maps'))

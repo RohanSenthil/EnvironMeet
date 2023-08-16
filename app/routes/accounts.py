@@ -87,6 +87,34 @@ def members():
 @admin_required
 def createmember():
     createform = createm(request.form)
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+        # 'ip_address': validated_ip_address
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        country = data['country']
+        city = data['city']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(country)
+        print(city)
+        print(ipaddress)
+        print(location)
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
+
+
     if request.method == "POST" and createform.validate():
         print(request.files.get('profile_pic'))
         if request.files.get('profile_pic').filename != '':
@@ -107,6 +135,8 @@ def createmember():
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         member = Members(name=encrypt(createform.name.data), email=emaill, username=usernamee, password=encrypt(passwordd), gender=createform.gender.data, contact=encrypt(createform.contact.data), points=0, yearlypoints = 0, profile_pic=pic_name, is_confirmed=False)
         db.session.add(member)
+        allowed = AllowedCountries(user=member.user_id, country=country)
+        db.session.add(allowed)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=member.id, act='member')
         id_mappings.store_id_mapping(object_id=member.id, hashed_value=hashed_id, act='member')
@@ -381,6 +411,32 @@ def organisations():
 @admin_required
 def createorganisations():
     createform = createo(request.form)
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+        # 'ip_address': validated_ip_address
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        country = data['country']
+        city = data['city']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(country)
+        print(city)
+        print(ipaddress)
+        print(location)
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
     if request.method == "POST" and createform.validate():
         print(request.files.get('profile_pic'))
         if request.files.get('profile_pic').filename != '':
@@ -400,6 +456,8 @@ def createorganisations():
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         organisation = Organisations(name=encrypt(createform.name.data), email=emaill, username=usernamee, password=encrypt(passwordd), address=encrypt(createform.address.data), description=createform.description.data, contact=encrypt(createform.contact.data), profile_pic=pic_name, is_confirmed=False)
         db.session.add(organisation)
+        allowed = AllowedCountries(user=organisation.user_id, country=country)
+        db.session.add(allowed)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=organisation.id, act='organisation')
         id_mappings.store_id_mapping(object_id=organisation.id, hashed_value=hashed_id, act='organisation')
@@ -496,6 +554,33 @@ def admins():
 # @admin_required
 def createadmin():
     createform = createa(request.form)
+    api_url = os.environ.get('geolocation_url')
+    api_key = os.environ.get('geolocation_key')
+
+    params = {
+        'api_key': api_key,
+        # 'ip_address': validated_ip_address
+    }
+
+    try:
+        response = requests.get(api_url, params=params)
+        print(response.content)
+        data = response.json()
+        ipaddress = data['ip_address']
+        country = data['country']
+        city = data['city']
+        latitude = str(data['latitude'])
+        longitude = str(data['longitude'])
+        location = str(data['latitude']) + ', ' + str(data['longitude'])
+        print(country)
+        print(city)
+        print(ipaddress)
+        print(location)
+
+    except requests.exceptions.RequestException as api_error:
+        print(f"There was an error contacting the Geolocation API: {api_error}")
+        raise SystemExit(api_error)
+
     if request.method == "POST" and createform.validate():
         pic_name = 'static\images\default_profile_pic.png'
         # Process the form data
@@ -504,6 +589,8 @@ def createadmin():
         passwordd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         admin = Admins(name=encrypt(createform.name.data), email=emaill, username="", password=encrypt(passwordd), gender=createform.gender.data, contact=encrypt(createform.contact.data), profile_pic=pic_name, is_confirmed=False)
         db.session.add(admin)
+        allowed = AllowedCountries(user=admin.user_id, country=country)
+        db.session.add(allowed)
         db.session.commit()
         hashed_id = id_mappings.hash_object_id(object_id=admin.id, act='admin')
         id_mappings.store_id_mapping(object_id=admin.id, hashed_value=hashed_id, act='admin')
