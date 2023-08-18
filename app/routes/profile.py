@@ -144,7 +144,7 @@ def profileupdate():
 def load_user(email):
     return Users.query.get(email)
 
-INACTIVITY_THRESHOLD = 60*60 #1 minute of inactivity
+INACTIVITY_THRESHOLD = 60*30 #30 minute of inactivity
 def check_user_activity():
     last_activity = session.get('last_activity')
     if last_activity:
@@ -219,9 +219,9 @@ def login_():
             if user.last_failed_attempt is not None:
                 elapsed_time = datetime.now() - user.last_failed_attempt
             else:
-                elapsed_time = timedelta(minutes=1)
+                elapsed_time = timedelta(minutes=10)
 
-            if elapsed_time < timedelta(minutes=1):
+            if elapsed_time < timedelta(minutes=10):
                 app.logger.warning('Attempt to login during account lockout',
                                    extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
                 flash("Account is locked. Please try again later.", "danger")
@@ -273,7 +273,7 @@ def login_():
             if user.failed_login_attempts >= 3:
                 app.logger.warning('Too many failed login attempts',
                                    extra={'security_relevant': True, 'http_status_code': 401, 'flagged': True})
-                flash("Too many failed login attempts. Account is locked for 10 minutes.", "danger")
+                flash("Too many failed login attempts. Please contact the administrator for help", "danger")
                 user.is_locked = True
 
             db.session.commit()
@@ -281,7 +281,7 @@ def login_():
             flash("Invalid email or password", "danger")
             return redirect(url_for('login_'))
 
-    # Check for elapsed time and reset failed_login_attempts after 10 minutes
+    # Check for elapsed time and reset failed_login_attempts after 10 minutes, does not work
     if 'user_id' in session and 'last_activity' in session:
         elapsed_time = time.time() - session['last_activity']
         if elapsed_time > 600:
