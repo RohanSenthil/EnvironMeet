@@ -332,7 +332,7 @@ def sendforgetemail(user):
     msg.sender = 'environmeet@outlook.com'
     msg.body = f'''Hello, {decrypt(user.name)}\nWe've received a request to reset your password for your Environmeet Account. 
     \nYou can reset the password by clicking the link: \n{url_for('reset_token', token=token, _external=True)}
-    \nIf you did not request this password reset, please let us know immediately.
+    \nIf you did not request this password reset, please let us know immediately. This reset link expires at {datetime.now() + timedelta(minutes = 5)}.
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)

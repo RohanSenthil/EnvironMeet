@@ -364,6 +364,7 @@ def sendverificationemail(user):
     msg.recipients = [user.email]
     msg.sender = 'environmeet@outlook.com'
     msg.body = f'''Hello, {decrypt(user.name)}\nVerify the email for your Environmeet account by clicking the link: \n{url_for('confirm_email', token=token, _external=True)}
+    \nThis verify link expires at {datetime.now() + timedelta(days = 1)}.
     \nBest regards,\nThe Environmeet Team
     '''
     mail.send(msg)
