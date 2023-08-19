@@ -12,6 +12,7 @@ import json
 from app.logging.logs_generator import generate_sample_logs
 from datetime import datetime
 from app.util.flagged import flag_user
+from app.util.rate_limiting import limiter
 # Example Usage
 # app.logger.warning('Unauthorized attempt to delete', extra={'security_relevant': True, 'http_status_code': 401})
 # Edit values to relevant values
@@ -179,10 +180,10 @@ with app.app_context():
 
 
 # Handle global exceptions
-# @app.errorhandler(Exception)
-# def handle_global_exceptions(error):
-#     app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
-#     return jsonify({'error': 'Unexpected error occured'}, 500)
+@app.errorhandler(Exception)
+def handle_global_exceptions(error):
+    app.logger.critical(f'Error: {error}', extra={'security_relevant': False, 'http_status_code': 500})
+    return jsonify({'error': 'Unexpected error occured'}, 500)
 
 
 # Handle CSRF Errors
@@ -196,6 +197,7 @@ def handle_error404(e):
     app.logger.error(e, extra={'security_relevant': False, 'http_status_code': 404})
     return render_template('404.html')
 
+@limiter.exempt
 @app.route('/get_server_time')
 def get_server_time():
     return {'server_time': datetime.utcnow().timestamp()}

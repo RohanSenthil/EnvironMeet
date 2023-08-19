@@ -97,12 +97,13 @@ def createPost():
             if not validation.file_is_image(uploaded_file.stream):
                 return jsonify({'error': 'File type not allowed'}, 415)
             
-            # For Purpose of Eicar demo we will comment this out
-            # try:
-            #     og_image = Image.open(uploaded_file)
-            # except OSError as e:
-            #     app.logger.error(f'Possible attempt to upload manipulated image, Error: {e}', extra={'security_relevant': True, 'http_status_code': 415})
-            #     return jsonify({'error': 'Invalid image file'}, 415)
+            # For Purpose of Eicar demo we will add this
+            if uploaded_file.filename != 'eicar.png':
+                try:
+                    og_image = Image.open(uploaded_file)
+                except OSError as e:
+                    app.logger.error(f'Possible attempt to upload manipulated image, Error: {e}', extra={'security_relevant': True, 'http_status_code': 415})
+                    return jsonify({'error': 'Invalid image file'}, 415)
 
             filename = uploaded_file.filename
             secureFilename = secure_filename(str(uuid.uuid4().hex) + '.' + filename.rsplit('.', 1)[1].lower())
