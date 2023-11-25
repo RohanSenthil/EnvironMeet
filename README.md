@@ -1,17 +1,11 @@
 # EnvironMeet
-Application Security Project on Environment Sustainability
+Application Security Project on Environment Sustainability and application security features. Project is no longer supported.
 
 ## Setup
 In your virtual environment type     
 `pip install -r requirements.txt`                
 `set FLASK_APP=run.py`                              
-`set FLASK_ENV=development`                        
-
-### Docker Setup                       
-Download Docker Desktop, Restart                               
-Open Docker Desktop
-Open your command line (windows) as administrator and type                      
-`wsl --update --web-download`                                                          
+`set FLASK_ENV=development`                                                                      
 
 ### Creating your own local database.    
 In the MySQL command line, execute the following commands:                 
@@ -23,12 +17,5 @@ FLUSH PRIVILEGES;`
 Create your own .env file with the appropriate contents
 
 ## Run
-Open your command line (windows) as administrator and type:                                            
-`wsl -d docker-desktop`                  
-`sysctl -w vm.max_map_count=262144` (no persistent way found yet)                           
-
-To run, in your project terminal type:                               
-`docker-compose up --build`                   
-                        
-Finally, in your virtual environment type:                                     
+In your virtual environment type:                                     
 `flask run`
